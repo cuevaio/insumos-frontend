@@ -292,7 +292,10 @@ function App() {
               <TableHead className="border-r">Usuario</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="text-xs">
+          <TableBody
+            className="text-xs"
+            key={`${market}-${unitId?.toString()}-${date?.toString()}`}
+          >
             {date &&
               availabilities &&
               insumos &&
@@ -430,7 +433,6 @@ function App() {
                       </TableCell>
                       <TableCell className="flex justify-center">
                         <Checkbox
-                          key={`${market}-${unitId?.toString()}-${date.toString()}-${hour}-agc`}
                           defaultChecked={insumo?.agc}
                           name={`${hour}-agc`}
                         />
