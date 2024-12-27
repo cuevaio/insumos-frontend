@@ -44,7 +44,7 @@ export function useAvailabilities({
 
       const data = json.data.data;
       return {
-        availabilities: data.filter(x=>x.marketType === market),
+        availabilities: data.filter((x) => x.marketType === market),
         dayDurations: json.data.days,
       };
     },
