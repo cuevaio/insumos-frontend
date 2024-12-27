@@ -1,3 +1,6 @@
+import { markets, noteEnumValues } from './constants';
+import { InsumoSchema } from './schemas';
+
 export interface CPPAPIResponse<T> {
   success: boolean;
   status: string;
@@ -6,3 +9,8 @@ export interface CPPAPIResponse<T> {
   timestamp: string;
   data: T;
 }
+
+export type Market = (typeof markets)[number];
+export type Note = (typeof noteEnumValues)[number];
+
+export type InsumoInsert = typeof InsumoSchema._type;

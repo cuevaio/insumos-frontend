@@ -1,25 +1,23 @@
-import { markets } from "@/lib/constants";
 import { useQuery } from '@tanstack/react-query';
-import { CPPAPIResponse } from '@/lib/types';
+
+import { CPPAPIResponse, Market } from '@/lib/types';
+
 import { useAuth } from './useAuth';
-import { CalendarDate } from "@internationalized/date";
 
 export function useAvailabilities({
   unitId,
   date,
-  market
+  market,
 }: {
   unitId?: string | null;
-  date: CalendarDate | null;
-  market: (typeof markets)[number];
+  date?: string | null;
+  market?: Market | null;
 }) {
-
   const authToken = useAuth();
 
   return useQuery({
     queryFn: async () => {
       const response = await fetch(
-
         'http://localhost:8080/cpp-backend/v1/availability/load',
         {
           method: 'PUT',
@@ -29,9 +27,9 @@ export function useAvailabilities({
           },
           body: JSON.stringify({
             unitId,
-            fromDate: date?.toString(),
-            toDate: date?.toString(),
-            statusCode: 2
+            fromDate: date,
+            toDate: date,
+            statusCode: 2,
           }),
         },
       );
@@ -46,13 +44,12 @@ export function useAvailabilities({
 
       const data = json.data.data;
       return {
-        availabilities: data,
+        availabilities: data.filter(x=>x.marketType === market),
         dayDurations: json.data.days,
       };
     },
     queryKey: ['availability', unitId, date, market],
-    enabled:
-      !!unitId && !!date && !!authToken,
+    enabled: !!unitId && !!date && !!authToken,
   });
 }
 
