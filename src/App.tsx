@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import ExportAvailabilitiesButton from '@/components/ExportAvailabilitiesButton';
 
 import { Button } from './components/ui/button';
 import { Checkbox } from './components/ui/checkbox';
@@ -155,7 +156,7 @@ function App() {
           </Select>
         </div>
         <div className="flex gap-4">
-          <Button variant="outline">Export</Button>
+          <ExportAvailabilitiesButton />
           <Button
             type="button"
             onClick={() => {
