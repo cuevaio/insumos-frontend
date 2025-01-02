@@ -21,6 +21,13 @@ interface Unit {
     name: string;
   } | null;
 }
+interface FuelType {
+  id: string;
+  name: string;
+  createdBy: string;
+  modifiedBy: string;
+  modifiedOn: string;
+}
 
 export function useUnits() {
   const authToken = useAuth();
@@ -41,7 +48,21 @@ export function useUnits() {
         throw new Error(json.message);
       }
 
-      return json.data;
+      const ft_response = await fetch(
+        'http://localhost:8080/cpp-backend/v1/fuelType/load',
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        },
+      );
+      const ft_json = (await ft_response.json()) as CPPAPIResponse<FuelType[]>;
+
+      return json.data.map((u) => ({
+        ...u,
+        fuelType1: ft_json.data.find((x) => x.id === u.fuelType1ID),
+        fuelType2: ft_json.data.find((x) => x.id === u.fuelType2ID),
+      }));
     },
     queryKey: ['allUnits'],
     enabled: !!authToken,

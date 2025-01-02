@@ -2,8 +2,21 @@ import React from 'react';
 
 import { CalendarDate, parseDate } from '@internationalized/date';
 import { type Key } from 'react-aria-components';
+import { useLocalStorage } from 'usehooks-ts';
 
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DatePicker } from '@/components/ui/date-picker';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectItem,
@@ -12,11 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { Button } from './components/ui/button';
-import { Checkbox } from './components/ui/checkbox';
-import { DatePicker } from './components/ui/date-picker';
-import { Input } from './components/ui/input';
 import {
   Table,
   TableBody,
@@ -24,14 +32,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './components/ui/table';
-import { useAvailabilities } from './hooks/useAvailabilities';
-import { useInsumos } from './hooks/useInsumos';
-import { useUnits } from './hooks/useUnits';
-import { useUpsertInsumos } from './hooks/useUpsertInsumos';
-import { InsumoSchema } from './lib/schemas';
-import type { InsumoInsert, Market } from './lib/types';
-import { cn } from './lib/utils';
+} from '@/components/ui/table';
+
+import { useAvailabilities } from '@/hooks/useAvailabilities';
+import { useInsumos } from '@/hooks/useInsumos';
+import { useUnits } from '@/hooks/useUnits';
+import { useUpsertInsumos } from '@/hooks/useUpsertInsumos';
+
+import { noteEnumValues } from '@/lib/constants';
+import { InsumoSchema } from '@/lib/schemas';
+import type { InsumoInsert, Market } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 function App() {
   const { data: units } = useUnits();
@@ -43,7 +54,21 @@ function App() {
   const [errors, setErrors] = React.useState<{ [key: string]: string[] }>({});
   const [isFlashing, setIsFlashing] = React.useState(false);
 
+  const [showFT1Columns, setShowFT1Columns] = useLocalStorage(
+    'show_ft_1',
+    false,
+  );
+  const [showFT2Columns, setShowFT2Columns] = useLocalStorage(
+    'show_ft_2',
+    false,
+  );
+
   const formRef = React.useRef<HTMLFormElement | null>(null);
+
+  const unit = React.useMemo(
+    () => units?.find((u) => u.id === unitId),
+    [unitId, units],
+  );
 
   React.useEffect(() => {
     if (!unitId) {
@@ -155,15 +180,29 @@ function App() {
           </Select>
         </div>
         <div className="flex gap-4">
-          <Button variant="outline">Export</Button>
-          <Button
-            type="button"
-            onClick={() => {
-              formRef?.current?.requestSubmit();
-            }}
-          >
-            Guardar cambios
-          </Button>
+          <Button variant="outline">Exportar</Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">Columnas</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Columnas</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={showFT1Columns}
+                onCheckedChange={setShowFT1Columns}
+              >
+                {unit?.fuelType1?.name.toUpperCase()}
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={showFT2Columns}
+                onCheckedChange={setShowFT2Columns}
+              >
+                {unit?.fuelType2?.name.toUpperCase()}
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <form
@@ -225,53 +264,75 @@ function App() {
       >
         <Table className="my-8">
           <TableHeader>
-            <TableRow className="text-xs">
-              <TableHead colSpan={2} className="border-l border-t"></TableHead>
-              <TableHead colSpan={5} className="border-x border-t">
-                FT 1
-              </TableHead>
-              <TableHead colSpan={5} className="border-x border-t">
-                FT 2
-              </TableHead>
-              <TableHead colSpan={13} className="border-r border-t"></TableHead>
-            </TableRow>
-            <TableRow className="text-[0.7rem] leading-[0.75rem]">
+            {(showFT1Columns || showFT2Columns) && (
+              <>
+                <TableRow className="text-xs">
+                  <TableHead
+                    colSpan={2}
+                    className="border-l border-t"
+                  ></TableHead>
+                  {showFT1Columns && (
+                    <TableHead colSpan={5} className="border-x border-t">
+                      {unit?.fuelType1?.name.toUpperCase()}
+                    </TableHead>
+                  )}
+                  {showFT2Columns && (
+                    <TableHead colSpan={5} className="border-x border-t">
+                      {unit?.fuelType2?.name.toUpperCase()}
+                    </TableHead>
+                  )}
+                  <TableHead
+                    colSpan={13}
+                    className="border-r border-t"
+                  ></TableHead>
+                </TableRow>
+              </>
+            )}
+            <TableRow className="border-t text-[0.7rem] leading-[0.75rem]">
               <TableHead className="border-l">Hora</TableHead>
               <TableHead className="min-w-[100px]">Horario</TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta Corregida a Condiciones de Diseño de Verano
-                (Contractual) MW
-              </TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta Expresada a Condiciones Ambientales Reales MW
-              </TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta Expresada a Condiciones Ambientales Reales
-                Considerando Cantidad de Gas Disponible
-              </TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta del Contrato de Interconexión Legado (CIL) MW
-              </TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta con Contrato Tipo LIE MW
-              </TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta Corregida a Condiciones de Diseño de Verano
-                (Contractual) MW
-              </TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta Expresada a Condiciones Ambientales Reales MW
-              </TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta Expresada a Condiciones Ambientales Reales
-                Considerando Cantidad de Diesel Disponible MW
-              </TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta del Contrato de Interconexión Legado (CIL) MW
-              </TableHead>
-              <TableHead className="min-w-[120px] border-l">
-                Capacidad Neta con Contrato Tipo LIE MW
-              </TableHead>
+              {showFT1Columns && (
+                <>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta Corregida a Condiciones de Diseño de Verano
+                    (Contractual) MW
+                  </TableHead>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta Expresada a Condiciones Ambientales Reales MW
+                  </TableHead>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta Expresada a Condiciones Ambientales Reales
+                    Considerando Cantidad de Gas Disponible
+                  </TableHead>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta del Contrato de Interconexión Legado (CIL) MW
+                  </TableHead>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta con Contrato Tipo LIE MW
+                  </TableHead>
+                </>
+              )}
+              {showFT2Columns && (
+                <>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta Corregida a Condiciones de Diseño de Verano
+                    (Contractual) MW
+                  </TableHead>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta Expresada a Condiciones Ambientales Reales MW
+                  </TableHead>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta Expresada a Condiciones Ambientales Reales
+                    Considerando Cantidad de Diesel Disponible MW
+                  </TableHead>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta del Contrato de Interconexión Legado (CIL) MW
+                  </TableHead>
+                  <TableHead className="min-w-[120px] border-l">
+                    Capacidad Neta con Contrato Tipo LIE MW
+                  </TableHead>
+                </>
+              )}
               <TableHead className="border-l">Pre-Selección</TableHead>
               <TableHead>Disponibilidad para Oferta (Max)</TableHead>
               <TableHead>Disponibilidad para Oferta (Min)</TableHead>
@@ -318,46 +379,56 @@ function App() {
                         {idx.toString().padStart(2, '0') + ':00'} -{' '}
                         {hour.toString().padStart(2, '0') + ':00'}
                       </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {
-                          availability?.fixedAvailability
-                            .fuelType1FixedNetCapacity
-                        }
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {availability?.fuelType1NetCapacity}
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {availability?.fuelType1AvailabilityNetCapacity}
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {availability?.fuelType1Cil}
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {availability?.fuelType1Lie}
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {
-                          availability?.fixedAvailability
-                            .fuelType2FixedNetCapacity
-                        }
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {availability?.fuelType2NetCapacity}
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {availability?.fuelType2AvailabilityNetCapacity}
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {availability?.fuelType2Cil}
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {availability?.fuelType2Lie}
-                      </TableCell>
+                      {showFT1Columns && (
+                        <>
+                          {' '}
+                          <TableCell className="bg-muted/50">
+                            {
+                              availability?.fixedAvailability
+                                .fuelType1FixedNetCapacity
+                            }
+                          </TableCell>
+                          <TableCell className="bg-muted/50">
+                            {availability?.fuelType1NetCapacity}
+                          </TableCell>
+                          <TableCell className="bg-muted/50">
+                            {availability?.fuelType1AvailabilityNetCapacity}
+                          </TableCell>
+                          <TableCell className="bg-muted/50">
+                            {availability?.fuelType1Cil}
+                          </TableCell>
+                          <TableCell className="bg-muted/50">
+                            {availability?.fuelType1Lie}
+                          </TableCell>
+                        </>
+                      )}
+                      {showFT2Columns && (
+                        <>
+                          <TableCell className="bg-muted/50">
+                            {
+                              availability?.fixedAvailability
+                                .fuelType2FixedNetCapacity
+                            }
+                          </TableCell>
+                          <TableCell className="bg-muted/50">
+                            {availability?.fuelType2NetCapacity}
+                          </TableCell>
+                          <TableCell className="bg-muted/50">
+                            {availability?.fuelType2AvailabilityNetCapacity}
+                          </TableCell>
+                          <TableCell className="bg-muted/50">
+                            {availability?.fuelType2Cil}
+                          </TableCell>
+                          <TableCell className="bg-muted/50">
+                            {availability?.fuelType2Lie}
+                          </TableCell>
+                        </>
+                      )}
                       <TableCell className="bg-muted/50"></TableCell>
                       <TableCell>
                         <Input
                           type="number"
+                          step=".01"
                           defaultValue={insumo?.max}
                           className={cn(
                             isFlashing &&
@@ -371,6 +442,8 @@ function App() {
                       </TableCell>
                       <TableCell>
                         <Input
+                          type="number"
+                          step=".01"
                           defaultValue={insumo?.min}
                           className={cn(
                             isFlashing &&
@@ -385,6 +458,7 @@ function App() {
                       <TableCell>
                         <Input
                           type="number"
+                          step=".01"
                           className={cn(
                             isFlashing &&
                               errors[hour] &&
@@ -403,6 +477,7 @@ function App() {
                       <TableCell>
                         <Input
                           type="number"
+                          step=".01"
                           className={cn(
                             isFlashing &&
                               errors[hour] &&
@@ -419,17 +494,36 @@ function App() {
                         />
                       </TableCell>
                       <TableCell>
-                        <Input
-                          defaultValue={insumo?.note}
-                          className={cn(
-                            isFlashing &&
-                              errors[hour] &&
-                              errors[hour].includes('note') &&
-                              'border-red-500',
-                            'transition-colors duration-300',
-                          )}
+                        <label id="label" className="hidden">
+                          Select note
+                        </label>
+                        <Select
+                          aria-labelledby="label"
+                          placeholder=""
                           name={`${hour}-note`}
-                        />
+                          defaultSelectedKey={insumo?.note}
+                        >
+                          <SelectTrigger
+                            className={cn(
+                              'h-full px-2 py-0 transition-colors duration-300',
+                              isFlashing &&
+                                errors[hour] &&
+                                errors[hour].includes('note') &&
+                                'border-red-500',
+                            )}
+                          >
+                            <SelectValue className="text-xs" />
+                          </SelectTrigger>
+                          <SelectPopover>
+                            <SelectListBox>
+                              {noteEnumValues.map((n) => (
+                                <SelectItem key={n} id={n}>
+                                  {n}
+                                </SelectItem>
+                              ))}
+                            </SelectListBox>
+                          </SelectPopover>
+                        </Select>
                       </TableCell>
                       <TableCell className="flex justify-center">
                         <Checkbox
@@ -439,6 +533,8 @@ function App() {
                       </TableCell>
                       <TableCell>
                         <Input
+                          type="number"
+                          step=".01"
                           defaultValue={insumo?.price_ft1}
                           className={cn(
                             isFlashing &&
@@ -452,6 +548,8 @@ function App() {
                       </TableCell>
                       <TableCell>
                         <Input
+                          type="number"
+                          step=".01"
                           defaultValue={insumo?.price_ft2}
                           className={cn(
                             isFlashing &&
@@ -484,6 +582,14 @@ function App() {
           </TableBody>
         </Table>
       </form>
+      <Button
+        type="button"
+        onClick={() => {
+          formRef?.current?.requestSubmit();
+        }}
+      >
+        Guardar cambios
+      </Button>
     </div>
   );
 }

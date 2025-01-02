@@ -8,20 +8,25 @@
   "importOrder": [
     "^react$",
     "^next/(.*)$",
-
     "",
 
     "<THIRD_PARTY_MODULES>",
     "",
+
     "^@/db$",
     "^@/db/(.*)$",
     "",
-    "^@/components/ui/(.*)$",
 
+    "^@/components/ui/(.*)$",
     "^@/components/(.*)$",
     "",
+
+    "^@/hooks/(.*)$",
+    "",
+
     "^@/lib/(.*)$",
     "",
+
     "^[./]"
   ],
   "importOrderTypeScriptVersion": "5.0.0"
