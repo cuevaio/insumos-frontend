@@ -204,6 +204,14 @@ function App() {
               </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Button
+            type="button"
+            onClick={() => {
+              formRef?.current?.requestSubmit();
+            }}
+          >
+            Guardar cambios
+          </Button>
         </div>
       </div>
       <form
