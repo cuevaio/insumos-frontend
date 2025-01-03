@@ -13,7 +13,6 @@ import {
 
 import { cn } from '@/lib/utils';
 
-import { Button } from './button';
 import {
   Calendar,
   CalendarCell,
@@ -25,6 +24,7 @@ import {
 } from './calendar';
 import { DateInput } from './datefield';
 import { FieldGroup, Label } from './field';
+import { Button } from './jolly-button';
 import { Popover } from './popover';
 
 const DateRangePicker = AriaDateRangePicker;

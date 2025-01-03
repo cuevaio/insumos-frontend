@@ -26,7 +26,7 @@ import {
   useLocale,
 } from 'react-aria-components';
 
-import { buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/jolly-button';
 
 import { cn } from '@/lib/utils';
 
