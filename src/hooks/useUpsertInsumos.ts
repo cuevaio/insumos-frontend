@@ -23,9 +23,12 @@ export const useUpsertInsumos = (data: {
       });
 
       const json = (await response.json()) as {
-        data: { inserted: number; updated: number };
+        data: {
+          inserted: number[];
+          updated: { [hour: number]: (keyof InsumoInsert)[] };
+        };
       };
-      return json;
+      return json.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { CalendarDate, parseDate } from '@internationalized/date';
 import { type Key } from 'react-aria-components';
+import { toast } from 'sonner';
 import { useLocalStorage } from 'usehooks-ts';
 
 import { Button } from '@/components/ui/button';
@@ -52,8 +53,11 @@ function App() {
   const [date, setDate] = React.useState<CalendarDate | null>(null);
   const [market, setMarket] = React.useState<Market | null>(null);
 
-  const [errors, setErrors] = React.useState<{ [key: string]: string[] }>({});
-  const [isFlashing, setIsFlashing] = React.useState(false);
+  const [errors, setErrors] = React.useState<{
+    [key: string]: (keyof InsumoInsert)[];
+  }>({});
+  const [isFlashingErrors, setIsFlashingErrors] = React.useState(false);
+  const [isFlashingSuccess, setIsFlashingSuccess] = React.useState(false);
 
   const [showFT1Columns, setShowFT1Columns] = useLocalStorage(
     'show_ft_1',
@@ -106,9 +110,10 @@ function App() {
 
   React.useEffect(() => {
     if (Object.keys(errors).length) {
-      setIsFlashing(true);
+      toast.error('Completa correctamente los campos en rojo');
+      setIsFlashingErrors(true);
       setTimeout(() => {
-        setIsFlashing(false);
+        setIsFlashingErrors(false);
       }, 3000);
     }
   }, [errors]);
@@ -125,11 +130,107 @@ function App() {
     market,
   });
 
-  const { mutate } = useUpsertInsumos({
+  const { mutate, data, isSuccess, isPending } = useUpsertInsumos({
     unitId: unitId?.toString(),
     date: date?.toString(),
     market,
   });
+
+  React.useEffect(() => {
+    if (!isPending) {
+      if (isSuccess) {
+        setIsFlashingSuccess(true);
+        setTimeout(() => {
+          setIsFlashingSuccess(false);
+        }, 3000);
+      }
+    }
+  }, [isSuccess, isPending]);
+
+  React.useEffect(() => {
+    if (!isPending) {
+      if (isSuccess) {
+        if (
+          data.inserted.length === 0 &&
+          Object.keys(data.updated).length === 0
+        ) {
+          toast('Sin cambios por guardar');
+        } else {
+          if (data.inserted.length > 0) {
+            toast.success(`Se crearon ${data.inserted.length} ofertas`);
+          }
+
+          if (Object.keys(data.updated).length) {
+            toast.success(
+              `Se actualizaron ${Object.keys(data.updated).length} ofertas`,
+            );
+          }
+        }
+      }
+    }
+  }, [data, isSuccess, isPending]);
+
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    rowIndex: number,
+    cellIndex: number,
+  ) => {
+    const columns = 8; // Number of editable columns
+    const totalRows =
+      date && availabilities ? availabilities.dayDurations[date.toString()] : 0;
+
+    let element: HTMLInputElement | null = null;
+
+    if (cellIndex !== 4) {
+      switch (event.key) {
+        case 'ArrowUp':
+          if (rowIndex > 0) {
+            element = document.querySelector(
+              `#input-${rowIndex - 1}-${cellIndex}`,
+            ) as HTMLInputElement;
+          }
+          break;
+        case 'ArrowDown':
+          if (rowIndex < totalRows) {
+            element = document.querySelector(
+              `#input-${rowIndex + 1}-${cellIndex}`,
+            ) as HTMLInputElement;
+          }
+          break;
+        case 'ArrowLeft':
+          if (cellIndex > 0) {
+            if (cellIndex === 5) {
+              element = document.querySelector(
+                `#input-${rowIndex}-${3}`,
+              ) as HTMLInputElement;
+            } else {
+              element = document.querySelector(
+                `#input-${rowIndex}-${cellIndex - 1}`,
+              ) as HTMLInputElement;
+            }
+          }
+          break;
+        case 'ArrowRight':
+          if (cellIndex < columns) {
+            if (cellIndex === 3) {
+              element = document.querySelector(
+                `#input-${rowIndex}-${5}`,
+              ) as HTMLInputElement;
+            } else {
+              element = document.querySelector(
+                `#input-${rowIndex}-${cellIndex + 1}`,
+              ) as HTMLInputElement;
+            }
+          }
+          break;
+      }
+    }
+
+    if (element) {
+      event.preventDefault();
+      element.focus();
+    }
+  };
 
   return (
     <div className="container mx-auto">
@@ -237,7 +338,7 @@ function App() {
           });
 
           const insumosToSubmit: InsumoInsert[] = [];
-          const _errors: { [key: string]: string[] } = {};
+          const _errors: { [key: string]: (keyof InsumoInsert)[] } = {};
 
           Object.entries(insumos).forEach(([hour, insumo]) => {
             if (Object.values(insumo).filter((x) => x !== '').length > 0) {
@@ -258,7 +359,9 @@ function App() {
               if (p.success) {
                 insumosToSubmit.push(p.data);
               } else {
-                _errors[hour] = p.error.issues.map((x) => x.path[0].toString());
+                _errors[hour] = p.error.issues.map((x) =>
+                  x.path[0].toString(),
+                ) as (keyof InsumoInsert)[];
               }
             }
           });
@@ -378,7 +481,6 @@ function App() {
                   );
 
                   const insumo = insumos?.insumos.find((x) => x.hour === hour);
-                  console.log(insumo);
                   return (
                     <TableRow key={idx}>
                       <TableCell className="border-l bg-muted/50 tabular-nums">
@@ -390,7 +492,6 @@ function App() {
                       </TableCell>
                       {showFT1Columns && (
                         <>
-                          {' '}
                           <TableCell className="bg-muted/50">
                             {
                               availability?.fixedAvailability
@@ -437,13 +538,21 @@ function App() {
                       <TableCell>
                         <Input
                           type="number"
+                          id={`input-${idx}-${0}`}
                           step=".01"
                           defaultValue={insumo?.max}
+                          onKeyDown={(e) => handleKeyDown(e, idx, 0)}
                           className={cn(
-                            isFlashing &&
+                            isFlashingErrors &&
                               errors[hour] &&
                               errors[hour].includes('max') &&
                               'border-red-500',
+                            isFlashingSuccess &&
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
+                            isFlashingSuccess &&
+                              data?.updated[hour]?.includes('max') &&
+                              'border-blue-500',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-max`}
@@ -452,13 +561,22 @@ function App() {
                       <TableCell>
                         <Input
                           type="number"
+                          id={`input-${idx}-${1}`}
                           step=".01"
                           defaultValue={insumo?.min}
+                          onKeyDown={(e) => handleKeyDown(e, idx, 1)}
                           className={cn(
-                            isFlashing &&
+                            isFlashingErrors &&
                               errors[hour] &&
                               errors[hour].includes('min') &&
                               'border-red-500',
+                            isFlashingSuccess &&
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
+                            isFlashingSuccess &&
+                              data?.updated[hour]?.includes('min') &&
+                              'border-blue-500',
+                            'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-min`}
@@ -467,12 +585,20 @@ function App() {
                       <TableCell>
                         <Input
                           type="number"
+                          id={`input-${idx}-${2}`}
                           step=".01"
                           className={cn(
-                            isFlashing &&
+                            isFlashingErrors &&
                               errors[hour] &&
                               errors[hour].includes('share_ft1') &&
                               'border-red-500',
+                            isFlashingSuccess &&
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
+                            isFlashingSuccess &&
+                              data?.updated[hour]?.includes('share_ft1') &&
+                              'border-blue-500',
+                            'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
                           defaultValue={
@@ -480,18 +606,27 @@ function App() {
                               ? insumo.share_ft1 * 100
                               : undefined
                           }
+                          onKeyDown={(e) => handleKeyDown(e, idx, 2)}
                           name={`${hour}-share_ft1`}
                         />
                       </TableCell>
                       <TableCell>
                         <Input
                           type="number"
+                          id={`input-${idx}-${3}`}
                           step=".01"
                           className={cn(
-                            isFlashing &&
+                            isFlashingErrors &&
                               errors[hour] &&
                               errors[hour].includes('share_ft2') &&
                               'border-red-500',
+                            isFlashingSuccess &&
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
+                            isFlashingSuccess &&
+                              data?.updated[hour]?.includes('share_ft2') &&
+                              'border-blue-500',
+                            'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
                           defaultValue={
@@ -499,13 +634,12 @@ function App() {
                               ? insumo.share_ft2 * 100
                               : undefined
                           }
+                          onKeyDown={(e) => handleKeyDown(e, idx, 3)}
                           name={`${hour}-share_ft2`}
                         />
                       </TableCell>
                       <TableCell>
-                        <label id="label" className="hidden">
-                          Select note
-                        </label>
+                        <label className="hidden">Select note</label>
                         <Select
                           aria-labelledby="label"
                           placeholder=""
@@ -513,12 +647,21 @@ function App() {
                           defaultSelectedKey={insumo?.note}
                         >
                           <SelectTrigger
+                            id={`input-${idx}-${4}`}
+                            onKeyDown={(e) => handleKeyDown(e, idx, 4)}
                             className={cn(
                               'h-full px-2 py-0 transition-colors duration-300',
-                              isFlashing &&
+                              isFlashingErrors &&
                                 errors[hour] &&
                                 errors[hour].includes('note') &&
                                 'border-red-500',
+                              isFlashingSuccess &&
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
+                              isFlashingSuccess &&
+                                data?.updated[hour]?.includes('note') &&
+                                'border-blue-500',
+                              'transition-colors duration-300',
                             )}
                           >
                             <SelectValue className="text-xs" />
@@ -536,20 +679,37 @@ function App() {
                       </TableCell>
                       <TableCell className="flex justify-center">
                         <Checkbox
+                          id={`input-${idx}-${5}`}
                           defaultChecked={insumo?.agc}
                           name={`${hour}-agc`}
+                          onKeyDown={(e) =>
+                            handleKeyDown(
+                              e as React.KeyboardEvent<HTMLInputElement>,
+                              idx,
+                              5,
+                            )
+                          }
                         />
                       </TableCell>
                       <TableCell>
                         <Input
                           type="number"
+                          id={`input-${idx}-${6}`}
                           step=".01"
                           defaultValue={insumo?.price_ft1}
+                          onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                           className={cn(
-                            isFlashing &&
+                            isFlashingErrors &&
                               errors[hour] &&
                               errors[hour].includes('price_ft1') &&
                               'border-red-500',
+                            isFlashingSuccess &&
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
+                            isFlashingSuccess &&
+                              data?.updated[hour]?.includes('price_ft1') &&
+                              'border-blue-500',
+                            'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-price_ft1`}
@@ -558,13 +718,22 @@ function App() {
                       <TableCell>
                         <Input
                           type="number"
+                          id={`input-${idx}-${7}`}
                           step=".01"
                           defaultValue={insumo?.price_ft2}
+                          onKeyDown={(e) => handleKeyDown(e, idx, 7)}
                           className={cn(
-                            isFlashing &&
+                            isFlashingErrors &&
                               errors[hour] &&
                               errors[hour].includes('price_ft2') &&
                               'border-red-500',
+                            isFlashingSuccess &&
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
+                            isFlashingSuccess &&
+                              data?.updated[hour]?.includes('price_ft2') &&
+                              'border-blue-500',
+                            'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-price_ft2`}
