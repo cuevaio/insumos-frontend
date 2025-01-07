@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { useAuth } from '@/hooks/useAuth';
+
 import { CPPAPIResponse } from '@/lib/types';
 
-import { useAuth } from './useAuth';
-
-interface Unit {
+export interface Unit {
   id: string;
   name: string;
   createdBy: string;

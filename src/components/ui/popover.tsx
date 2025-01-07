@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import {
   Dialog as AriaDialog,
   DialogProps as AriaDialogProps,

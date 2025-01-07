@@ -34,6 +34,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import ExportAvailabilitiesButton from '@/components/ExportAvailabilitiesButton';
 
 import { useAvailabilities } from '@/hooks/useAvailabilities';
 import { useInsumos } from '@/hooks/useInsumos';
@@ -281,7 +282,7 @@ function App() {
           </Select>
         </div>
         <div className="flex gap-4">
-          <Button variant="outline">Exportar</Button>
+          <ExportAvailabilitiesButton />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -304,6 +305,14 @@ function App() {
               </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Button
+            type="button"
+            onClick={() => {
+              formRef?.current?.requestSubmit();
+            }}
+          >
+            Guardar cambios
+          </Button>
         </div>
       </div>
       <form

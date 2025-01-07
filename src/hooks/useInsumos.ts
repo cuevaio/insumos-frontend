@@ -2,6 +2,20 @@ import { useQuery } from '@tanstack/react-query';
 
 import type { Market, Note } from '@/lib/types';
 
+export interface Insumo {
+  hour: number;
+  min: number;
+  max: number;
+  share_ft1?: number;
+  share_ft2?: number;
+  note: Note;
+  agc: boolean;
+  price_ft1: number;
+  price_ft2?: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export const useInsumos = ({
   date,
   unitId,
@@ -22,19 +36,7 @@ export const useInsumos = ({
           date: string;
           market: string;
           unit_id: string;
-          insumos: {
-            hour: number;
-            min: number;
-            max: number;
-            share_ft1?: number;
-            share_ft2?: number;
-            note: Note;
-            agc: boolean;
-            price_ft1: number;
-            price_ft2?: number;
-            created_at: string;
-            updated_at: string;
-          }[];
+          insumos: Insumo[];
         };
       };
 
