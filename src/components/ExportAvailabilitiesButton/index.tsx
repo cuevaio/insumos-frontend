@@ -46,7 +46,7 @@ const ExportAvailabilitiesButton = () => {
       if (!availabilities) throw new Error('No availabilities found');
       if (!insumos) throw new Error('No insumos found');
 
-      const duration = data?.dayDurations[date]!;
+      const duration = data?.dayDurations[date];
 
       const response = await fetch(`/cpp-ui/template-${duration}.xlsx`);
       const arrayBuffer = await response.arrayBuffer();
@@ -96,7 +96,7 @@ const ExportAvailabilitiesButton = () => {
         mutate();
       }}
     >
-      Export
+      Exportar
     </Button>
   );
 };

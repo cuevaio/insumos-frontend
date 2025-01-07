@@ -237,17 +237,17 @@ function App() {
       <div className="flex items-end justify-between">
         <div className="flex gap-4">
           <DatePicker
-            label="Date"
+            label="Fecha"
             value={date}
             onChange={(value) => setDate(value)}
           />
           <Select
             className="w-[200px]"
-            placeholder="Select a unit"
+            placeholder="Selecciona una unidad"
             selectedKey={unitId}
             onSelectionChange={(selected) => setUnitId(selected)}
           >
-            <Label>Unit</Label>
+            <Label>Unidad</Label>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -263,13 +263,13 @@ function App() {
           </Select>
           <Select
             className="w-[200px]"
-            placeholder="Select a market"
+            placeholder="Selecciona un mercado"
             selectedKey={market}
             onSelectionChange={(selected) =>
               setMarket(selected.toString() as Market)
             }
           >
-            <Label>Market</Label>
+            <Label>Mercado</Label>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -282,8 +282,6 @@ function App() {
           </Select>
         </div>
         <div className="flex gap-4">
-          <ExportAvailabilitiesButton />
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">Columnas</Button>
@@ -297,22 +295,16 @@ function App() {
               >
                 {unit?.fuelType1?.name.toUpperCase()}
               </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={showFT2Columns}
-                onCheckedChange={setShowFT2Columns}
-              >
-                {unit?.fuelType2?.name.toUpperCase()}
-              </DropdownMenuCheckboxItem>
+              {unit?.fuelType2 && (
+                <DropdownMenuCheckboxItem
+                  checked={showFT2Columns}
+                  onCheckedChange={setShowFT2Columns}
+                >
+                  {unit.fuelType2.name.toUpperCase()}
+                </DropdownMenuCheckboxItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button
-            type="button"
-            onClick={() => {
-              formRef?.current?.requestSubmit();
-            }}
-          >
-            Guardar cambios
-          </Button>
         </div>
       </div>
       <form
@@ -376,7 +368,7 @@ function App() {
       >
         <Table className="my-8">
           <TableHeader>
-            {(showFT1Columns || showFT2Columns) && (
+            {(showFT1Columns || (showFT2Columns && unit?.fuelType2)) && (
               <>
                 <TableRow className="text-xs">
                   <TableHead
@@ -388,7 +380,7 @@ function App() {
                       {unit?.fuelType1?.name.toUpperCase()}
                     </TableHead>
                   )}
-                  {showFT2Columns && (
+                  {showFT2Columns && unit?.fuelType2 && (
                     <TableHead colSpan={5} className="border-x border-t">
                       {unit?.fuelType2?.name.toUpperCase()}
                     </TableHead>
@@ -424,7 +416,7 @@ function App() {
                   </TableHead>
                 </>
               )}
-              {showFT2Columns && (
+              {showFT2Columns && unit?.fuelType2 && (
                 <>
                   <TableHead className="min-w-[120px] border-l">
                     Capacidad Neta Corregida a Condiciones de Diseño de Verano
@@ -512,7 +504,7 @@ function App() {
                           </TableCell>
                         </>
                       )}
-                      {showFT2Columns && (
+                      {showFT2Columns && unit?.fuelType2 && (
                         <>
                           <TableCell className="bg-muted/50">
                             {
@@ -760,14 +752,17 @@ function App() {
           </TableBody>
         </Table>
       </form>
-      <Button
-        type="button"
-        onClick={() => {
-          formRef?.current?.requestSubmit();
-        }}
-      >
-        Guardar cambios
-      </Button>
+      <div className="flex justify-between">
+        <ExportAvailabilitiesButton />
+        <Button
+          type="button"
+          onClick={() => {
+            formRef?.current?.requestSubmit();
+          }}
+        >
+          Guardar cambios
+        </Button>
+      </div>
     </div>
   );
 }
