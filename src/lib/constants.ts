@@ -8,3 +8,5 @@ export const noteEnumValues = [
   'sa_prg',
   'prueba',
 ] as const;
+
+export const DEV = true;

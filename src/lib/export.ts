@@ -16,6 +16,7 @@ const getOperationTypeDisplayValue = (operationType: string): string => {
 
 const populateFuelTypeFields = (
   worksheet: ExcelJS.Worksheet,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   availability: any,
   index: number,
   fuelTypeNumber: 1 | 2,
@@ -63,6 +64,7 @@ const populateFuelTypeFields = (
 
 export const populateAvailabilityData = (
   worksheet: ExcelJS.Worksheet,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   availability: any,
   index: number,
   insumo: Insumo | undefined,

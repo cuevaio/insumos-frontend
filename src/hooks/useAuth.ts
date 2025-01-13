@@ -1,15 +1,15 @@
 import React from 'react';
 
-function getCookie(name: string) {
+/* function getCookie(name: string) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop()!.split(';').shift();
-}
+} */
 
 export const useAuth = () => {
-  const [token, setToken] = React.useState<string>();
+  const [token] = React.useState<string>('hi!');
 
-  React.useEffect(() => {
+  /* React.useEffect(() => {
     if (!token) {
       const tokenCookie = getCookie('pci_auth_access_token');
       if (tokenCookie) {
@@ -20,7 +20,7 @@ export const useAuth = () => {
         );
       }
     }
-  }, [token]);
+  }, [token]); */
 
   return token;
 };

@@ -36,7 +36,10 @@ import {
 } from '@/components/ui/table';
 import ExportAvailabilitiesButton from '@/components/ExportAvailabilitiesButton';
 
-import { useAvailabilities } from '@/hooks/useAvailabilities';
+import {
+  AvailabilityRecord,
+  useAvailabilities,
+} from '@/hooks/useAvailabilities';
 import { useInsumos } from '@/hooks/useInsumos';
 import { useUnits } from '@/hooks/useUnits';
 import { useUpsertInsumos } from '@/hooks/useUpsertInsumos';
@@ -231,6 +234,207 @@ function App() {
       element.focus();
     }
   };
+  const [checkedStates, setCheckedStates] = React.useState<{
+    [key: string]: boolean;
+  }>({});
+
+  React.useEffect(() => {
+    if (!availabilities?.availabilities || !insumos?.insumos) return;
+    const checked: { [key: string]: boolean } = {};
+
+    availabilities.availabilities.forEach((a) => {
+      const insumo = insumos.insumos.find((i) => i.hour === a.hour);
+      if (!insumo) {
+        checked[`${a.hour - 1}-fix-ft1fnc`] = false;
+        checked[`${a.hour - 1}-ft1nc`] = false;
+        checked[`${a.hour - 1}-ft1anc`] = false;
+        checked[`${a.hour - 1}-ft1cil`] = false;
+        checked[`${a.hour - 1}-ft1lie`] = false;
+
+        if (unit?.fuelType2ID) {
+          checked[`${a.hour - 1}-fix-ft2fnc`] = false;
+          checked[`${a.hour - 1}-ft2nc`] = false;
+          checked[`${a.hour - 1}-ft2anc`] = false;
+          checked[`${a.hour - 1}-ft2cil`] = false;
+          checked[`${a.hour - 1}-ft2lie`] = false;
+        }
+      } else {
+        if (a.fixedAvailability.fuelType1FixedNetCapacity === insumo.max) {
+          checked[`${a.hour - 1}-fix-ft1fnc`] = true;
+        }
+        if (a.fuelType1NetCapacity === insumo.max) {
+          checked[`${a.hour - 1}-ft1nc`] = true;
+        }
+        if (a.fuelType1AvailabilityNetCapacity === insumo.max) {
+          checked[`${a.hour - 1}-ft1anc`] = true;
+        }
+        if (a.fuelType1Cil === insumo.max) {
+          checked[`${a.hour - 1}-ft1cil`] = true;
+        }
+        if (a.fuelType1Lie === insumo.max) {
+          checked[`${a.hour - 1}-ft1lie`] = true;
+        }
+
+        if (unit?.fuelType2ID) {
+          if (a.fixedAvailability.fuelType2FixedNetCapacity === insumo.max) {
+            checked[`${a.hour - 1}-fix-ft2fnc`] = true;
+          }
+          if (a.fuelType2NetCapacity === insumo.max) {
+            checked[`${a.hour - 1}-ft2nc`] = true;
+          }
+          if (a.fuelType2AvailabilityNetCapacity === insumo.max) {
+            checked[`${a.hour - 1}-ft2anc`] = true;
+          }
+          if (a.fuelType2Cil === insumo.max) {
+            checked[`${a.hour - 1}-ft2cil`] = true;
+          }
+          if (a.fuelType2Lie === insumo.max) {
+            checked[`${a.hour - 1}-ft2lie`] = true;
+          }
+        }
+      }
+    });
+
+    setCheckedStates({ ...checked });
+  }, [availabilities, insumos, unit]);
+
+  const updateMaxValue = (
+    rowIndex: number,
+    columnName: string,
+    value?: number,
+  ) => {
+    const input = document.querySelector(
+      `#input-${rowIndex}-0`,
+    ) as HTMLInputElement;
+
+    if (input) {
+      input.value = value?.toString() || '';
+    }
+
+    setCheckedStates((prev) => ({
+      ...prev,
+
+      [`${rowIndex}-fix-ft1fnc`]: false,
+      [`${rowIndex}-ft1nc`]: false,
+      [`${rowIndex}-ft1anc`]: false,
+      [`${rowIndex}-ft1nc`]: false,
+      [`${rowIndex}-ft1cil`]: false,
+      [`${rowIndex}-ft1lie`]: false,
+
+      [`${rowIndex}-${columnName}`]: true,
+    }));
+  };
+
+  const renderCapacityCell = (
+    rowIndex: number,
+    columnName: string,
+    value?: number,
+  ) => {
+    if (value === undefined || value === null) return null;
+    const cellId = `${rowIndex}-${columnName}`;
+
+    return (
+      <div className="flex items-center gap-2">
+        <span>{value}</span>
+        <Checkbox
+          key={JSON.stringify(checkedStates)}
+          className="h-4 w-4"
+          checked={checkedStates[cellId] || false}
+          onCheckedChange={(checked) => {
+            if (checked) {
+              updateMaxValue(rowIndex, columnName, value);
+            }
+          }}
+        />
+      </div>
+    );
+  };
+
+  const calcPreselection = (availability?: AvailabilityRecord) => {
+    if (!unit || !availability) return;
+
+    const comments = (availability.comments || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+
+    const operationType = (availability.operationType || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+
+    const getMinPrimary = () => {
+      return Math.min(
+        typeof availability.fuelType1AvailabilityNetCapacity === 'number' &&
+          availability.fuelType1AvailabilityNetCapacity > 0
+          ? availability.fuelType1AvailabilityNetCapacity
+          : 999999,
+        typeof availability.fixedAvailability.fuelType1FixedNetCapacity ===
+          'number' &&
+          availability.fixedAvailability.fuelType1FixedNetCapacity > 0
+          ? availability.fixedAvailability.fuelType1FixedNetCapacity
+          : 999999,
+        typeof availability.fuelType1NetCapacity === 'number' &&
+          availability.fuelType1NetCapacity > 0
+          ? availability.fuelType1NetCapacity
+          : 999999,
+      );
+    };
+
+    // CASE 1
+    if (unit?.fuelType2) {
+      if (
+        typeof availability.fuelType2AvailabilityNetCapacity === 'number' &&
+        availability.fuelType2AvailabilityNetCapacity > 0
+      ) {
+        return availability.fuelType2AvailabilityNetCapacity;
+      }
+    }
+
+    // CASE 2
+    if (
+      operationType === 'disponible a despacho' &&
+      comments.includes('limite minimo')
+    ) {
+      if (
+        typeof availability.fuelType1AvailabilityNetCapacity === 'number' &&
+        availability.fuelType1AvailabilityNetCapacity > 0
+      ) {
+        return availability.fuelType1AvailabilityNetCapacity;
+      }
+    }
+
+    // CASE 3
+    if (comments.includes('licencia') && comments.includes('mantenimiento')) {
+      const min = getMinPrimary();
+      if (min !== 999999) return min;
+    }
+
+    // CASE 4
+    if (operationType.includes('obligada')) {
+      const min = getMinPrimary();
+      if (min !== 999999) return min;
+    }
+
+    // CASE 5
+    if (
+      operationType.includes('no disponible') &&
+      comments.includes('emergencia')
+    ) {
+      const min = getMinPrimary();
+      if (min !== 999999) return min;
+    }
+
+    // CASE 6
+    if (
+      operationType.includes('disponible a despacho') &&
+      comments.includes('restriccion') &&
+      comments.includes('suministrador')
+    ) {
+      const min = getMinPrimary();
+      if (min !== 999999) return min;
+    }
+  };
 
   return (
     <div className="container mx-auto">
@@ -308,6 +512,7 @@ function App() {
         </div>
       </div>
       <form
+        className="my-8"
         ref={formRef}
         onSubmit={(event) => {
           event.preventDefault();
@@ -334,7 +539,16 @@ function App() {
 
           Object.entries(insumos).forEach(([hour, insumo]) => {
             if (Object.values(insumo).filter((x) => x !== '').length > 0) {
-              const p = InsumoSchema.safeParse({
+              let Schema = InsumoSchema;
+              type S = typeof Schema;
+
+              if (!unit?.fuelType2) {
+                Schema = Schema.omit({
+                  price_ft2: true,
+                  share_ft2: true,
+                }) as S;
+              }
+              const p = Schema.safeParse({
                 ...insumo,
                 hour,
                 min: insumo.min === '' ? null : Number(insumo.min),
@@ -358,7 +572,6 @@ function App() {
             }
           });
 
-          console.log(_errors, insumosToSubmit);
           if (Object.keys(_errors).length) {
             setErrors(_errors);
           } else {
@@ -366,7 +579,7 @@ function App() {
           }
         }}
       >
-        <Table className="my-8">
+        <Table>
           <TableHeader>
             {(showFT1Columns || (showFT2Columns && unit?.fuelType2)) && (
               <>
@@ -440,12 +653,24 @@ function App() {
               <TableHead className="border-l">Pre-Selección</TableHead>
               <TableHead>Disponibilidad para Oferta (Max)</TableHead>
               <TableHead>Disponibilidad para Oferta (Min)</TableHead>
-              <TableHead className="min-w-[70px]">% Gas</TableHead>
-              <TableHead className="min-w-[70px]">% Diesel</TableHead>
+              <TableHead className="min-w-[70px]">
+                % {unit?.fuelType1?.name}
+              </TableHead>
+              {unit?.fuelType2 && (
+                <TableHead className="min-w-[70px]">
+                  % {unit.fuelType2.name}
+                </TableHead>
+              )}
               <TableHead className="min-w-[120px]">Nota</TableHead>
               <TableHead>AGC</TableHead>
-              <TableHead className="min-w-[100px]">Precio de Gas</TableHead>
-              <TableHead className="min-w-[100px]">Precio de Diesel</TableHead>
+              <TableHead className="min-w-[100px]">
+                Precio de {unit?.fuelType1?.name}
+              </TableHead>
+              {unit?.fuelType2 && (
+                <TableHead className="min-w-[100px]">
+                  Precio de {unit.fuelType2.name}
+                </TableHead>
+              )}
               <TableHead className="min-w-[150px]">
                 Tipo de Operación (Disponible a Despacho / Operación Obligada)
               </TableHead>
@@ -485,48 +710,86 @@ function App() {
                       {showFT1Columns && (
                         <>
                           <TableCell className="bg-muted/50">
-                            {
+                            {renderCapacityCell(
+                              idx,
+                              'fix-ft1fnc',
                               availability?.fixedAvailability
-                                .fuelType1FixedNetCapacity
-                            }
+                                .fuelType1FixedNetCapacity,
+                            )}
                           </TableCell>
                           <TableCell className="bg-muted/50">
-                            {availability?.fuelType1NetCapacity}
+                            {renderCapacityCell(
+                              idx,
+                              'ft1nc',
+                              availability?.fuelType1NetCapacity,
+                            )}
                           </TableCell>
                           <TableCell className="bg-muted/50">
-                            {availability?.fuelType1AvailabilityNetCapacity}
+                            {renderCapacityCell(
+                              idx,
+                              'ft1anc',
+                              availability?.fuelType1AvailabilityNetCapacity,
+                            )}
                           </TableCell>
                           <TableCell className="bg-muted/50">
-                            {availability?.fuelType1Cil}
+                            {renderCapacityCell(
+                              idx,
+                              'ft1cil',
+                              availability?.fuelType1Cil,
+                            )}
                           </TableCell>
                           <TableCell className="bg-muted/50">
-                            {availability?.fuelType1Lie}
+                            {renderCapacityCell(
+                              idx,
+                              'ft1lie',
+                              availability?.fuelType1Lie,
+                            )}
                           </TableCell>
                         </>
                       )}
                       {showFT2Columns && unit?.fuelType2 && (
                         <>
                           <TableCell className="bg-muted/50">
-                            {
+                            {renderCapacityCell(
+                              idx,
+                              'ft2-fixed',
                               availability?.fixedAvailability
-                                .fuelType2FixedNetCapacity
-                            }
+                                .fuelType2FixedNetCapacity,
+                            )}
                           </TableCell>
                           <TableCell className="bg-muted/50">
-                            {availability?.fuelType2NetCapacity}
+                            {renderCapacityCell(
+                              idx,
+                              'ft2-net',
+                              availability?.fuelType2NetCapacity,
+                            )}
                           </TableCell>
                           <TableCell className="bg-muted/50">
-                            {availability?.fuelType2AvailabilityNetCapacity}
+                            {renderCapacityCell(
+                              idx,
+                              'ft2-availability',
+                              availability?.fuelType2AvailabilityNetCapacity,
+                            )}
                           </TableCell>
                           <TableCell className="bg-muted/50">
-                            {availability?.fuelType2Cil}
+                            {renderCapacityCell(
+                              idx,
+                              'ft2-cil',
+                              availability?.fuelType2Cil,
+                            )}
                           </TableCell>
                           <TableCell className="bg-muted/50">
-                            {availability?.fuelType2Lie}
+                            {renderCapacityCell(
+                              idx,
+                              'ft2-lie',
+                              availability?.fuelType2Lie,
+                            )}
                           </TableCell>
                         </>
                       )}
-                      <TableCell className="bg-muted/50"></TableCell>
+                      <TableCell className="bg-muted/50">
+                        {calcPreselection(availability) || ''}
+                      </TableCell>
                       <TableCell>
                         <Input
                           type="number"
@@ -594,7 +857,7 @@ function App() {
                             'transition-colors duration-300',
                           )}
                           defaultValue={
-                            insumo?.share_ft1
+                            typeof insumo?.share_ft1 === 'number'
                               ? insumo.share_ft1 * 100
                               : undefined
                           }
@@ -602,34 +865,36 @@ function App() {
                           name={`${hour}-share_ft1`}
                         />
                       </TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          id={`input-${idx}-${3}`}
-                          step=".01"
-                          className={cn(
-                            isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('share_ft2') &&
-                              'border-red-500',
-                            isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
-                            isFlashingSuccess &&
-                              data?.updated[hour]?.includes('share_ft2') &&
-                              'border-blue-500',
-                            'transition-colors duration-300',
-                            'transition-colors duration-300',
-                          )}
-                          defaultValue={
-                            insumo?.share_ft2
-                              ? insumo.share_ft2 * 100
-                              : undefined
-                          }
-                          onKeyDown={(e) => handleKeyDown(e, idx, 3)}
-                          name={`${hour}-share_ft2`}
-                        />
-                      </TableCell>
+                      {unit?.fuelType2 && (
+                        <TableCell>
+                          <Input
+                            type="number"
+                            id={`input-${idx}-${3}`}
+                            step=".01"
+                            className={cn(
+                              isFlashingErrors &&
+                                errors[hour] &&
+                                errors[hour].includes('share_ft2') &&
+                                'border-red-500',
+                              isFlashingSuccess &&
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
+                              isFlashingSuccess &&
+                                data?.updated[hour]?.includes('share_ft2') &&
+                                'border-blue-500',
+                              'transition-colors duration-300',
+                              'transition-colors duration-300',
+                            )}
+                            defaultValue={
+                              typeof insumo?.share_ft2 === 'number'
+                                ? insumo.share_ft2 * 100
+                                : undefined
+                            }
+                            onKeyDown={(e) => handleKeyDown(e, idx, 3)}
+                            name={`${hour}-share_ft2`}
+                          />
+                        </TableCell>
+                      )}
                       <TableCell>
                         <label className="hidden">Select note</label>
                         <Select
@@ -707,30 +972,33 @@ function App() {
                           name={`${hour}-price_ft1`}
                         />
                       </TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          id={`input-${idx}-${7}`}
-                          step=".01"
-                          defaultValue={insumo?.price_ft2}
-                          onKeyDown={(e) => handleKeyDown(e, idx, 7)}
-                          className={cn(
-                            isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('price_ft2') &&
-                              'border-red-500',
-                            isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
-                            isFlashingSuccess &&
-                              data?.updated[hour]?.includes('price_ft2') &&
-                              'border-blue-500',
-                            'transition-colors duration-300',
-                            'transition-colors duration-300',
-                          )}
-                          name={`${hour}-price_ft2`}
-                        />
-                      </TableCell>
+                      {unit?.fuelType2 && (
+                        <TableCell>
+                          <Input
+                            type="number"
+                            id={`input-${idx}-${7}`}
+                            step=".01"
+                            defaultValue={insumo?.price_ft2}
+                            onKeyDown={(e) => handleKeyDown(e, idx, 7)}
+                            className={cn(
+                              isFlashingErrors &&
+                                errors[hour] &&
+                                errors[hour].includes('price_ft2') &&
+                                'border-red-500',
+                              isFlashingSuccess &&
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
+                              isFlashingSuccess &&
+                                data?.updated[hour]?.includes('price_ft2') &&
+                                'border-blue-500',
+                              'transition-colors duration-300',
+                              'transition-colors duration-300',
+                              'control',
+                            )}
+                            name={`${hour}-price_ft2`}
+                          />
+                        </TableCell>
+                      )}
                       <TableCell className="bg-muted/50">
                         {availability?.operationType}
                       </TableCell>
@@ -751,6 +1019,9 @@ function App() {
                 })}
           </TableBody>
         </Table>
+        <p className="my-1 text-center text-xs text-muted-foreground">
+          Todas las fechas se muestran el el timezone {unit?.timeZone}
+        </p>
       </form>
       <div className="flex justify-between">
         <ExportAvailabilitiesButton />

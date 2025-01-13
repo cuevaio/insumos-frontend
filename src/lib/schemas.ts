@@ -13,13 +13,13 @@ export const InsumoSchema = z.object({
     .min(0)
     .max(100)
     .nullish()
-    .transform((x) => (x ? x / 100 : null)),
+    .transform((x) => (typeof x === 'number' ? x / 100 : null)),
   share_ft2: z
     .number()
     .min(0)
     .max(100)
     .nullish()
-    .transform((x) => (x ? x / 100 : null)),
+    .transform((x) => (typeof x === 'number' ? x / 100 : null)),
   note: noteEnumZod,
   agc: z
     .enum(['on', 'off'])
