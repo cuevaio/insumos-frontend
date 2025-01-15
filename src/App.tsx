@@ -2,9 +2,9 @@ import React from 'react';
 
 import { CalendarDate, parseDate } from '@internationalized/date';
 import { type Key } from 'react-aria-components';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useLocalStorage } from 'usehooks-ts';
-import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -45,12 +45,17 @@ import { useInsumos } from '@/hooks/useInsumos';
 import { useUnits } from '@/hooks/useUnits';
 import { useUpsertInsumos } from '@/hooks/useUpsertInsumos';
 
-import { noteEnumValues } from '@/lib/constants';
+import { noteEnumValues, prices } from '@/lib/constants';
 import { InsumoSchema } from '@/lib/schemas';
 import type { InsumoInsert, Market } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 function App() {
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
+
   const { data: units } = useUnits();
 
   const [unitId, setUnitId] = React.useState<Key>();
@@ -120,7 +125,7 @@ function App() {
         setIsFlashingErrors(false);
       }, 3000);
     }
-  }, [errors]);
+  }, [errors, t]);
 
   const { data: availabilities } = useAvailabilities({
     unitId: unitId?.toString(),
@@ -163,24 +168,26 @@ function App() {
           if (data.inserted.length > 0) {
             toast.success(
               (() => {
-                if (language === 'es') return `Se crearon ${data.inserted.length} ofertas`;
+                if (language === 'es')
+                  return `Se crearon ${data.inserted.length} ofertas`;
                 return `${data.inserted.length} offers were created`;
-              })()
+              })(),
             );
           }
 
           if (Object.keys(data.updated).length) {
             toast.success(
               (() => {
-                if (language === 'es') return `Se actualizaron ${Object.keys(data.updated).length} ofertas`;
+                if (language === 'es')
+                  return `Se actualizaron ${Object.keys(data.updated).length} ofertas`;
                 return `${data.inserted.length} offers were updated`;
-              })()
+              })(),
             );
           }
         }
       }
     }
-  }, [data, isSuccess, isPending]);
+  }, [data, isSuccess, isPending, language, t]);
 
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>,
@@ -343,7 +350,7 @@ function App() {
     const cellId = `${rowIndex}-${columnName}`;
 
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 px-2">
         <span>{value}</span>
         <Checkbox
           key={JSON.stringify(checkedStates)}
@@ -444,9 +451,6 @@ function App() {
       if (min !== 999999) return min;
     }
   };
-
-  const { t, i18n: { language } } = useTranslation()
-
   return (
     <div className="container mx-auto">
       <div className="flex items-end justify-between">
@@ -622,7 +626,9 @@ function App() {
               {showFT1Columns && (
                 <>
                   <TableHead className="min-w-[120px] border-l">
-                    {t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                    {t(
+                      'Corrected Net Capacity at Summer Design Conditions (Contractual) MW',
+                    )}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
                     {t('Net Capacity at Real Ambient Conditions')}
@@ -641,7 +647,9 @@ function App() {
               {showFT2Columns && unit?.fuelType2 && (
                 <>
                   <TableHead className="min-w-[120px] border-l">
-                    {t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                    {t(
+                      'Corrected Net Capacity at Summer Design Conditions (Contractual) MW',
+                    )}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
                     {t('Net Capacity at Real Ambient Conditions')}
@@ -679,10 +687,13 @@ function App() {
                 </TableHead>
               )}
               <TableHead className="min-w-[150px]">
-                {t('Operation Type')} (Disponible a Despacho / Operación Obligada)
+                {t('Operation Type')} (Disponible a Despacho / Operación
+                Obligada)
               </TableHead>
-              <TableHead className="min-w-[250px]">
-                {t('Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)')}
+              <TableHead className="min-w-[350px]">
+                {t(
+                  'Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)',
+                )}
               </TableHead>
               <TableHead>{t('Last Update Date')}</TableHead>
               <TableHead className="border-r">{t('User')}</TableHead>
@@ -805,15 +816,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 0)}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('max') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('max') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('max') &&
-                            'border-blue-500',
+                              data?.updated[hour]?.includes('max') &&
+                              'border-blue-500',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-max`}
@@ -828,15 +839,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 1)}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('min') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('min') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('min') &&
-                            'border-blue-500',
+                              data?.updated[hour]?.includes('min') &&
+                              'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -850,15 +861,15 @@ function App() {
                           step=".01"
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('share_ft1') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('share_ft1') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('share_ft1') &&
-                            'border-blue-500',
+                              data?.updated[hour]?.includes('share_ft1') &&
+                              'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -879,15 +890,15 @@ function App() {
                             step=".01"
                             className={cn(
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('share_ft2') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('share_ft2') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('share_ft2') &&
-                              'border-blue-500',
+                                data?.updated[hour]?.includes('share_ft2') &&
+                                'border-blue-500',
                               'transition-colors duration-300',
                               'transition-colors duration-300',
                             )}
@@ -915,15 +926,15 @@ function App() {
                             className={cn(
                               'h-full px-2 py-0 transition-colors duration-300',
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('note') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('note') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('note') &&
-                              'border-blue-500',
+                                data?.updated[hour]?.includes('note') &&
+                                'border-blue-500',
                               'transition-colors duration-300',
                             )}
                           >
@@ -963,15 +974,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('price_ft1') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('price_ft1') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('price_ft1') &&
-                            'border-blue-500',
+                              data?.updated[hour]?.includes('price_ft1') &&
+                              'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -988,15 +999,15 @@ function App() {
                             onKeyDown={(e) => handleKeyDown(e, idx, 7)}
                             className={cn(
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('price_ft2') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('price_ft2') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('price_ft2') &&
-                              'border-blue-500',
+                                data?.updated[hour]?.includes('price_ft2') &&
+                                'border-blue-500',
                               'transition-colors duration-300',
                               'transition-colors duration-300',
                               'control',
@@ -1028,18 +1039,44 @@ function App() {
         <p className="my-1 text-center text-xs text-muted-foreground">
           {t('All dates are displayed in timezone')} {unit?.timeZone}
         </p>
+        <p className="my-1 text-center text-xs text-muted-foreground">
+          Nota: La información de la columna de pre-selección solo es una
+          sugerencia de un posible escenario basado en la información enviada
+          por el cliente externo.
+        </p>
+        <div className="mt-4 flex justify-between">
+          <div className="flex gap-4 text-center">
+            <div className="rounded-lg border bg-blue-300 p-2">
+              <p className="font-bold">
+                Promedio de precios de los últimos 30 días
+              </p>
+              <p>
+                Nodo {unit?.name}: {unit && `$${prices[unit.id].op}`}
+              </p>
+              <p>Días sin PML: 10/02/2024</p>
+            </div>
+            <div className="rounded-lg border bg-rose-200 p-2">
+              <p className="font-bold">Tarifa de Transmisión</p>
+              <p>{unit && `$${prices[unit.id].tm}`}</p>
+            </div>
+            <div className="rounded-lg border bg-green-200 p-2">
+              <p className="font-bold">Tarifa de Operación</p>
+              <p>{unit && `$${prices[unit.id].op}`}</p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <ExportAvailabilitiesButton />
+            <Button
+              type="button"
+              onClick={() => {
+                formRef?.current?.requestSubmit();
+              }}
+            >
+              Guardar cambios
+            </Button>
+          </div>
+        </div>
       </form>
-      <div className="flex justify-between">
-        <ExportAvailabilitiesButton />
-        <Button
-          type="button"
-          onClick={() => {
-            formRef?.current?.requestSubmit();
-          }}
-        >
-          {t('Save changes')}
-        </Button>
-      </div>
     </div>
   );
 }
