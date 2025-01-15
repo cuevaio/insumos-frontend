@@ -44,7 +44,7 @@ import { useInsumos } from '@/hooks/useInsumos';
 import { useUnits } from '@/hooks/useUnits';
 import { useUpsertInsumos } from '@/hooks/useUpsertInsumos';
 
-import { noteEnumValues } from '@/lib/constants';
+import { noteEnumValues, prices } from '@/lib/constants';
 import { InsumoSchema } from '@/lib/schemas';
 import type { InsumoInsert, Market } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -334,7 +334,7 @@ function App() {
     const cellId = `${rowIndex}-${columnName}`;
 
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 px-2">
         <span>{value}</span>
         <Checkbox
           key={JSON.stringify(checkedStates)}
@@ -674,7 +674,7 @@ function App() {
               <TableHead className="min-w-[150px]">
                 Tipo de Operación (Disponible a Despacho / Operación Obligada)
               </TableHead>
-              <TableHead className="min-w-[250px]">
+              <TableHead className="min-w-[350px]">
                 Comentarios (Precisiones, No. de Licencias, condiciones de AGC,
                 Etc.)
               </TableHead>
@@ -1022,18 +1022,44 @@ function App() {
         <p className="my-1 text-center text-xs text-muted-foreground">
           Todas las fechas se muestran el el timezone {unit?.timeZone}
         </p>
+        <p className="my-1 text-center text-xs text-muted-foreground">
+          Nota: La información de la columna de pre-selección solo es una
+          sugerencia de un posible escenario basado en la información enviada
+          por el cliente externo.
+        </p>
+        <div className="mt-4 flex justify-between">
+          <div className="flex gap-4 text-center">
+            <div className="rounded-lg border bg-blue-300 p-2">
+              <p className="font-bold">
+                Promedio de precios de los últimos 30 días
+              </p>
+              <p>
+                Nodo {unit?.name}: ${prices[unit!.id].avg}
+              </p>
+              <p>Días sin PML: 10/02/2024</p>
+            </div>
+            <div className="rounded-lg border bg-rose-200 p-2">
+              <p className="font-bold">Tarifa de Transmisión</p>
+              <p>${prices[unit!.id].tm}</p>
+            </div>
+            <div className="rounded-lg border bg-green-200 p-2">
+              <p className="font-bold">Tarifa de Operación</p>
+              <p>${prices[unit!.id].op}</p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <ExportAvailabilitiesButton />
+            <Button
+              type="button"
+              onClick={() => {
+                formRef?.current?.requestSubmit();
+              }}
+            >
+              Guardar cambios
+            </Button>
+          </div>
+        </div>
       </form>
-      <div className="flex justify-between">
-        <ExportAvailabilitiesButton />
-        <Button
-          type="button"
-          onClick={() => {
-            formRef?.current?.requestSubmit();
-          }}
-        >
-          Guardar cambios
-        </Button>
-      </div>
     </div>
   );
 }
