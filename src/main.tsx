@@ -6,6 +6,8 @@ import './index.css';
 
 import { Toaster } from '@/components/ui/sonner';
 
+import '@/lib/i18n/i18n'
+
 import App from './App.tsx';
 import { Providers } from './providers.tsx';
 

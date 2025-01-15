@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import ExcelJS from 'exceljs';
 import FileSaver from 'file-saver';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 
@@ -13,8 +14,7 @@ import { populateAvailabilityData, setupWorksheet } from '@/lib/export';
 import { Market } from '@/lib/types';
 
 const ExportAvailabilitiesButton = () => {
-  // TODO: Get language using useTranslation hook
-  const language = 'es';
+  const { t, i18n: { language } } = useTranslation();
 
   const unitId = localStorage.getItem('unit_id');
   const date = localStorage.getItem('date');
@@ -96,7 +96,7 @@ const ExportAvailabilitiesButton = () => {
         mutate();
       }}
     >
-      Exportar
+      {t('Export')}
     </Button>
   );
 };

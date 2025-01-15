@@ -4,6 +4,7 @@ import { CalendarDate, parseDate } from '@internationalized/date';
 import { type Key } from 'react-aria-components';
 import { toast } from 'sonner';
 import { useLocalStorage } from 'usehooks-ts';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -113,7 +114,7 @@ function App() {
 
   React.useEffect(() => {
     if (Object.keys(errors).length) {
-      toast.error('Completa correctamente los campos en rojo');
+      toast.error(t('Correctly fill in the red fields'));
       setIsFlashingErrors(true);
       setTimeout(() => {
         setIsFlashingErrors(false);
@@ -157,15 +158,23 @@ function App() {
           data.inserted.length === 0 &&
           Object.keys(data.updated).length === 0
         ) {
-          toast('Sin cambios por guardar');
+          toast(t('No changes to save'));
         } else {
           if (data.inserted.length > 0) {
-            toast.success(`Se crearon ${data.inserted.length} ofertas`);
+            toast.success(
+              (() => {
+                if (language === 'es') return `Se crearon ${data.inserted.length} ofertas`;
+                return `${data.inserted.length} offers were created`;
+              })()
+            );
           }
 
           if (Object.keys(data.updated).length) {
             toast.success(
-              `Se actualizaron ${Object.keys(data.updated).length} ofertas`,
+              (() => {
+                if (language === 'es') return `Se actualizaron ${Object.keys(data.updated).length} ofertas`;
+                return `${data.inserted.length} offers were updated`;
+              })()
             );
           }
         }
@@ -436,22 +445,24 @@ function App() {
     }
   };
 
+  const { t, i18n: { language } } = useTranslation()
+
   return (
     <div className="container mx-auto">
       <div className="flex items-end justify-between">
         <div className="flex gap-4">
           <DatePicker
-            label="Fecha"
+            label={t('Date')}
             value={date}
             onChange={(value) => setDate(value)}
           />
           <Select
             className="w-[200px]"
-            placeholder="Selecciona una unidad"
+            placeholder={t('Select a unit')}
             selectedKey={unitId}
             onSelectionChange={(selected) => setUnitId(selected)}
           >
-            <Label>Unidad</Label>
+            <Label>{t('Unit')}</Label>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -467,13 +478,13 @@ function App() {
           </Select>
           <Select
             className="w-[200px]"
-            placeholder="Selecciona un mercado"
+            placeholder={t('Select a market')}
             selectedKey={market}
             onSelectionChange={(selected) =>
               setMarket(selected.toString() as Market)
             }
           >
-            <Label>Mercado</Label>
+            <Label>{t('Market')}</Label>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -488,10 +499,10 @@ function App() {
         <div className="flex gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">Columnas</Button>
+              <Button variant="outline">{t('Columns')}</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Columnas</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('Columns')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
                 checked={showFT1Columns}
@@ -606,53 +617,49 @@ function App() {
               </>
             )}
             <TableRow className="border-t text-[0.7rem] leading-[0.75rem]">
-              <TableHead className="border-l">Hora</TableHead>
-              <TableHead className="min-w-[100px]">Horario</TableHead>
+              <TableHead className="border-l">{t('Hour')}</TableHead>
+              <TableHead className="min-w-[100px]">{t('Schedule')}</TableHead>
               {showFT1Columns && (
                 <>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta Corregida a Condiciones de Diseño de Verano
-                    (Contractual) MW
+                    {t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta Expresada a Condiciones Ambientales Reales MW
+                    {t('Net Capacity at Real Ambient Conditions')}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta Expresada a Condiciones Ambientales Reales
-                    Considerando Cantidad de Gas Disponible
+                    {t('Net Capacity Considering Available Gas')}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta del Contrato de Interconexión Legado (CIL) MW
+                    {t('Legacy Interconnection Contract Capacity (LIC) MW')}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta con Contrato Tipo LIE MW
+                    {t('Net Capacity with LIE Contract MW')}
                   </TableHead>
                 </>
               )}
               {showFT2Columns && unit?.fuelType2 && (
                 <>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta Corregida a Condiciones de Diseño de Verano
-                    (Contractual) MW
+                    {t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta Expresada a Condiciones Ambientales Reales MW
+                    {t('Net Capacity at Real Ambient Conditions')}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta Expresada a Condiciones Ambientales Reales
-                    Considerando Cantidad de Diesel Disponible MW
+                    {t('Net Capacity Considering Available Diesel MW')}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta del Contrato de Interconexión Legado (CIL) MW
+                    {t('Legacy Interconnection Contract Capacity (LIC) MW')}
                   </TableHead>
                   <TableHead className="min-w-[120px] border-l">
-                    Capacidad Neta con Contrato Tipo LIE MW
+                    {t('Net Capacity with LIE Contract MW')}
                   </TableHead>
                 </>
               )}
-              <TableHead className="border-l">Pre-Selección</TableHead>
-              <TableHead>Disponibilidad para Oferta (Max)</TableHead>
-              <TableHead>Disponibilidad para Oferta (Min)</TableHead>
+              <TableHead className="border-l">{t('Pre-Selection')}</TableHead>
+              <TableHead>{t('Maximum Offer Availability')}</TableHead>
+              <TableHead>{t('Minimum Offer Availability')}</TableHead>
               <TableHead className="min-w-[70px]">
                 % {unit?.fuelType1?.name}
               </TableHead>
@@ -661,25 +668,24 @@ function App() {
                   % {unit.fuelType2.name}
                 </TableHead>
               )}
-              <TableHead className="min-w-[120px]">Nota</TableHead>
+              <TableHead className="min-w-[120px]">{t('Note')}</TableHead>
               <TableHead>AGC</TableHead>
               <TableHead className="min-w-[100px]">
-                Precio de {unit?.fuelType1?.name}
+                {t('Price of')} {unit?.fuelType1?.name}
               </TableHead>
               {unit?.fuelType2 && (
                 <TableHead className="min-w-[100px]">
-                  Precio de {unit.fuelType2.name}
+                  {t('Price of')} {unit.fuelType2.name}
                 </TableHead>
               )}
               <TableHead className="min-w-[150px]">
-                Tipo de Operación (Disponible a Despacho / Operación Obligada)
+                {t('Operation Type')} (Disponible a Despacho / Operación Obligada)
               </TableHead>
               <TableHead className="min-w-[250px]">
-                Comentarios (Precisiones, No. de Licencias, condiciones de AGC,
-                Etc.)
+                {t('Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)')}
               </TableHead>
-              <TableHead>Fecha última actualización</TableHead>
-              <TableHead className="border-r">Usuario</TableHead>
+              <TableHead>{t('Last Update Date')}</TableHead>
+              <TableHead className="border-r">{t('User')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -799,15 +805,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 0)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('max') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('max') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('max') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('max') &&
+                            'border-blue-500',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-max`}
@@ -822,15 +828,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 1)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('min') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('min') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('min') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('min') &&
+                            'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -844,15 +850,15 @@ function App() {
                           step=".01"
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('share_ft1') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('share_ft1') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('share_ft1') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('share_ft1') &&
+                            'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -873,15 +879,15 @@ function App() {
                             step=".01"
                             className={cn(
                               isFlashingErrors &&
-                                errors[hour] &&
-                                errors[hour].includes('share_ft2') &&
-                                'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('share_ft2') &&
+                              'border-red-500',
                               isFlashingSuccess &&
-                                data?.inserted.includes(hour) &&
-                                'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                               isFlashingSuccess &&
-                                data?.updated[hour]?.includes('share_ft2') &&
-                                'border-blue-500',
+                              data?.updated[hour]?.includes('share_ft2') &&
+                              'border-blue-500',
                               'transition-colors duration-300',
                               'transition-colors duration-300',
                             )}
@@ -909,15 +915,15 @@ function App() {
                             className={cn(
                               'h-full px-2 py-0 transition-colors duration-300',
                               isFlashingErrors &&
-                                errors[hour] &&
-                                errors[hour].includes('note') &&
-                                'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('note') &&
+                              'border-red-500',
                               isFlashingSuccess &&
-                                data?.inserted.includes(hour) &&
-                                'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                               isFlashingSuccess &&
-                                data?.updated[hour]?.includes('note') &&
-                                'border-blue-500',
+                              data?.updated[hour]?.includes('note') &&
+                              'border-blue-500',
                               'transition-colors duration-300',
                             )}
                           >
@@ -957,15 +963,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('price_ft1') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('price_ft1') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('price_ft1') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('price_ft1') &&
+                            'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -982,15 +988,15 @@ function App() {
                             onKeyDown={(e) => handleKeyDown(e, idx, 7)}
                             className={cn(
                               isFlashingErrors &&
-                                errors[hour] &&
-                                errors[hour].includes('price_ft2') &&
-                                'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('price_ft2') &&
+                              'border-red-500',
                               isFlashingSuccess &&
-                                data?.inserted.includes(hour) &&
-                                'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                               isFlashingSuccess &&
-                                data?.updated[hour]?.includes('price_ft2') &&
-                                'border-blue-500',
+                              data?.updated[hour]?.includes('price_ft2') &&
+                              'border-blue-500',
                               'transition-colors duration-300',
                               'transition-colors duration-300',
                               'control',
@@ -1020,7 +1026,7 @@ function App() {
           </TableBody>
         </Table>
         <p className="my-1 text-center text-xs text-muted-foreground">
-          Todas las fechas se muestran el el timezone {unit?.timeZone}
+          {t('All dates are displayed in timezone')} {unit?.timeZone}
         </p>
       </form>
       <div className="flex justify-between">
@@ -1031,7 +1037,7 @@ function App() {
             formRef?.current?.requestSubmit();
           }}
         >
-          Guardar cambios
+          {t('Save changes')}
         </Button>
       </div>
     </div>
