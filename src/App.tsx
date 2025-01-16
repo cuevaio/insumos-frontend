@@ -397,14 +397,35 @@ function App() {
       );
     };
 
-    // CASE 1
-    if (unit?.fuelType2) {
-      if (
-        typeof availability.fuelType2AvailabilityNetCapacity === 'number' &&
-        availability.fuelType2AvailabilityNetCapacity > 0
-      ) {
-        return availability.fuelType2AvailabilityNetCapacity;
-      }
+    // CASE 6
+    if (
+      operationType.includes('disponible a despacho') &&
+      comments.includes('restriccion') &&
+      comments.includes('suministrador')
+    ) {
+      const min = getMinPrimary();
+      if (min !== 999999) return min;
+    }
+
+    // CASE 5
+    if (
+      operationType.includes('no disponible') &&
+      comments.includes('emergencia')
+    ) {
+      const min = getMinPrimary();
+      if (min !== 999999) return min;
+    }
+
+    // CASE 4
+    if (operationType.includes('obligada')) {
+      const min = getMinPrimary();
+      if (min !== 999999) return min;
+    }
+
+    // CASE 3
+    if (comments.includes('licencia') && comments.includes('mantenimiento')) {
+      const min = getMinPrimary();
+      if (min !== 999999) return min;
     }
 
     // CASE 2
@@ -420,37 +441,19 @@ function App() {
       }
     }
 
-    // CASE 3
-    if (comments.includes('licencia') && comments.includes('mantenimiento')) {
-      const min = getMinPrimary();
-      if (min !== 999999) return min;
+    // CASE 1
+    if (unit?.fuelType2) {
+      if (
+        typeof availability.fuelType2AvailabilityNetCapacity === 'number' &&
+        availability.fuelType2AvailabilityNetCapacity > 0
+      ) {
+        return availability.fuelType2AvailabilityNetCapacity;
+      }
     }
 
-    // CASE 4
-    if (operationType.includes('obligada')) {
-      const min = getMinPrimary();
-      if (min !== 999999) return min;
-    }
-
-    // CASE 5
-    if (
-      operationType.includes('no disponible') &&
-      comments.includes('emergencia')
-    ) {
-      const min = getMinPrimary();
-      if (min !== 999999) return min;
-    }
-
-    // CASE 6
-    if (
-      operationType.includes('disponible a despacho') &&
-      comments.includes('restriccion') &&
-      comments.includes('suministrador')
-    ) {
-      const min = getMinPrimary();
-      if (min !== 999999) return min;
-    }
+    return availability.fuelType1AvailabilityNetCapacity;
   };
+
   return (
     <div className="container mx-auto">
       <div className="flex items-end justify-between">
