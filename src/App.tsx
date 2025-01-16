@@ -445,7 +445,8 @@ function App() {
     if (unit?.fuelType2) {
       if (
         typeof availability.fuelType2AvailabilityNetCapacity === 'number' &&
-        availability.fuelType2AvailabilityNetCapacity > 0
+        availability.fuelType2AvailabilityNetCapacity > 0 &&
+        !availability.fuelType1AvailabilityNetCapacity
       ) {
         return availability.fuelType2AvailabilityNetCapacity;
       }
