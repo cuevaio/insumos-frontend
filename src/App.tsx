@@ -67,7 +67,7 @@ import { cn } from '@/lib/utils';
 function App() {
   const {
     t,
-    i18n: { language },
+    i18n: { language, changeLanguage },
   } = useTranslation();
 
   const { data: units } = useUnits();
@@ -469,6 +469,14 @@ function App() {
     return availability.fuelType1AvailabilityNetCapacity;
   };
 
+  // TODO: defaultLanguage will be get from backend
+  const defaultLanguage = 'es';
+
+  React.useEffect(() => {
+    const userHasDifferentLanguage = defaultLanguage && (defaultLanguage !== language)
+    if (userHasDifferentLanguage) changeLanguage(defaultLanguage as LangType)
+  }, [defaultLanguage]);
+
   return (
     <div className="container mx-auto">
       <div className="flex items-end justify-between">
@@ -866,15 +874,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 0)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('max') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('max') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('max') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('max') &&
+                            'border-blue-500',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-max`}
@@ -889,15 +897,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 1)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('min') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('min') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('min') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('min') &&
+                            'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -911,15 +919,15 @@ function App() {
                           step=".01"
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('share_ft1') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('share_ft1') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('share_ft1') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('share_ft1') &&
+                            'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -940,15 +948,15 @@ function App() {
                             step=".01"
                             className={cn(
                               isFlashingErrors &&
-                                errors[hour] &&
-                                errors[hour].includes('share_ft2') &&
-                                'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('share_ft2') &&
+                              'border-red-500',
                               isFlashingSuccess &&
-                                data?.inserted.includes(hour) &&
-                                'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                               isFlashingSuccess &&
-                                data?.updated[hour]?.includes('share_ft2') &&
-                                'border-blue-500',
+                              data?.updated[hour]?.includes('share_ft2') &&
+                              'border-blue-500',
                               'transition-colors duration-300',
                               'transition-colors duration-300',
                             )}
@@ -976,15 +984,15 @@ function App() {
                             className={cn(
                               'h-full px-2 py-0 transition-colors duration-300',
                               isFlashingErrors &&
-                                errors[hour] &&
-                                errors[hour].includes('note') &&
-                                'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('note') &&
+                              'border-red-500',
                               isFlashingSuccess &&
-                                data?.inserted.includes(hour) &&
-                                'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                               isFlashingSuccess &&
-                                data?.updated[hour]?.includes('note') &&
-                                'border-blue-500',
+                              data?.updated[hour]?.includes('note') &&
+                              'border-blue-500',
                               'transition-colors duration-300',
                             )}
                           >
@@ -1024,15 +1032,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('price_ft1') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('price_ft1') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('price_ft1') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('price_ft1') &&
+                            'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -1049,15 +1057,15 @@ function App() {
                             onKeyDown={(e) => handleKeyDown(e, idx, 7)}
                             className={cn(
                               isFlashingErrors &&
-                                errors[hour] &&
-                                errors[hour].includes('price_ft2') &&
-                                'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('price_ft2') &&
+                              'border-red-500',
                               isFlashingSuccess &&
-                                data?.inserted.includes(hour) &&
-                                'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                               isFlashingSuccess &&
-                                data?.updated[hour]?.includes('price_ft2') &&
-                                'border-blue-500',
+                              data?.updated[hour]?.includes('price_ft2') &&
+                              'border-blue-500',
                               'transition-colors duration-300',
                               'transition-colors duration-300',
                               'control',
