@@ -474,7 +474,7 @@ function App() {
 
   React.useEffect(() => {
     const userHasDifferentLanguage = defaultLanguage && (defaultLanguage !== language)
-    if (userHasDifferentLanguage) changeLanguage(defaultLanguage as LangType)
+    if (userHasDifferentLanguage) changeLanguage(defaultLanguage)
   }, [defaultLanguage]);
 
   return (
