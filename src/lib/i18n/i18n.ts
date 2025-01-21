@@ -14,7 +14,7 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    fallbackLng: 'en', // default language if none detected
+    fallbackLng: 'es', // default language if none detected
     debug: true,
     resources, // resources to initialize with translation files
     interpolation: {
