@@ -23,7 +23,7 @@ import {
   ListBoxItem,
   ListBoxSection,
 } from './list-box';
-import { Popover } from './popover';
+import { Popover } from './jolly-popover';
 
 const Select = AriaSelect;
 

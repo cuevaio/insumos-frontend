@@ -25,7 +25,7 @@ import {
 import { DateInput } from './datefield';
 import { FieldGroup, Label } from './field';
 import { Button } from './jolly-button';
-import { Popover } from './popover';
+import { Popover } from './jolly-popover';
 
 const DateRangePicker = AriaDateRangePicker;
 

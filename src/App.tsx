@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { CalendarDate, parseDate } from '@internationalized/date';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import { type Key } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -8,6 +9,14 @@ import { useLocalStorage } from 'usehooks-ts';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import { DatePicker } from '@/components/ui/date-picker';
 import {
   DropdownMenu,
@@ -19,6 +28,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import {
   Select,
   SelectItem,
@@ -61,7 +75,7 @@ function App() {
   const [unitId, setUnitId] = React.useState<Key>();
   const [date, setDate] = React.useState<CalendarDate | null>(null);
   const [market, setMarket] = React.useState<Market | null>(null);
-
+  const [open, setOpen] = React.useState(false);
   const [errors, setErrors] = React.useState<{
     [key: string]: (keyof InsumoInsert)[];
   }>({});
@@ -464,26 +478,58 @@ function App() {
             value={date}
             onChange={(value) => setDate(value)}
           />
-          <Select
-            className="w-[200px]"
-            placeholder={t('Select a unit')}
-            selectedKey={unitId}
-            onSelectionChange={(selected) => setUnitId(selected)}
-          >
+          <div className="flex flex-col justify-end gap-1">
             <Label>{t('Unit')}</Label>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectPopover>
-              <SelectListBox>
-                {units?.map((unit) => (
-                  <SelectItem key={unit.id} id={unit.id}>
-                    {unit.name}
-                  </SelectItem>
-                ))}
-              </SelectListBox>
-            </SelectPopover>
-          </Select>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="h-10 w-[200px] justify-between"
+                >
+                  {unitId
+                    ? units?.find((unit) => unit.id === unitId)?.name
+                    : t('Select a unit')}
+                  <ChevronsUpDown className="opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[200px] p-0">
+                <Command>
+                  <CommandInput
+                    placeholder={t('Select a unit')}
+                    className="h-9"
+                  />
+                  <CommandList>
+                    <CommandEmpty>No unit found.</CommandEmpty>
+                    <CommandGroup>
+                      {units?.map((unit) => (
+                        <CommandItem
+                          key={unit.id}
+                          value={unit.name}
+                          onSelect={(currentValue) => {
+                            const unitId = units?.find(
+                              (unit) => unit.name === currentValue,
+                            )?.id;
+                            setUnitId(unitId);
+                            setOpen(false);
+                          }}
+                        >
+                          {unit.name}
+                          <Check
+                            className={cn(
+                              'ml-auto',
+                              unitId === unit.id ? 'opacity-100' : 'opacity-0',
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </div>
           <Select
             className="w-[200px]"
             placeholder={t('Select a market')}
@@ -1044,27 +1090,27 @@ function App() {
           {t('All dates are displayed in timezone')} {unit?.timeZone}
         </p>
         <p className="my-1 text-center text-xs text-muted-foreground">
-          Nota: La información de la columna de pre-selección solo es una
-          sugerencia de un posible escenario basado en la información enviada
-          por el cliente externo.
+          {t(
+            'Note: The information in the pre-selection column is only a suggestion of a possible scenario based on information sent by the external client.',
+          )}
         </p>
         <div className="mt-4 flex justify-between">
           <div className="flex gap-4 text-center">
             <div className="rounded-lg border bg-blue-300 p-2">
               <p className="font-bold">
-                Promedio de precios de los últimos 30 días
+                {t('Average prices for the last 30 days')}
               </p>
               <p>
                 Nodo {unit?.name}: {unit && `$${prices[unit.id].op}`}
               </p>
-              <p>Días sin PML: 10/02/2024</p>
+              <p>{t('Days without PML')}: 10/02/2024</p>
             </div>
             <div className="rounded-lg border bg-rose-200 p-2">
-              <p className="font-bold">Tarifa de Transmisión</p>
+              <p className="font-bold">{t('Transmission Rate')}</p>
               <p>{unit && `$${prices[unit.id].tm}`}</p>
             </div>
             <div className="rounded-lg border bg-green-200 p-2">
-              <p className="font-bold">Tarifa de Operación</p>
+              <p className="font-bold">{t('Operation Rate')}</p>
               <p>{unit && `$${prices[unit.id].op}`}</p>
             </div>
           </div>
@@ -1076,7 +1122,7 @@ function App() {
                 formRef?.current?.requestSubmit();
               }}
             >
-              Guardar cambios
+              {t('Save changes')}
             </Button>
           </div>
         </div>

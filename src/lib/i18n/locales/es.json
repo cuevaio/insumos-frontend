@@ -29,6 +29,11 @@
     "Select a unit": "Selecciona una unidad",
     "Select a market": "Selecciona un mercado",
     "No changes to save": "Sin cambios por guardar",
-    "Correctly fill in the red fields": "Completa correctamente los campos en rojo"
+    "Correctly fill in the red fields": "Completa correctamente los campos en rojo",
+    "Average prices for the last 30 days": "Promedio de precios de los últimos 30 días",
+    "Days without PML": "Días sin PML",
+    "Transmission Rate": "Tarifa de Transmisión",
+    "Operation Rate": "Tarifa de Operación",
+    "Note: The information in the pre-selection column is only a suggestion of a possible scenario based on information sent by the external client.": "Nota: La información de la columna de pre-selección solo es una sugerencia de un posible escenario basado en la información enviada por el cliente externo."
   }
 }
