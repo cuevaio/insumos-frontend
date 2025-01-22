@@ -1176,7 +1176,6 @@ function App() {
           <div className="flex gap-4">
             <ExportAvailabilitiesButton />
             <Button
-              className="text-xs"
               type="button"
               disabled={isEditingDisabled}
               onClick={() => {
@@ -1184,6 +1183,7 @@ function App() {
               }}
               className={cn(
                 isEditingDisabled && 'cursor-not-allowed opacity-50',
+                'text-xs',
               )}
             >
               {t('Save changes')}
