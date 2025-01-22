@@ -473,9 +473,30 @@ function App() {
   const defaultLanguage = 'es';
 
   React.useEffect(() => {
-    const userHasDifferentLanguage = defaultLanguage && (defaultLanguage !== language)
-    if (userHasDifferentLanguage) changeLanguage(defaultLanguage)
+    const userHasDifferentLanguage =
+      defaultLanguage && defaultLanguage !== language;
+    if (userHasDifferentLanguage) changeLanguage(defaultLanguage);
   }, [defaultLanguage]);
+  // Add this function to check if editing should be disabled
+  const isEditingDisabled = React.useMemo(() => {
+    if (!date) return false;
+    const _today = new Date();
+    const today = new CalendarDate(
+      _today.getFullYear(),
+      _today.getMonth() + 1,
+      _today.getDate(),
+    );
+    const twoDaysAgo = today.subtract({ days: 2 });
+
+    return date.compare(twoDaysAgo) < 0;
+  }, [date]);
+
+  // Add useEffect to show toast when selecting a disabled date
+  React.useEffect(() => {
+    if (isEditingDisabled) {
+      toast.error(t('Cannot edit dates more than 2 days in the past'));
+    }
+  }, [isEditingDisabled, t]);
 
   return (
     <div className="container mx-auto">
@@ -589,6 +610,12 @@ function App() {
         ref={formRef}
         onSubmit={(event) => {
           event.preventDefault();
+
+          if (isEditingDisabled) {
+            toast.error(t('Cannot edit dates more than 2 days in the past'));
+            return;
+          }
+
           const formData = Array.from(
             new FormData(event.target as HTMLFormElement),
           );
@@ -871,18 +898,21 @@ function App() {
                           id={`input-${idx}-${0}`}
                           step=".01"
                           defaultValue={insumo?.max}
+                          disabled={isEditingDisabled}
                           onKeyDown={(e) => handleKeyDown(e, idx, 0)}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('max') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('max') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('max') &&
-                            'border-blue-500',
+                              data?.updated[hour]?.includes('max') &&
+                              'border-blue-500',
+                            isEditingDisabled &&
+                              'cursor-not-allowed opacity-50',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-max`}
@@ -894,19 +924,21 @@ function App() {
                           id={`input-${idx}-${1}`}
                           step=".01"
                           defaultValue={insumo?.min}
+                          disabled={isEditingDisabled}
                           onKeyDown={(e) => handleKeyDown(e, idx, 1)}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('min') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('min') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('min') &&
-                            'border-blue-500',
-                            'transition-colors duration-300',
+                              data?.updated[hour]?.includes('min') &&
+                              'border-blue-500',
+                            isEditingDisabled &&
+                              'cursor-not-allowed opacity-50',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-min`}
@@ -917,18 +949,20 @@ function App() {
                           type="number"
                           id={`input-${idx}-${2}`}
                           step=".01"
+                          disabled={isEditingDisabled}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('share_ft1') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('share_ft1') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('share_ft1') &&
-                            'border-blue-500',
-                            'transition-colors duration-300',
+                              data?.updated[hour]?.includes('share_ft1') &&
+                              'border-blue-500',
+                            isEditingDisabled &&
+                              'cursor-not-allowed opacity-50',
                             'transition-colors duration-300',
                           )}
                           defaultValue={
@@ -946,18 +980,20 @@ function App() {
                             type="number"
                             id={`input-${idx}-${3}`}
                             step=".01"
+                            disabled={isEditingDisabled}
                             className={cn(
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('share_ft2') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('share_ft2') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('share_ft2') &&
-                              'border-blue-500',
-                              'transition-colors duration-300',
+                                data?.updated[hour]?.includes('share_ft2') &&
+                                'border-blue-500',
+                              isEditingDisabled &&
+                                'cursor-not-allowed opacity-50',
                               'transition-colors duration-300',
                             )}
                             defaultValue={
@@ -977,6 +1013,7 @@ function App() {
                           placeholder=""
                           name={`${hour}-note`}
                           defaultSelectedKey={insumo?.note}
+                          isDisabled={isEditingDisabled}
                         >
                           <SelectTrigger
                             id={`input-${idx}-${4}`}
@@ -984,15 +1021,17 @@ function App() {
                             className={cn(
                               'h-full px-2 py-0 transition-colors duration-300',
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('note') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('note') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('note') &&
-                              'border-blue-500',
+                                data?.updated[hour]?.includes('note') &&
+                                'border-blue-500',
+                              isEditingDisabled &&
+                                'cursor-not-allowed opacity-50',
                               'transition-colors duration-300',
                             )}
                           >
@@ -1014,6 +1053,7 @@ function App() {
                           id={`input-${idx}-${5}`}
                           defaultChecked={insumo?.agc}
                           name={`${hour}-agc`}
+                          disabled={isEditingDisabled}
                           onKeyDown={(e) =>
                             handleKeyDown(
                               e as React.KeyboardEvent<HTMLInputElement>,
@@ -1029,19 +1069,21 @@ function App() {
                           id={`input-${idx}-${6}`}
                           step=".01"
                           defaultValue={insumo?.price_ft1}
+                          disabled={isEditingDisabled}
                           onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('price_ft1') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('price_ft1') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('price_ft1') &&
-                            'border-blue-500',
-                            'transition-colors duration-300',
+                              data?.updated[hour]?.includes('price_ft1') &&
+                              'border-blue-500',
+                            isEditingDisabled &&
+                              'cursor-not-allowed opacity-50',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-price_ft1`}
@@ -1054,19 +1096,21 @@ function App() {
                             id={`input-${idx}-${7}`}
                             step=".01"
                             defaultValue={insumo?.price_ft2}
+                            disabled={isEditingDisabled}
                             onKeyDown={(e) => handleKeyDown(e, idx, 7)}
                             className={cn(
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('price_ft2') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('price_ft2') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('price_ft2') &&
-                              'border-blue-500',
-                              'transition-colors duration-300',
+                                data?.updated[hour]?.includes('price_ft2') &&
+                                'border-blue-500',
+                              isEditingDisabled &&
+                                'cursor-not-allowed opacity-50',
                               'transition-colors duration-300',
                               'control',
                             )}
@@ -1126,9 +1170,13 @@ function App() {
             <ExportAvailabilitiesButton />
             <Button
               type="button"
+              disabled={isEditingDisabled}
               onClick={() => {
                 formRef?.current?.requestSubmit();
               }}
+              className={cn(
+                isEditingDisabled && 'cursor-not-allowed opacity-50',
+              )}
             >
               {t('Save changes')}
             </Button>

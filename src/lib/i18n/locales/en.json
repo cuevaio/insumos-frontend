@@ -34,6 +34,7 @@
     "Days without PML": "Days without PML",
     "Transmission Rate": "Transmission Rate",
     "Operation Rate": "Operation Rate",
-    "Note: The information in the pre-selection column is only a suggestion of a possible scenario based on information sent by the external client.": "Note: The information in the pre-selection column is only a suggestion of a possible scenario based on information sent by the external client."
+    "Note: The information in the pre-selection column is only a suggestion of a possible scenario based on information sent by the external client.": "Note: The information in the pre-selection column is only a suggestion of a possible scenario based on information sent by the external client.",
+    "Cannot edit dates more than 2 days in the past": "Cannot edit dates more than 2 days in the past"
   }
 }
