@@ -4,7 +4,6 @@ import { initReactI18next } from 'react-i18next';
 
 import resources from '@/lib/i18n/locales';
 
-
 i18n
   // detect user language
   // learn more: https://github.com/i18next/i18next-browser-languageDetector

@@ -17,13 +17,13 @@ import {
 import { cn } from '@/lib/utils';
 
 import { FieldError, Label } from './field';
+import { Popover } from './jolly-popover';
 import {
   ListBoxCollection,
   ListBoxHeader,
   ListBoxItem,
   ListBoxSection,
 } from './list-box';
-import { Popover } from './jolly-popover';
 
 const Select = AriaSelect;
 
@@ -42,7 +42,7 @@ const SelectValue = <T extends object>({
   <AriaSelectValue
     className={composeRenderProps(className, (className) =>
       cn(
-        'line-clamp-1 data-[placeholder]:text-muted-foreground',
+        'line-clamp-1 text-xs data-[placeholder]:text-muted-foreground',
         /* Description */
         '[&>[slot=description]]:hidden',
         className,
