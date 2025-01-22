@@ -473,13 +473,14 @@ function App() {
   const defaultLanguage = 'es';
 
   React.useEffect(() => {
-    const userHasDifferentLanguage = defaultLanguage && (defaultLanguage !== language)
-    if (userHasDifferentLanguage) changeLanguage(defaultLanguage)
+    const userHasDifferentLanguage =
+      defaultLanguage && defaultLanguage !== language;
+    if (userHasDifferentLanguage) changeLanguage(defaultLanguage);
   }, [defaultLanguage]);
 
   return (
-    <div className="container mx-auto">
-      <div className="flex items-end justify-between">
+    <div className="container mx-auto flex w-full flex-col flex-wrap gap-4">
+      <div className="flex w-full items-end justify-between">
         <div className="flex gap-4">
           <DatePicker
             label={t('Date')}
@@ -494,7 +495,7 @@ function App() {
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className="h-10 w-[200px] justify-between"
+                  className="h-10 w-[200px] justify-between text-xs"
                 >
                   {unitId
                     ? units?.find((unit) => unit.id === unitId)?.name
@@ -506,7 +507,7 @@ function App() {
                 <Command>
                   <CommandInput
                     placeholder={t('Select a unit')}
-                    className="h-9"
+                    className="h-9 text-xs"
                   />
                   <CommandList>
                     <CommandEmpty>No unit found.</CommandEmpty>
@@ -514,6 +515,7 @@ function App() {
                       {units?.map((unit) => (
                         <CommandItem
                           key={unit.id}
+                          className="text-xs"
                           value={unit.name}
                           onSelect={(currentValue) => {
                             const unitId = units?.find(
@@ -561,12 +563,17 @@ function App() {
         <div className="flex gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">{t('Columns')}</Button>
+              <Button className="text-xs" variant="outline">
+                {t('Columns')}
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>{t('Columns')}</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs">
+                {t('Columns')}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuCheckboxItem
+                className="text-xs"
                 checked={showFT1Columns}
                 onCheckedChange={setShowFT1Columns}
               >
@@ -574,6 +581,7 @@ function App() {
               </DropdownMenuCheckboxItem>
               {unit?.fuelType2 && (
                 <DropdownMenuCheckboxItem
+                  className="text-xs"
                   checked={showFT2Columns}
                   onCheckedChange={setShowFT2Columns}
                 >
@@ -585,7 +593,7 @@ function App() {
         </div>
       </div>
       <form
-        className="my-8"
+        className="w-full"
         ref={formRef}
         onSubmit={(event) => {
           event.preventDefault();
@@ -874,15 +882,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 0)}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('max') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('max') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('max') &&
-                            'border-blue-500',
+                              data?.updated[hour]?.includes('max') &&
+                              'border-blue-500',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-max`}
@@ -897,15 +905,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 1)}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('min') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('min') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('min') &&
-                            'border-blue-500',
+                              data?.updated[hour]?.includes('min') &&
+                              'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -919,15 +927,15 @@ function App() {
                           step=".01"
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('share_ft1') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('share_ft1') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('share_ft1') &&
-                            'border-blue-500',
+                              data?.updated[hour]?.includes('share_ft1') &&
+                              'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -948,15 +956,15 @@ function App() {
                             step=".01"
                             className={cn(
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('share_ft2') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('share_ft2') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('share_ft2') &&
-                              'border-blue-500',
+                                data?.updated[hour]?.includes('share_ft2') &&
+                                'border-blue-500',
                               'transition-colors duration-300',
                               'transition-colors duration-300',
                             )}
@@ -984,15 +992,15 @@ function App() {
                             className={cn(
                               'h-full px-2 py-0 transition-colors duration-300',
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('note') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('note') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('note') &&
-                              'border-blue-500',
+                                data?.updated[hour]?.includes('note') &&
+                                'border-blue-500',
                               'transition-colors duration-300',
                             )}
                           >
@@ -1032,15 +1040,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                           className={cn(
                             isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('price_ft1') &&
-                            'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('price_ft1') &&
+                              'border-red-500',
                             isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                             isFlashingSuccess &&
-                            data?.updated[hour]?.includes('price_ft1') &&
-                            'border-blue-500',
+                              data?.updated[hour]?.includes('price_ft1') &&
+                              'border-blue-500',
                             'transition-colors duration-300',
                             'transition-colors duration-300',
                           )}
@@ -1057,15 +1065,15 @@ function App() {
                             onKeyDown={(e) => handleKeyDown(e, idx, 7)}
                             className={cn(
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('price_ft2') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('price_ft2') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('price_ft2') &&
-                              'border-blue-500',
+                                data?.updated[hour]?.includes('price_ft2') &&
+                                'border-blue-500',
                               'transition-colors duration-300',
                               'transition-colors duration-300',
                               'control',
@@ -1105,26 +1113,27 @@ function App() {
         <div className="mt-4 flex justify-between">
           <div className="flex gap-4 text-center">
             <div className="rounded-lg border bg-blue-300 p-2">
-              <p className="font-bold">
+              <p className="text-sm font-bold">
                 {t('Average prices for the last 30 days')}
               </p>
-              <p>
+              <p className="text-sm">
                 Nodo {unit?.name}: {unit && `$${prices[unit.id].op}`}
               </p>
-              <p>{t('Days without PML')}: 10/02/2024</p>
+              <p className="text-sm">{t('Days without PML')}: 10/02/2024</p>
             </div>
             <div className="rounded-lg border bg-rose-200 p-2">
-              <p className="font-bold">{t('Transmission Rate')}</p>
-              <p>{unit && `$${prices[unit.id].tm}`}</p>
+              <p className="text-sm font-bold">{t('Transmission Rate')}</p>
+              <p className="text-sm">{unit && `$${prices[unit.id].tm}`}</p>
             </div>
             <div className="rounded-lg border bg-green-200 p-2">
-              <p className="font-bold">{t('Operation Rate')}</p>
-              <p>{unit && `$${prices[unit.id].op}`}</p>
+              <p className="text-sm font-bold">{t('Operation Rate')}</p>
+              <p className="text-sm">{unit && `$${prices[unit.id].op}`}</p>
             </div>
           </div>
           <div className="flex gap-4">
             <ExportAvailabilitiesButton />
             <Button
+              className="text-xs"
               type="button"
               onClick={() => {
                 formRef?.current?.requestSubmit();

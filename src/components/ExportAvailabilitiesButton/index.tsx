@@ -14,7 +14,10 @@ import { populateAvailabilityData, setupWorksheet } from '@/lib/export';
 import { Market } from '@/lib/types';
 
 const ExportAvailabilitiesButton = () => {
-  const { t, i18n: { language } } = useTranslation();
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
 
   const unitId = localStorage.getItem('unit_id');
   const date = localStorage.getItem('date');
@@ -91,6 +94,7 @@ const ExportAvailabilitiesButton = () => {
 
   return (
     <Button
+      className="text-xs"
       variant="outline"
       onClick={() => {
         mutate();

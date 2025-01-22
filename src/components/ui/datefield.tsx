@@ -59,7 +59,7 @@ function DateInput({
   return (
     <AriaDateInput
       className={composeRenderProps(className, (className) =>
-        cn(fieldGroupVariants({ variant }), 'text-sm', className),
+        cn(fieldGroupVariants({ variant }), 'text-xs', className),
       )}
       {...props}
     >
