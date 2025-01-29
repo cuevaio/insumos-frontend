@@ -355,31 +355,6 @@ function App() {
     }));
   };
 
-  const renderCapacityCell = (
-    rowIndex: number,
-    columnName: string,
-    value?: number,
-  ) => {
-    if (value === undefined || value === null) return null;
-    const cellId = `${rowIndex}-${columnName}`;
-
-    return (
-      <div className="flex items-center gap-2 px-2">
-        <span>{value}</span>
-        <Checkbox
-          key={JSON.stringify(checkedStates)}
-          className="h-3 w-3"
-          checked={checkedStates[cellId] || false}
-          onCheckedChange={(checked) => {
-            if (checked) {
-              updateMaxValue(rowIndex, columnName, value);
-            }
-          }}
-        />
-      </div>
-    );
-  };
-
   const calcPreselection = (availability?: AvailabilityRecord) => {
     if (!unit || !availability) return;
 
@@ -476,27 +451,60 @@ function App() {
     const userHasDifferentLanguage =
       defaultLanguage && defaultLanguage !== language;
     if (userHasDifferentLanguage) changeLanguage(defaultLanguage);
-  }, [defaultLanguage]);
-  // Add this function to check if editing should be disabled
-  const isEditingDisabled = React.useMemo(() => {
-    if (!date) return false;
+  }, [defaultLanguage, language, changeLanguage]);
+
+  const dateDiff = React.useMemo(() => {
+    if (!date) return 0;
     const _today = new Date();
     const today = new CalendarDate(
       _today.getFullYear(),
       _today.getMonth() + 1,
       _today.getDate(),
     );
-    const twoDaysAgo = today.subtract({ days: 2 });
-
-    return date.compare(twoDaysAgo) < 0;
+    console.log(date.compare(today));
+    return date.compare(today);
   }, [date]);
 
-  // Add useEffect to show toast when selecting a disabled date
-  React.useEffect(() => {
-    if (isEditingDisabled) {
-      toast.error(t('Cannot edit dates more than 2 days in the past'));
-    }
-  }, [isEditingDisabled, t]);
+  const minEditableHour = React.useMemo(() => {
+    const now = new Date();
+    const nowHour = now.getHours();
+
+    return Math.max(nowHour - 1, 0);
+  }, []);
+
+  const isHourEditable = React.useCallback(
+    (hour: number) => {
+      if (dateDiff < 0) return false;
+      if (dateDiff === 0 && hour < minEditableHour) return false;
+      return true;
+    },
+    [dateDiff, minEditableHour],
+  );
+
+  const renderCapacityCell = (
+    rowIndex: number,
+    columnName: string,
+    value?: number,
+  ) => {
+    if (value === undefined || value === null) return null;
+    const cellId = `${rowIndex}-${columnName}`;
+
+    return (
+      <div className="flex items-center gap-2 px-2">
+        <span>{value}</span>
+        <Checkbox
+          key={JSON.stringify(checkedStates)}
+          className="h-4 w-4"
+          checked={checkedStates[cellId] || false}
+          onCheckedChange={(checked) => {
+            if (checked) {
+              updateMaxValue(rowIndex, columnName, value);
+            }
+          }}
+        />
+      </div>
+    );
+  };
 
   return (
     <div className="container mx-auto flex w-full flex-col flex-wrap gap-1">
@@ -618,8 +626,8 @@ function App() {
         onSubmit={(event) => {
           event.preventDefault();
 
-          if (isEditingDisabled) {
-            toast.error(t('Cannot edit dates more than 2 days in the past'));
+          if (dateDiff < 0) {
+            toast.error(t('Cannot edit dates in the past'));
             return;
           }
 
@@ -1024,7 +1032,7 @@ function App() {
                           id={`input-${idx}-${0}`}
                           step=".01"
                           defaultValue={insumo?.max}
-                          disabled={isEditingDisabled}
+                          disabled={!isHourEditable(hour)}
                           onKeyDown={(e) => handleKeyDown(e, idx, 0)}
                           className={cn(
                             isFlashingErrors &&
@@ -1037,8 +1045,9 @@ function App() {
                             isFlashingSuccess &&
                             data?.updated[hour]?.includes('max') &&
                             'border-blue-500',
-                            isEditingDisabled &&
-                            'cursor-not-allowed opacity-50',
+                            !isHourEditable(hour)
+                              ? 'cursor-not-allowed !bg-muted'
+                              : 'cursor-text',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-max`}
@@ -1050,7 +1059,7 @@ function App() {
                           id={`input-${idx}-${1}`}
                           step=".01"
                           defaultValue={insumo?.min}
-                          disabled={isEditingDisabled}
+                          disabled={!isHourEditable(hour)}
                           onKeyDown={(e) => handleKeyDown(e, idx, 1)}
                           className={cn(
                             isFlashingErrors &&
@@ -1063,8 +1072,8 @@ function App() {
                             isFlashingSuccess &&
                             data?.updated[hour]?.includes('min') &&
                             'border-blue-500',
-                            isEditingDisabled &&
-                            'cursor-not-allowed opacity-50',
+                            !isHourEditable(hour) &&
+                            'cursor-not-allowed !bg-muted',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-min`}
@@ -1075,7 +1084,7 @@ function App() {
                           type="number"
                           id={`input-${idx}-${2}`}
                           step=".01"
-                          disabled={isEditingDisabled}
+                          disabled={!isHourEditable(hour)}
                           className={cn(
                             isFlashingErrors &&
                             errors[hour] &&
@@ -1087,8 +1096,8 @@ function App() {
                             isFlashingSuccess &&
                             data?.updated[hour]?.includes('share_ft1') &&
                             'border-blue-500',
-                            isEditingDisabled &&
-                            'cursor-not-allowed opacity-50',
+                            !isHourEditable(hour) &&
+                            'cursor-not-allowed !bg-muted',
                             'transition-colors duration-300',
                           )}
                           defaultValue={
@@ -1106,7 +1115,7 @@ function App() {
                             type="number"
                             id={`input-${idx}-${3}`}
                             step=".01"
-                            disabled={isEditingDisabled}
+                            disabled={!isHourEditable(hour)}
                             className={cn(
                               isFlashingErrors &&
                               errors[hour] &&
@@ -1118,8 +1127,8 @@ function App() {
                               isFlashingSuccess &&
                               data?.updated[hour]?.includes('share_ft2') &&
                               'border-blue-500',
-                              isEditingDisabled &&
-                              'cursor-not-allowed opacity-50',
+                              !isHourEditable(hour) &&
+                              'cursor-not-allowed !bg-muted',
                               'transition-colors duration-300',
                             )}
                             defaultValue={
@@ -1139,7 +1148,7 @@ function App() {
                           placeholder=""
                           name={`${hour}-note`}
                           defaultSelectedKey={insumo?.note}
-                          isDisabled={isEditingDisabled}
+                          isDisabled={!isHourEditable(hour)}
                         >
                           <SelectTrigger
                             id={`input-${idx}-${4}`}
@@ -1156,8 +1165,8 @@ function App() {
                               isFlashingSuccess &&
                               data?.updated[hour]?.includes('note') &&
                               'border-blue-500',
-                              isEditingDisabled &&
-                              'cursor-not-allowed opacity-50',
+                              !isHourEditable(hour) &&
+                              'cursor-not-allowed !bg-muted',
                               'transition-colors duration-300',
                             )}
                           >
@@ -1179,7 +1188,7 @@ function App() {
                           id={`input-${idx}-${5}`}
                           defaultChecked={insumo?.agc}
                           name={`${hour}-agc`}
-                          disabled={isEditingDisabled}
+                          disabled={!isHourEditable(hour)}
                           onKeyDown={(e) =>
                             handleKeyDown(
                               e as React.KeyboardEvent<HTMLInputElement>,
@@ -1195,7 +1204,7 @@ function App() {
                           id={`input-${idx}-${6}`}
                           step=".01"
                           defaultValue={insumo?.price_ft1}
-                          disabled={isEditingDisabled}
+                          disabled={!isHourEditable(hour)}
                           onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                           className={cn(
                             isFlashingErrors &&
@@ -1208,8 +1217,8 @@ function App() {
                             isFlashingSuccess &&
                             data?.updated[hour]?.includes('price_ft1') &&
                             'border-blue-500',
-                            isEditingDisabled &&
-                            'cursor-not-allowed opacity-50',
+                            !isHourEditable(hour) &&
+                            'cursor-not-allowed !bg-muted',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-price_ft1`}
@@ -1222,7 +1231,7 @@ function App() {
                             id={`input-${idx}-${7}`}
                             step=".01"
                             defaultValue={insumo?.price_ft2}
-                            disabled={isEditingDisabled}
+                            disabled={!isHourEditable(hour)}
                             onKeyDown={(e) => handleKeyDown(e, idx, 7)}
                             className={cn(
                               isFlashingErrors &&
@@ -1235,8 +1244,8 @@ function App() {
                               isFlashingSuccess &&
                               data?.updated[hour]?.includes('price_ft2') &&
                               'border-blue-500',
-                              isEditingDisabled &&
-                              'cursor-not-allowed opacity-50',
+                              !isHourEditable(hour) &&
+                              'cursor-not-allowed !bg-muted',
                               'transition-colors duration-300',
                               'control',
                             )}
@@ -1275,33 +1284,33 @@ function App() {
         <div className="mt-4 flex justify-between">
           <div className="flex gap-4 text-center">
             <div className="rounded-lg border bg-blue-300 p-2">
-              <p className="text-sm font-bold">
+              <p className="text-xs font-bold">
                 {t('Average prices for the last 30 days')}
               </p>
-              <p className="text-sm">
+              <p className="text-xs">
                 Nodo {unit?.name}: {unit && `$${prices[unit.id].op}`}
               </p>
-              <p className="text-sm">{t('Days without PML')}: 10/02/2024</p>
+              <p className="text-xs">{t('Days without PML')}: 10/02/2024</p>
             </div>
             <div className="rounded-lg border bg-rose-200 p-2">
-              <p className="text-sm font-bold">{t('Transmission Rate')}</p>
-              <p className="text-sm">{unit && `$${prices[unit.id].tm}`}</p>
+              <p className="text-xs font-bold">{t('Transmission Rate')}</p>
+              <p className="text-xs">{unit && `$${prices[unit.id].tm}`}</p>
             </div>
             <div className="rounded-lg border bg-green-200 p-2">
-              <p className="text-sm font-bold">{t('Operation Rate')}</p>
-              <p className="text-sm">{unit && `$${prices[unit.id].op}`}</p>
+              <p className="text-xs font-bold">{t('Operation Rate')}</p>
+              <p className="text-xs">{unit && `$${prices[unit.id].op}`}</p>
             </div>
           </div>
           <div className="flex gap-4">
             <ExportAvailabilitiesButton />
             <Button
               type="button"
-              disabled={isEditingDisabled}
+              disabled={dateDiff < 0}
               onClick={() => {
                 formRef?.current?.requestSubmit();
               }}
               className={cn(
-                isEditingDisabled && 'cursor-not-allowed opacity-50',
+                dateDiff < 0 && 'cursor-not-allowed opacity-50',
                 'text-xs',
                 'h-6',
               )}
