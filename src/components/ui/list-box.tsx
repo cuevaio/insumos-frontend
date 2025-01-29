@@ -47,7 +47,7 @@ const ListBoxItem = <T extends object>({
       }
       className={composeRenderProps(className, (className) =>
         cn(
-          'relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none',
+          'relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-xxs outline-none',
           /* Disabled */
           'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
           /* Focused */

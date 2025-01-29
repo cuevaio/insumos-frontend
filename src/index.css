@@ -84,5 +84,5 @@ input[type='number'] {
 
 #root {
   padding-inline: 30px;
-  padding-block: 12px;
+  padding-block: 0 12px;
 }
