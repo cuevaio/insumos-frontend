@@ -491,7 +491,7 @@ function App() {
 
     return (
       <div className="flex items-center gap-2 px-2">
-        <span>{value}</span>
+        <span className="min-w-[24px]">{value}</span>
         <Checkbox
           key={JSON.stringify(checkedStates)}
           className="h-4 w-4"
@@ -507,9 +507,9 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto flex w-full flex-col flex-wrap gap-1">
+    <div className="container mx-auto flex w-full flex-col flex-wrap gap-2">
       <div className="flex w-full items-end justify-between">
-        <div className="flex gap-1">
+        <div className="flex gap-2">
           <DatePicker
             label={t('Date')}
             value={date}
@@ -695,7 +695,7 @@ function App() {
         }}
       >
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted">
             {(showFT1Columns || (showFT2Columns && unit?.fuelType2)) && (
               <TableRow className="text-xxs">
                 <TableHead
@@ -703,13 +703,13 @@ function App() {
                   className="border-l border-t"
                 ></TableHead>
                 {showFT1Columns && (
-                  <TableHead colSpan={5} className="border-x border-t">
-                    {unit?.fuelType1?.name.toUpperCase()}
+                  <TableHead colSpan={5} className="border-x border-t text-center">
+                    {t('Declared Net Capacity of the plant or package')} - {unit?.fuelType1?.name.toUpperCase()}
                   </TableHead>
                 )}
                 {showFT2Columns && unit?.fuelType2 && (
-                  <TableHead colSpan={5} className="border-x border-t">
-                    {unit?.fuelType2?.name.toUpperCase()}
+                  <TableHead colSpan={5} className="border-x border-t text-center">
+                    {t('Declared Net Capacity of the plant or package')} - {unit?.fuelType2?.name.toUpperCase()}
                   </TableHead>
                 )}
                 <TableHead
@@ -723,94 +723,94 @@ function App() {
               <TableHead className="min-w-[100px]">{t('Schedule')}</TableHead>
               {showFT1Columns && (
                 <>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('Corrected to Summer Design Conditions (Contractual) MW')}
                     >
-                      {t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                      {t('Corrected to Summer Design Conditions (Contractual) MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Net Capacity at Real Ambient Conditions')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('Real Environment Conditions MW')}
                     >
-                      {t('Net Capacity at Real Ambient Conditions')}
+                      {t('Real Environment Conditions MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Net Capacity Considering Available Gas')}>
-                      {t('Net Capacity Considering Available Gas')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('Real Environment Conditions Considering Available Amount MW')}>
+                      {t('Real Environment Conditions Considering Available Amount MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('From Legacy Interconnection Contract (CIL) MW')}
                     >
-                      {t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                      {t('From Legacy Interconnection Contract (CIL) MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Net Capacity with LIE Contract MW')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('Under LIE Type Contract MW')}
                     >
-                      {t('Net Capacity with LIE Contract MW')}
+                      {t('Under LIE Type Contract MW')}
                     </span>
                   </TableHead>
                 </>
               )}
               {showFT2Columns && unit?.fuelType2 && (
                 <>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('Corrected to Summer Design Conditions (Contractual) MW')}
                     >
-                      {t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                      {t('Corrected to Summer Design Conditions (Contractual) MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Net Capacity at Real Ambient Conditions')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('Real Environment Conditions MW')}
                     >
-                      {t('Net Capacity at Real Ambient Conditions')}
+                      {t('Real Environment Conditions MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Net Capacity Considering Available Diesel MW')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('Considering Available Diesel MW')}
                     >
-                      {t('Net Capacity Considering Available Diesel MW')}
+                      {t('Considering Available Diesel MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('From Legacy Interconnection Contract (CIL) MW')}
                     >
-                      {t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                      {t('From Legacy Interconnection Contract (CIL) MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[192px] border-l">
+                  <TableHead className="text-xxs min-w-[120px] border-l">
                     <span
-                      className="line-clamp-2 break-words overflow-hidden"
-                      title={t('Net Capacity with LIE Contract MW')}
+                      className="line-clamp-3 break-words overflow-hidden"
+                      title={t('Under LIE Type Contract MW')}
                     >
-                      {t('Net Capacity with LIE Contract MW')}
+                      {t('Under LIE Type Contract MW')}
                     </span>
                   </TableHead>
                 </>
               )}
               <TableHead className="border-l">
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={t('Pre-Selection')}
                 >
                   {t('Pre-Selection')}
@@ -818,7 +818,7 @@ function App() {
               </TableHead>
               <TableHead>
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={t('Maximum Offer Availability')}
                 >
                   {t('Maximum Offer Availability')}
@@ -826,7 +826,7 @@ function App() {
               </TableHead>
               <TableHead>
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={t('Minimum Offer Availability')}
                 >
                   {t('Minimum Offer Availability')}
@@ -834,7 +834,7 @@ function App() {
               </TableHead>
               <TableHead className="min-w-[70px]">
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={`% ${unit?.fuelType1?.name}`}
                 >
                   % {unit?.fuelType1?.name}
@@ -843,16 +843,16 @@ function App() {
               {unit?.fuelType2 && (
                 <TableHead className="min-w-[70px]">
                   <span
-                    className="line-clamp-2 break-words overflow-hidden"
+                    className="line-clamp-3 break-words overflow-hidden"
                     title={`% ${unit.fuelType2.name}`}
                   >
                     % {unit.fuelType2.name}
                   </span>
                 </TableHead>
               )}
-              <TableHead className="text-xxs min-w-[192px]">
+              <TableHead className="text-xxs min-w-[120px]">
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={t('Note')}
                 >
                   {t('Note')}
@@ -860,7 +860,7 @@ function App() {
               </TableHead>
               <TableHead>
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title="AGC"
                 >
                   AGC
@@ -868,7 +868,7 @@ function App() {
               </TableHead>
               <TableHead className="min-w-[100px]">
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={`${t('Price of')} ${unit?.fuelType1?.name}`}
                 >
                   {t('Price of')} {unit?.fuelType1?.name}
@@ -877,7 +877,7 @@ function App() {
               {unit?.fuelType2 && (
                 <TableHead className="min-w-[100px]">
                   <span
-                    className="line-clamp-2 break-words overflow-hidden"
+                    className="line-clamp-3 break-words overflow-hidden"
                     title={`${t('Price of')} ${unit.fuelType2.name}`}
                   >
                     {t('Price of')} {unit.fuelType2.name}
@@ -886,7 +886,7 @@ function App() {
               )}
               <TableHead className="min-w-[150px]">
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={`${t('Operation Type')} (Disponible a Despacho / Operación Obligada)`}
                 >
                   {t('Operation Type')} (Disponible a Despacho / Operación Obligada)
@@ -894,7 +894,7 @@ function App() {
               </TableHead>
               <TableHead className="min-w-[350px]">
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={t('Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)')}
                 >
                   {t('Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)')}
@@ -902,7 +902,7 @@ function App() {
               </TableHead>
               <TableHead>
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={t('Last Update Date')}
                 >
                   {t('Last Update Date')}
@@ -910,7 +910,7 @@ function App() {
               </TableHead>
               <TableHead className="border-r">
                 <span
-                  className="line-clamp-2 break-words overflow-hidden"
+                  className="line-clamp-3 break-words overflow-hidden"
                   title={t('User')}
                 >
                   {t('User')}
@@ -935,7 +935,12 @@ function App() {
 
                   const insumo = insumos?.insumos.find((x) => x.hour === hour);
                   return (
-                    <TableRow key={idx}>
+                    <TableRow key={idx} className={
+                      cn(
+                        idx % 2 !== 0 ? 'bg-muted/50' : '',
+                        'hover:bg-blue-300/50'
+                      )
+                    }>
                       <TableCell className="border-l bg-muted/50 tabular-nums">
                         {hour}
                       </TableCell>
