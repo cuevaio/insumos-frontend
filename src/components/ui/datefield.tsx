@@ -49,7 +49,7 @@ function DateSegment({ className, ...props }: AriaDateSegmentProps) {
 
 interface DateInputProps
   extends AriaDateInputProps,
-    VariantProps<typeof fieldGroupVariants> {}
+  VariantProps<typeof fieldGroupVariants> { }
 
 function DateInput({
   className,
@@ -59,7 +59,7 @@ function DateInput({
   return (
     <AriaDateInput
       className={composeRenderProps(className, (className) =>
-        cn(fieldGroupVariants({ variant }), 'text-xs', className),
+        cn(fieldGroupVariants({ variant }), 'text-xxs', className),
       )}
       {...props}
     >

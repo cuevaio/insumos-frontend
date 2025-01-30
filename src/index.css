@@ -84,5 +84,28 @@ input[type='number'] {
 
 #root {
   padding-inline: 30px;
-  padding-block: 12px;
+  padding-block: 0 12px;
+}
+
+table {
+  th:not(:first-child) {
+    position: relative;
+
+    &::before,
+    &::after {
+      content: '';
+      inline-size: 1px;
+      block-size: 25%;
+      position: absolute;
+      top: 0;
+      left: -1px;
+      background: hsl(var(--muted));
+    }
+
+    &::after {
+      top: unset;
+      bottom: 0;
+      left: -1px;
+    }
+  }
 }

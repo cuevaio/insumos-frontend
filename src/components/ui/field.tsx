@@ -17,7 +17,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const labelVariants = cva([
-  'text-xs font-medium leading-none',
+  'text-xxs font-medium leading-none',
   /* Disabled */
   'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-70',
   /* Invalid */
@@ -51,7 +51,7 @@ const fieldGroupVariants = cva('', {
   variants: {
     variant: {
       default: [
-        'relative flex h-10 w-full items-center overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background',
+        'relative flex h-6 w-full items-center overflow-hidden rounded-md border border-input bg-background px-2 py-0 text-sm ring-offset-background',
         /* Focus Within */
         'data-[focus-within]:outline-none data-[focus-within]:ring-2 data-[focus-within]:ring-ring data-[focus-within]:ring-offset-2',
         /* Disabled */
@@ -67,7 +67,7 @@ const fieldGroupVariants = cva('', {
 
 interface GroupProps
   extends AriaGroupProps,
-    VariantProps<typeof fieldGroupVariants> {}
+  VariantProps<typeof fieldGroupVariants> { }
 
 function FieldGroup({ className, variant, ...props }: GroupProps) {
   return (

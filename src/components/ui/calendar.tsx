@@ -54,7 +54,7 @@ const CalendarHeading = (props: React.HTMLAttributes<HTMLElement>) => {
           <ChevronLeft aria-hidden className="size-4" />
         )}
       </AriaButton>
-      <AriaHeading className="grow text-center text-sm font-medium" />
+      <AriaHeading className="grow text-center text-sm text-xs" />
       <AriaButton
         slot="next"
         className={cn(
@@ -94,7 +94,7 @@ const CalendarHeaderCell = ({
 }: AriaCalendarHeaderCellProps) => (
   <AriaCalendarHeaderCell
     className={cn(
-      'w-9 rounded-md text-[0.8rem] font-normal text-muted-foreground',
+      'w-9 rounded-md text-xs font-normal text-muted-foreground',
       className,
     )}
     {...props}
@@ -115,36 +115,36 @@ const CalendarCell = ({ className, ...props }: AriaCalendarCellProps) => {
       className={composeRenderProps(className, (className, renderProps) =>
         cn(
           buttonVariants({ variant: 'ghost' }),
-          'relative flex size-9 items-center justify-center p-0 text-sm font-normal',
+          'relative flex size-8 items-center justify-center p-0 text-xs font-normal',
           /* Disabled */
           renderProps.isDisabled && 'text-muted-foreground opacity-50',
           /* Selected */
           renderProps.isSelected &&
-            'bg-primary text-primary-foreground data-[focused]:bg-primary data-[focused]:text-primary-foreground',
+          'bg-primary text-primary-foreground data-[focused]:bg-primary data-[focused]:text-primary-foreground',
           /* Hover */
           renderProps.isHovered &&
-            renderProps.isSelected &&
-            (renderProps.isSelectionStart ||
-              renderProps.isSelectionEnd ||
-              !isRange) &&
-            'data-[hovered]:bg-primary data-[hovered]:text-primary-foreground',
+          renderProps.isSelected &&
+          (renderProps.isSelectionStart ||
+            renderProps.isSelectionEnd ||
+            !isRange) &&
+          'data-[hovered]:bg-primary data-[hovered]:text-primary-foreground',
           /* Selection Start/End */
           renderProps.isSelected &&
-            isRange &&
-            !renderProps.isSelectionStart &&
-            !renderProps.isSelectionEnd &&
-            'rounded-none bg-accent text-accent-foreground',
+          isRange &&
+          !renderProps.isSelectionStart &&
+          !renderProps.isSelectionEnd &&
+          'rounded-none bg-accent text-accent-foreground',
           /* Outside Month */
           renderProps.isOutsideMonth &&
-            'text-muted-foreground opacity-50 data-[selected]:bg-accent/50 data-[selected]:text-muted-foreground data-[selected]:opacity-30',
+          'text-muted-foreground opacity-50 data-[selected]:bg-accent/50 data-[selected]:text-muted-foreground data-[selected]:opacity-30',
           /* Current Date */
           renderProps.date.compare(today(getLocalTimeZone())) === 0 &&
-            !renderProps.isSelected &&
-            'bg-accent text-accent-foreground',
+          !renderProps.isSelected &&
+          'bg-accent text-accent-foreground',
           /* Unavailable Date */
           renderProps.isUnavailable && 'cursor-default text-destructive',
           renderProps.isInvalid &&
-            'bg-destructive text-destructive-foreground data-[focused]:bg-destructive data-[hovered]:bg-destructive data-[focused]:text-destructive-foreground data-[hovered]:text-destructive-foreground',
+          'bg-destructive text-destructive-foreground data-[focused]:bg-destructive data-[hovered]:bg-destructive data-[focused]:text-destructive-foreground data-[hovered]:text-destructive-foreground',
           className,
         ),
       )}
