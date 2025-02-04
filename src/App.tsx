@@ -49,6 +49,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import AvailabilitiesTableBody from '@/components/AvailabilitiesTableBody';
 import ExportAvailabilitiesButton from '@/components/ExportAvailabilitiesButton';
 
 import {
@@ -506,6 +507,8 @@ function App() {
     );
   };
 
+  console.log('availabilities :', availabilities);
+
   return (
     <div className="container mx-auto flex w-full flex-col flex-wrap gap-2">
       <div className="flex w-full items-end justify-between">
@@ -523,12 +526,12 @@ function App() {
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className="h-6 w-[200px] justify-between text-xxs px-2 py-0"
+                  className="h-6 w-[200px] justify-between px-2 py-0 text-xxs"
                 >
                   {unitId
                     ? units?.find((unit) => unit.id === unitId)?.name
                     : t('Select a unit')}
-                  <ChevronsUpDown className="opacity-50 size-3" />
+                  <ChevronsUpDown className="size-3 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0">
@@ -591,7 +594,7 @@ function App() {
         <div className="flex gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="text-xs h-6" variant="outline">
+              <Button className="h-6 text-xs" variant="outline">
                 {t('Columns')}
               </Button>
             </DropdownMenuTrigger>
@@ -703,13 +706,21 @@ function App() {
                   className="border-l border-t"
                 ></TableHead>
                 {showFT1Columns && (
-                  <TableHead colSpan={5} className="border-x border-t text-center">
-                    {t('Declared Net Capacity of the plant or package')} - {unit?.fuelType1?.name.toUpperCase()}
+                  <TableHead
+                    colSpan={5}
+                    className="border-x border-t text-center"
+                  >
+                    {t('Declared Net Capacity of the plant or package')} -{' '}
+                    {unit?.fuelType1?.name.toUpperCase()}
                   </TableHead>
                 )}
                 {showFT2Columns && unit?.fuelType2 && (
-                  <TableHead colSpan={5} className="border-x border-t text-center">
-                    {t('Declared Net Capacity of the plant or package')} - {unit?.fuelType2?.name.toUpperCase()}
+                  <TableHead
+                    colSpan={5}
+                    className="border-x border-t text-center"
+                  >
+                    {t('Declared Net Capacity of the plant or package')} -{' '}
+                    {unit?.fuelType2?.name.toUpperCase()}
                   </TableHead>
                 )}
                 <TableHead
@@ -723,40 +734,49 @@ function App() {
               <TableHead className="min-w-[100px]">{t('Schedule')}</TableHead>
               {showFT1Columns && (
                 <>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
-                      title={t('Corrected to Summer Design Conditions (Contractual) MW')}
+                      className="line-clamp-3 overflow-hidden break-words"
+                      title={t(
+                        'Corrected to Summer Design Conditions (Contractual) MW',
+                      )}
                     >
-                      {t('Corrected to Summer Design Conditions (Contractual) MW')}
+                      {t(
+                        'Corrected to Summer Design Conditions (Contractual) MW',
+                      )}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
+                      className="line-clamp-3 overflow-hidden break-words"
                       title={t('Real Environment Conditions MW')}
                     >
                       {t('Real Environment Conditions MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
-                      title={t('Real Environment Conditions Considering Available Amount MW')}>
-                      {t('Real Environment Conditions Considering Available Amount MW')}
+                      className="line-clamp-3 overflow-hidden break-words"
+                      title={t(
+                        'Real Environment Conditions Considering Available Amount MW',
+                      )}
+                    >
+                      {t(
+                        'Real Environment Conditions Considering Available Amount MW',
+                      )}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
+                      className="line-clamp-3 overflow-hidden break-words"
                       title={t('From Legacy Interconnection Contract (CIL) MW')}
                     >
                       {t('From Legacy Interconnection Contract (CIL) MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
+                      className="line-clamp-3 overflow-hidden break-words"
                       title={t('Under LIE Type Contract MW')}
                     >
                       {t('Under LIE Type Contract MW')}
@@ -766,41 +786,45 @@ function App() {
               )}
               {showFT2Columns && unit?.fuelType2 && (
                 <>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
-                      title={t('Corrected to Summer Design Conditions (Contractual) MW')}
+                      className="line-clamp-3 overflow-hidden break-words"
+                      title={t(
+                        'Corrected to Summer Design Conditions (Contractual) MW',
+                      )}
                     >
-                      {t('Corrected to Summer Design Conditions (Contractual) MW')}
+                      {t(
+                        'Corrected to Summer Design Conditions (Contractual) MW',
+                      )}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
+                      className="line-clamp-3 overflow-hidden break-words"
                       title={t('Real Environment Conditions MW')}
                     >
                       {t('Real Environment Conditions MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
+                      className="line-clamp-3 overflow-hidden break-words"
                       title={t('Considering Available Diesel MW')}
                     >
                       {t('Considering Available Diesel MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
+                      className="line-clamp-3 overflow-hidden break-words"
                       title={t('From Legacy Interconnection Contract (CIL) MW')}
                     >
                       {t('From Legacy Interconnection Contract (CIL) MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
-                      className="line-clamp-3 break-words overflow-hidden"
+                      className="line-clamp-3 overflow-hidden break-words"
                       title={t('Under LIE Type Contract MW')}
                     >
                       {t('Under LIE Type Contract MW')}
@@ -810,7 +834,7 @@ function App() {
               )}
               <TableHead className="border-l">
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title={t('Pre-Selection')}
                 >
                   {t('Pre-Selection')}
@@ -818,7 +842,7 @@ function App() {
               </TableHead>
               <TableHead>
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title={t('Maximum Offer Availability')}
                 >
                   {t('Maximum Offer Availability')}
@@ -826,7 +850,7 @@ function App() {
               </TableHead>
               <TableHead>
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title={t('Minimum Offer Availability')}
                 >
                   {t('Minimum Offer Availability')}
@@ -834,7 +858,7 @@ function App() {
               </TableHead>
               <TableHead className="min-w-[70px]">
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title={`% ${unit?.fuelType1?.name}`}
                 >
                   % {unit?.fuelType1?.name}
@@ -843,16 +867,16 @@ function App() {
               {unit?.fuelType2 && (
                 <TableHead className="min-w-[70px]">
                   <span
-                    className="line-clamp-3 break-words overflow-hidden"
+                    className="line-clamp-3 overflow-hidden break-words"
                     title={`% ${unit.fuelType2.name}`}
                   >
                     % {unit.fuelType2.name}
                   </span>
                 </TableHead>
               )}
-              <TableHead className="text-xxs min-w-[120px]">
+              <TableHead className="min-w-[120px] text-xxs">
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title={t('Note')}
                 >
                   {t('Note')}
@@ -860,7 +884,7 @@ function App() {
               </TableHead>
               <TableHead>
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title="AGC"
                 >
                   AGC
@@ -868,7 +892,7 @@ function App() {
               </TableHead>
               <TableHead className="min-w-[100px]">
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title={`${t('Price of')} ${unit?.fuelType1?.name}`}
                 >
                   {t('Price of')} {unit?.fuelType1?.name}
@@ -877,7 +901,7 @@ function App() {
               {unit?.fuelType2 && (
                 <TableHead className="min-w-[100px]">
                   <span
-                    className="line-clamp-3 break-words overflow-hidden"
+                    className="line-clamp-3 overflow-hidden break-words"
                     title={`${t('Price of')} ${unit.fuelType2.name}`}
                   >
                     {t('Price of')} {unit.fuelType2.name}
@@ -886,23 +910,28 @@ function App() {
               )}
               <TableHead className="min-w-[150px]">
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title={`${t('Operation Type')} (Disponible a Despacho / Operación Obligada)`}
                 >
-                  {t('Operation Type')} (Disponible a Despacho / Operación Obligada)
+                  {t('Operation Type')} (Disponible a Despacho / Operación
+                  Obligada)
                 </span>
               </TableHead>
               <TableHead className="min-w-[350px]">
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
-                  title={t('Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)')}
+                  className="line-clamp-3 overflow-hidden break-words"
+                  title={t(
+                    'Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)',
+                  )}
                 >
-                  {t('Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)')}
+                  {t(
+                    'Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)',
+                  )}
                 </span>
               </TableHead>
               <TableHead>
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title={t('Last Update Date')}
                 >
                   {t('Last Update Date')}
@@ -910,7 +939,7 @@ function App() {
               </TableHead>
               <TableHead className="border-r">
                 <span
-                  className="line-clamp-3 break-words overflow-hidden"
+                  className="line-clamp-3 overflow-hidden break-words"
                   title={t('User')}
                 >
                   {t('User')}
@@ -918,365 +947,380 @@ function App() {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody
-            className="text-xxs"
-            key={`${market}-${unitId?.toString()}-${date?.toString()}`}
-          >
-            {date &&
-              availabilities &&
-              insumos &&
-              new Array(availabilities.dayDurations[date.toString()])
-                .fill(0)
-                .map((_, idx) => {
-                  const hour = idx + 1;
-                  const availability = availabilities.availabilities.find(
-                    (x) => x.hour === hour,
-                  );
+          {date && availabilities && insumos ? (
+            <TableBody
+              className="text-xxs"
+              key={`${market}-${unitId?.toString()}-${date?.toString()}`}
+            >
+              {date &&
+                availabilities &&
+                insumos &&
+                new Array(availabilities.dayDurations[date.toString()])
+                  .fill(0)
+                  .map((_, idx) => {
+                    const hour = idx + 1;
+                    const availability = availabilities.availabilities.find(
+                      (x) => x.hour === hour,
+                    );
 
-                  const insumo = insumos?.insumos.find((x) => x.hour === hour);
-                  return (
-                    <TableRow key={idx} className={
-                      cn(
-                        idx % 2 !== 0 ? 'bg-muted/50' : '',
-                        'hover:bg-blue-300/50'
-                      )
-                    }>
-                      <TableCell className="border-l bg-muted/50 tabular-nums">
-                        {hour}
-                      </TableCell>
-                      <TableCell className="bg-muted/50 tabular-nums">
-                        {idx.toString().padStart(2, '0') + ':00'} -{' '}
-                        {hour.toString().padStart(2, '0') + ':00'}
-                      </TableCell>
-                      {showFT1Columns && (
-                        <>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'fix-ft1fnc',
-                              availability?.fixedAvailability
-                                .fuelType1FixedNetCapacity,
-                            )}
-                          </TableCell>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'ft1nc',
-                              availability?.fuelType1NetCapacity,
-                            )}
-                          </TableCell>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'ft1anc',
-                              availability?.fuelType1AvailabilityNetCapacity,
-                            )}
-                          </TableCell>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'ft1cil',
-                              availability?.fuelType1Cil,
-                            )}
-                          </TableCell>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'ft1lie',
-                              availability?.fuelType1Lie,
-                            )}
-                          </TableCell>
-                        </>
-                      )}
-                      {showFT2Columns && unit?.fuelType2 && (
-                        <>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'ft2-fixed',
-                              availability?.fixedAvailability
-                                .fuelType2FixedNetCapacity,
-                            )}
-                          </TableCell>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'ft2-net',
-                              availability?.fuelType2NetCapacity,
-                            )}
-                          </TableCell>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'ft2-availability',
-                              availability?.fuelType2AvailabilityNetCapacity,
-                            )}
-                          </TableCell>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'ft2-cil',
-                              availability?.fuelType2Cil,
-                            )}
-                          </TableCell>
-                          <TableCell className="bg-muted/50">
-                            {renderCapacityCell(
-                              idx,
-                              'ft2-lie',
-                              availability?.fuelType2Lie,
-                            )}
-                          </TableCell>
-                        </>
-                      )}
-                      <TableCell className="bg-muted/50">
-                        {calcPreselection(availability) || ''}
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          id={`input-${idx}-${0}`}
-                          step=".01"
-                          defaultValue={insumo?.max}
-                          disabled={!isHourEditable(hour)}
-                          onKeyDown={(e) => handleKeyDown(e, idx, 0)}
-                          className={cn(
-                            isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('max') &&
-                            'border-red-500',
-                            isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
-                            isFlashingSuccess &&
-                            data?.updated[hour]?.includes('max') &&
-                            'border-blue-500',
-                            !isHourEditable(hour)
-                              ? 'cursor-not-allowed !bg-muted'
-                              : 'cursor-text',
-                            'transition-colors duration-300',
-                          )}
-                          name={`${hour}-max`}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          id={`input-${idx}-${1}`}
-                          step=".01"
-                          defaultValue={insumo?.min}
-                          disabled={!isHourEditable(hour)}
-                          onKeyDown={(e) => handleKeyDown(e, idx, 1)}
-                          className={cn(
-                            isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('min') &&
-                            'border-red-500',
-                            isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
-                            isFlashingSuccess &&
-                            data?.updated[hour]?.includes('min') &&
-                            'border-blue-500',
-                            !isHourEditable(hour) &&
-                            'cursor-not-allowed !bg-muted',
-                            'transition-colors duration-300',
-                          )}
-                          name={`${hour}-min`}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          id={`input-${idx}-${2}`}
-                          step=".01"
-                          disabled={!isHourEditable(hour)}
-                          className={cn(
-                            isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('share_ft1') &&
-                            'border-red-500',
-                            isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
-                            isFlashingSuccess &&
-                            data?.updated[hour]?.includes('share_ft1') &&
-                            'border-blue-500',
-                            !isHourEditable(hour) &&
-                            'cursor-not-allowed !bg-muted',
-                            'transition-colors duration-300',
-                          )}
-                          defaultValue={
-                            typeof insumo?.share_ft1 === 'number'
-                              ? insumo.share_ft1 * 100
-                              : undefined
-                          }
-                          onKeyDown={(e) => handleKeyDown(e, idx, 2)}
-                          name={`${hour}-share_ft1`}
-                        />
-                      </TableCell>
-                      {unit?.fuelType2 && (
+                    const insumo = insumos?.insumos.find(
+                      (x) => x.hour === hour,
+                    );
+                    return (
+                      <TableRow
+                        key={idx}
+                        className={cn(
+                          idx % 2 !== 0 ? 'bg-muted/50' : '',
+                          'hover:bg-blue-300/50',
+                        )}
+                      >
+                        <TableCell className="border-l bg-muted/50 tabular-nums">
+                          {hour}
+                        </TableCell>
+                        <TableCell className="bg-muted/50 tabular-nums">
+                          {idx.toString().padStart(2, '0') + ':00'} -{' '}
+                          {hour.toString().padStart(2, '0') + ':00'}
+                        </TableCell>
+                        {showFT1Columns && (
+                          <>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'fix-ft1fnc',
+                                availability?.fixedAvailability
+                                  .fuelType1FixedNetCapacity,
+                              )}
+                            </TableCell>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'ft1nc',
+                                availability?.fuelType1NetCapacity,
+                              )}
+                            </TableCell>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'ft1anc',
+                                availability?.fuelType1AvailabilityNetCapacity,
+                              )}
+                            </TableCell>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'ft1cil',
+                                availability?.fuelType1Cil,
+                              )}
+                            </TableCell>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'ft1lie',
+                                availability?.fuelType1Lie,
+                              )}
+                            </TableCell>
+                          </>
+                        )}
+                        {showFT2Columns && unit?.fuelType2 && (
+                          <>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'ft2-fixed',
+                                availability?.fixedAvailability
+                                  .fuelType2FixedNetCapacity,
+                              )}
+                            </TableCell>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'ft2-net',
+                                availability?.fuelType2NetCapacity,
+                              )}
+                            </TableCell>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'ft2-availability',
+                                availability?.fuelType2AvailabilityNetCapacity,
+                              )}
+                            </TableCell>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'ft2-cil',
+                                availability?.fuelType2Cil,
+                              )}
+                            </TableCell>
+                            <TableCell className="bg-muted/50">
+                              {renderCapacityCell(
+                                idx,
+                                'ft2-lie',
+                                availability?.fuelType2Lie,
+                              )}
+                            </TableCell>
+                          </>
+                        )}
+                        <TableCell className="bg-muted/50">
+                          {calcPreselection(availability) || ''}
+                        </TableCell>
                         <TableCell>
                           <Input
                             type="number"
-                            id={`input-${idx}-${3}`}
+                            id={`input-${idx}-${0}`}
+                            step=".01"
+                            defaultValue={insumo?.max}
+                            disabled={!isHourEditable(hour)}
+                            onKeyDown={(e) => handleKeyDown(e, idx, 0)}
+                            className={cn(
+                              isFlashingErrors &&
+                                errors[hour] &&
+                                errors[hour].includes('max') &&
+                                'border-red-500',
+                              isFlashingSuccess &&
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
+                              isFlashingSuccess &&
+                                data?.updated[hour]?.includes('max') &&
+                                'border-blue-500',
+                              !isHourEditable(hour)
+                                ? 'cursor-not-allowed !bg-muted'
+                                : 'cursor-text',
+                              'transition-colors duration-300',
+                            )}
+                            name={`${hour}-max`}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Input
+                            type="number"
+                            id={`input-${idx}-${1}`}
+                            step=".01"
+                            defaultValue={insumo?.min}
+                            disabled={!isHourEditable(hour)}
+                            onKeyDown={(e) => handleKeyDown(e, idx, 1)}
+                            className={cn(
+                              isFlashingErrors &&
+                                errors[hour] &&
+                                errors[hour].includes('min') &&
+                                'border-red-500',
+                              isFlashingSuccess &&
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
+                              isFlashingSuccess &&
+                                data?.updated[hour]?.includes('min') &&
+                                'border-blue-500',
+                              !isHourEditable(hour) &&
+                                'cursor-not-allowed !bg-muted',
+                              'transition-colors duration-300',
+                            )}
+                            name={`${hour}-min`}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Input
+                            type="number"
+                            id={`input-${idx}-${2}`}
                             step=".01"
                             disabled={!isHourEditable(hour)}
                             className={cn(
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('share_ft2') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('share_ft1') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('share_ft2') &&
-                              'border-blue-500',
+                                data?.updated[hour]?.includes('share_ft1') &&
+                                'border-blue-500',
                               !isHourEditable(hour) &&
-                              'cursor-not-allowed !bg-muted',
+                                'cursor-not-allowed !bg-muted',
                               'transition-colors duration-300',
                             )}
                             defaultValue={
-                              typeof insumo?.share_ft2 === 'number'
-                                ? insumo.share_ft2 * 100
+                              typeof insumo?.share_ft1 === 'number'
+                                ? insumo.share_ft1 * 100
                                 : undefined
                             }
-                            onKeyDown={(e) => handleKeyDown(e, idx, 3)}
-                            name={`${hour}-share_ft2`}
+                            onKeyDown={(e) => handleKeyDown(e, idx, 2)}
+                            name={`${hour}-share_ft1`}
                           />
                         </TableCell>
-                      )}
-                      <TableCell>
-                        <label className="hidden">Select note</label>
-                        <Select
-                          aria-labelledby="label"
-                          placeholder=""
-                          name={`${hour}-note`}
-                          defaultSelectedKey={insumo?.note}
-                          isDisabled={!isHourEditable(hour)}
-                        >
-                          <SelectTrigger
-                            id={`input-${idx}-${4}`}
-                            onKeyDown={(e) => handleKeyDown(e, idx, 4)}
-                            className={cn(
-                              'h-full px-2 py-0 transition-colors duration-300',
-                              isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('note') &&
-                              'border-red-500',
-                              isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
-                              isFlashingSuccess &&
-                              data?.updated[hour]?.includes('note') &&
-                              'border-blue-500',
-                              !isHourEditable(hour) &&
-                              'cursor-not-allowed !bg-muted',
-                              'transition-colors duration-300',
-                            )}
+                        {unit?.fuelType2 && (
+                          <TableCell>
+                            <Input
+                              type="number"
+                              id={`input-${idx}-${3}`}
+                              step=".01"
+                              disabled={!isHourEditable(hour)}
+                              className={cn(
+                                isFlashingErrors &&
+                                  errors[hour] &&
+                                  errors[hour].includes('share_ft2') &&
+                                  'border-red-500',
+                                isFlashingSuccess &&
+                                  data?.inserted.includes(hour) &&
+                                  'border-green-500',
+                                isFlashingSuccess &&
+                                  data?.updated[hour]?.includes('share_ft2') &&
+                                  'border-blue-500',
+                                !isHourEditable(hour) &&
+                                  'cursor-not-allowed !bg-muted',
+                                'transition-colors duration-300',
+                              )}
+                              defaultValue={
+                                typeof insumo?.share_ft2 === 'number'
+                                  ? insumo.share_ft2 * 100
+                                  : undefined
+                              }
+                              onKeyDown={(e) => handleKeyDown(e, idx, 3)}
+                              name={`${hour}-share_ft2`}
+                            />
+                          </TableCell>
+                        )}
+                        <TableCell>
+                          <label className="hidden">Select note</label>
+                          <Select
+                            aria-labelledby="label"
+                            placeholder=""
+                            name={`${hour}-note`}
+                            defaultSelectedKey={insumo?.note}
+                            isDisabled={!isHourEditable(hour)}
                           >
-                            <SelectValue className="text-xs" />
-                          </SelectTrigger>
-                          <SelectPopover>
-                            <SelectListBox>
-                              {noteEnumValues.map((n) => (
-                                <SelectItem key={n} id={n}>
-                                  {n}
-                                </SelectItem>
-                              ))}
-                            </SelectListBox>
-                          </SelectPopover>
-                        </Select>
-                      </TableCell>
-                      <TableCell className="flex justify-center">
-                        <Checkbox
-                          id={`input-${idx}-${5}`}
-                          defaultChecked={insumo?.agc}
-                          name={`${hour}-agc`}
-                          disabled={!isHourEditable(hour)}
-                          onKeyDown={(e) =>
-                            handleKeyDown(
-                              e as React.KeyboardEvent<HTMLInputElement>,
-                              idx,
-                              5,
-                            )
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          id={`input-${idx}-${6}`}
-                          step=".01"
-                          defaultValue={insumo?.price_ft1}
-                          disabled={!isHourEditable(hour)}
-                          onKeyDown={(e) => handleKeyDown(e, idx, 6)}
-                          className={cn(
-                            isFlashingErrors &&
-                            errors[hour] &&
-                            errors[hour].includes('price_ft1') &&
-                            'border-red-500',
-                            isFlashingSuccess &&
-                            data?.inserted.includes(hour) &&
-                            'border-green-500',
-                            isFlashingSuccess &&
-                            data?.updated[hour]?.includes('price_ft1') &&
-                            'border-blue-500',
-                            !isHourEditable(hour) &&
-                            'cursor-not-allowed !bg-muted',
-                            'transition-colors duration-300',
-                          )}
-                          name={`${hour}-price_ft1`}
-                        />
-                      </TableCell>
-                      {unit?.fuelType2 && (
+                            <SelectTrigger
+                              id={`input-${idx}-${4}`}
+                              onKeyDown={(e) => handleKeyDown(e, idx, 4)}
+                              className={cn(
+                                'h-full px-2 py-0 transition-colors duration-300',
+                                isFlashingErrors &&
+                                  errors[hour] &&
+                                  errors[hour].includes('note') &&
+                                  'border-red-500',
+                                isFlashingSuccess &&
+                                  data?.inserted.includes(hour) &&
+                                  'border-green-500',
+                                isFlashingSuccess &&
+                                  data?.updated[hour]?.includes('note') &&
+                                  'border-blue-500',
+                                !isHourEditable(hour) &&
+                                  'cursor-not-allowed !bg-muted',
+                                'transition-colors duration-300',
+                              )}
+                            >
+                              <SelectValue className="text-xs" />
+                            </SelectTrigger>
+                            <SelectPopover>
+                              <SelectListBox>
+                                {noteEnumValues.map((n) => (
+                                  <SelectItem key={n} id={n}>
+                                    {n}
+                                  </SelectItem>
+                                ))}
+                              </SelectListBox>
+                            </SelectPopover>
+                          </Select>
+                        </TableCell>
+                        <TableCell className="flex justify-center">
+                          <Checkbox
+                            id={`input-${idx}-${5}`}
+                            defaultChecked={insumo?.agc}
+                            name={`${hour}-agc`}
+                            disabled={!isHourEditable(hour)}
+                            onKeyDown={(e) =>
+                              handleKeyDown(
+                                e as React.KeyboardEvent<HTMLInputElement>,
+                                idx,
+                                5,
+                              )
+                            }
+                          />
+                        </TableCell>
                         <TableCell>
                           <Input
                             type="number"
-                            id={`input-${idx}-${7}`}
+                            id={`input-${idx}-${6}`}
                             step=".01"
-                            defaultValue={insumo?.price_ft2}
+                            defaultValue={insumo?.price_ft1}
                             disabled={!isHourEditable(hour)}
-                            onKeyDown={(e) => handleKeyDown(e, idx, 7)}
+                            onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                             className={cn(
                               isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('price_ft2') &&
-                              'border-red-500',
+                                errors[hour] &&
+                                errors[hour].includes('price_ft1') &&
+                                'border-red-500',
                               isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                                data?.inserted.includes(hour) &&
+                                'border-green-500',
                               isFlashingSuccess &&
-                              data?.updated[hour]?.includes('price_ft2') &&
-                              'border-blue-500',
+                                data?.updated[hour]?.includes('price_ft1') &&
+                                'border-blue-500',
                               !isHourEditable(hour) &&
-                              'cursor-not-allowed !bg-muted',
+                                'cursor-not-allowed !bg-muted',
                               'transition-colors duration-300',
-                              'control',
                             )}
-                            name={`${hour}-price_ft2`}
+                            name={`${hour}-price_ft1`}
                           />
                         </TableCell>
-                      )}
-                      <TableCell className="bg-muted/50">
-                        {availability?.operationType}
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {availability?.comments}
-                      </TableCell>
-                      <TableCell className="bg-muted/50">
-                        {insumo &&
-                          new Date(insumo.updated_at).toLocaleDateString(
-                            'es-MX',
-                          )}
-                      </TableCell>
-                      <TableCell className="border-r bg-muted/50">
-                        {insumo && 'hi@cueva.io'}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-          </TableBody>
+                        {unit?.fuelType2 && (
+                          <TableCell>
+                            <Input
+                              type="number"
+                              id={`input-${idx}-${7}`}
+                              step=".01"
+                              defaultValue={insumo?.price_ft2}
+                              disabled={!isHourEditable(hour)}
+                              onKeyDown={(e) => handleKeyDown(e, idx, 7)}
+                              className={cn(
+                                isFlashingErrors &&
+                                  errors[hour] &&
+                                  errors[hour].includes('price_ft2') &&
+                                  'border-red-500',
+                                isFlashingSuccess &&
+                                  data?.inserted.includes(hour) &&
+                                  'border-green-500',
+                                isFlashingSuccess &&
+                                  data?.updated[hour]?.includes('price_ft2') &&
+                                  'border-blue-500',
+                                !isHourEditable(hour) &&
+                                  'cursor-not-allowed !bg-muted',
+                                'transition-colors duration-300',
+                                'control',
+                              )}
+                              name={`${hour}-price_ft2`}
+                            />
+                          </TableCell>
+                        )}
+                        <TableCell className="bg-muted/50">
+                          {availability?.operationType}
+                        </TableCell>
+                        <TableCell className="bg-muted/50">
+                          {availability?.comments}
+                        </TableCell>
+                        <TableCell className="bg-muted/50">
+                          {insumo &&
+                            new Date(insumo.updated_at).toLocaleDateString(
+                              'es-MX',
+                            )}
+                        </TableCell>
+                        <TableCell className="border-r bg-muted/50">
+                          {insumo && 'hi@cueva.io'}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              <TableRow />
+            </TableBody>
+          ) : (
+            <AvailabilitiesTableBody
+              key={`${market}-${unitId?.toString()}-${date?.toString()}`}
+              rows={24}
+              unit={unit}
+              showFT1Columns={showFT1Columns}
+              showFT2Columns={showFT2Columns}
+              isSkeleton={true}
+            />
+          )}
         </Table>
         <p className="my-1 text-center text-xs text-muted-foreground">
           {t('All dates are displayed in timezone')} {unit?.timeZone}

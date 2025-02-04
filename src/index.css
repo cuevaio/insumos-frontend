@@ -88,24 +88,34 @@ input[type='number'] {
 }
 
 table {
-  th:not(:first-child) {
-    position: relative;
+  > thead {
+    th:not(:first-child) {
+      position: relative;
 
-    &::before,
-    &::after {
-      content: '';
-      inline-size: 1px;
-      block-size: 25%;
-      position: absolute;
-      top: 0;
-      left: -1px;
-      background: hsl(var(--muted));
+      &::before,
+      &::after {
+        content: '';
+        inline-size: 1px;
+        block-size: 25%;
+        position: absolute;
+        top: 0;
+        left: -1px;
+        background: hsl(var(--muted));
+      }
+
+      &::after {
+        top: unset;
+        bottom: 0;
+        left: -1px;
+      }
     }
+  }
 
-    &::after {
-      top: unset;
-      bottom: 0;
-      left: -1px;
+  > tbody {
+    &.emptyTableBody {
+      > tr {
+        block-size: 21px;
+      }
     }
   }
 }
