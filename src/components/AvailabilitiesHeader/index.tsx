@@ -38,9 +38,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { AvailabilityRecord } from '@/hooks/useAvailabilities';
-import { Insumo } from '@/hooks/useInsumos';
-import { Unit, UnitWithFuelType } from '@/hooks/useUnits';
+import { UnitWithFuelType } from '@/hooks/useUnits';
 
 import type { Market } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -48,7 +46,7 @@ import { cn } from '@/lib/utils';
 interface AvailabilitiesHeaderProps {
   showColumns: boolean;
   units: any[] | undefined;
-  unit: Unit | undefined;
+  unit: UnitWithFuelType | undefined;
   unitId: Key | undefined;
   date: CalendarDate | null;
   setDate: Dispatch<SetStateAction<CalendarDate | null>>;
