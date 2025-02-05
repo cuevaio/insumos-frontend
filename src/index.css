@@ -113,8 +113,8 @@ table {
 
   > tbody {
     &.emptyTableBody {
-      > tr {
-        block-size: 21px;
+      > tr:not(:last-of-type) {
+        block-size: 20.4px;
       }
     }
   }
