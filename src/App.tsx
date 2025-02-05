@@ -1,38 +1,19 @@
 import React from 'react';
 
-import { CalendarDate, parseDate } from '@internationalized/date';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import { type Key } from 'react-aria-components';
+import {
+  useDate,
+  useMarket,
+  useShowFT1Columns,
+  useShowFT2Columns,
+  useUnit,
+} from '@/contexts/AppContext';
+import { CalendarDate } from '@internationalized/date';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { useLocalStorage } from 'usehooks-ts';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
-import { DatePicker } from '@/components/ui/date-picker';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Label } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import {
   Select,
   SelectItem,
@@ -56,13 +37,14 @@ import {
   useAvailabilities,
 } from '@/hooks/useAvailabilities';
 import { useInsumos } from '@/hooks/useInsumos';
-import { useUnits } from '@/hooks/useUnits';
 import { useUpsertInsumos } from '@/hooks/useUpsertInsumos';
 
 import { noteEnumValues, prices } from '@/lib/constants';
 import { InsumoSchema } from '@/lib/schemas';
-import type { InsumoInsert, Market } from '@/lib/types';
+import type { InsumoInsert } from '@/lib/types';
 import { cn } from '@/lib/utils';
+
+import { Filters } from './components/Filters';
 
 function App() {
   const {
@@ -70,66 +52,38 @@ function App() {
     i18n: { language, changeLanguage },
   } = useTranslation();
 
-  const { data: units } = useUnits();
+  const { value: unit } = useUnit();
+  const { value: date } = useDate();
+  const { value: market } = useMarket();
 
-  const [unitId, setUnitId] = React.useState<Key>();
-  const [date, setDate] = React.useState<CalendarDate | null>(null);
-  const [market, setMarket] = React.useState<Market | null>(null);
-  const [open, setOpen] = React.useState(false);
   const [errors, setErrors] = React.useState<{
     [key: string]: (keyof InsumoInsert)[];
   }>({});
   const [isFlashingErrors, setIsFlashingErrors] = React.useState(false);
   const [isFlashingSuccess, setIsFlashingSuccess] = React.useState(false);
 
-  const [showFT1Columns, setShowFT1Columns] = useLocalStorage(
-    'show_ft_1',
-    false,
-  );
-  const [showFT2Columns, setShowFT2Columns] = useLocalStorage(
-    'show_ft_2',
-    false,
-  );
+  const { value: showFT1Columns } = useShowFT1Columns();
+  const { value: showFT2Columns } = useShowFT2Columns();
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
-  const unit = React.useMemo(
-    () => units?.find((u) => u.id === unitId),
-    [unitId, units],
-  );
+  const { data: availabilities } = useAvailabilities({
+    unitId: unit?.id?.toString(),
+    date: date?.toString(),
+    market,
+  });
 
-  React.useEffect(() => {
-    if (!unitId) {
-      const lsUnitId = localStorage.getItem('unit_id');
-      if (lsUnitId) {
-        setUnitId(lsUnitId);
-      }
-    } else {
-      localStorage.setItem('unit_id', unitId.toString());
-    }
-  }, [unitId, setUnitId]);
+  const { data: insumos } = useInsumos({
+    date: date?.toString(),
+    unitId: unit?.id?.toString(),
+    market,
+  });
 
-  React.useEffect(() => {
-    if (!date) {
-      const lsDate = localStorage.getItem('date');
-      if (lsDate) {
-        setDate(parseDate(lsDate));
-      }
-    } else {
-      localStorage.setItem('date', date.toString());
-    }
-  }, [date, setDate]);
-
-  React.useEffect(() => {
-    if (!market) {
-      const lsMarket = localStorage.getItem('market');
-      if (lsMarket) {
-        setMarket(lsMarket as Market);
-      }
-    } else {
-      localStorage.setItem('market', market);
-    }
-  }, [market, setMarket]);
+  const { mutate, data, isSuccess, isPending } = useUpsertInsumos({
+    unitId: unit?.id?.toString(),
+    date: date?.toString(),
+    market,
+  });
 
   React.useEffect(() => {
     if (Object.keys(errors).length) {
@@ -140,24 +94,6 @@ function App() {
       }, 3000);
     }
   }, [errors, t]);
-
-  const { data: availabilities } = useAvailabilities({
-    unitId: unitId?.toString(),
-    date: date?.toString(),
-    market,
-  });
-
-  const { data: insumos } = useInsumos({
-    date: date?.toString(),
-    unitId: unitId?.toString(),
-    market,
-  });
-
-  const { mutate, data, isSuccess, isPending } = useUpsertInsumos({
-    unitId: unitId?.toString(),
-    date: date?.toString(),
-    market,
-  });
 
   React.useEffect(() => {
     if (!isPending) {
@@ -431,7 +367,7 @@ function App() {
     }
 
     // CASE 1
-    if (unit?.fuelType2) {
+    if (unit?.fuelType2ID) {
       if (
         typeof availability.fuelType2AvailabilityNetCapacity === 'number' &&
         availability.fuelType2AvailabilityNetCapacity > 0 &&
@@ -508,118 +444,7 @@ function App() {
 
   return (
     <div className="container mx-auto flex w-full flex-col flex-wrap gap-4">
-      <div className="flex w-full items-end justify-between">
-        <div className="flex gap-4">
-          <DatePicker
-            label={t('Date')}
-            value={date}
-            onChange={(value) => setDate(value)}
-          />
-          <div className="flex flex-col justify-end gap-1">
-            <Label>{t('Unit')}</Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="h-10 w-[200px] justify-between text-xs"
-                >
-                  {unitId
-                    ? units?.find((unit) => unit.id === unitId)?.name
-                    : t('Select a unit')}
-                  <ChevronsUpDown className="opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                <Command>
-                  <CommandInput
-                    placeholder={t('Select a unit')}
-                    className="h-9 text-xs"
-                  />
-                  <CommandList>
-                    <CommandEmpty>No unit found.</CommandEmpty>
-                    <CommandGroup>
-                      {units?.map((unit) => (
-                        <CommandItem
-                          key={unit.id}
-                          className="text-xs"
-                          value={unit.name}
-                          onSelect={(currentValue) => {
-                            const unitId = units?.find(
-                              (unit) => unit.name === currentValue,
-                            )?.id;
-                            setUnitId(unitId);
-                            setOpen(false);
-                          }}
-                        >
-                          {unit.name}
-                          <Check
-                            className={cn(
-                              'ml-auto',
-                              unitId === unit.id ? 'opacity-100' : 'opacity-0',
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </div>
-          <Select
-            className="w-[200px]"
-            placeholder={t('Select a market')}
-            selectedKey={market}
-            onSelectionChange={(selected) =>
-              setMarket(selected.toString() as Market)
-            }
-          >
-            <Label>{t('Market')}</Label>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectPopover>
-              <SelectListBox>
-                <SelectItem id="MDA">MDA</SelectItem>
-                <SelectItem id="MTR">MTR</SelectItem>
-              </SelectListBox>
-            </SelectPopover>
-          </Select>
-        </div>
-        <div className="flex gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="text-xs" variant="outline">
-                {t('Columns')}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel className="text-xs">
-                {t('Columns')}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuCheckboxItem
-                className="text-xs"
-                checked={showFT1Columns}
-                onCheckedChange={setShowFT1Columns}
-              >
-                {unit?.fuelType1?.name.toUpperCase()}
-              </DropdownMenuCheckboxItem>
-              {unit?.fuelType2 && (
-                <DropdownMenuCheckboxItem
-                  className="text-xs"
-                  checked={showFT2Columns}
-                  onCheckedChange={setShowFT2Columns}
-                >
-                  {unit.fuelType2.name.toUpperCase()}
-                </DropdownMenuCheckboxItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+      <Filters />
       <form
         className="w-full"
         ref={formRef}
@@ -801,7 +626,7 @@ function App() {
           </TableHeader>
           <TableBody
             className="text-xs"
-            key={`${market}-${unitId?.toString()}-${date?.toString()}`}
+            key={`${market}-${unit?.id?.toString()}-${date?.toString()}`}
           >
             {date &&
               availabilities &&

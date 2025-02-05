@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { DEV } from '@/lib/constants';
 import { CPPAPIResponse } from '@/lib/types';
 
-import { useFuelTypes } from './useFuelTypes';
+import { FuelType, useFuelTypes } from './useFuelTypes';
 
 export interface Unit {
   id: string;
@@ -26,7 +26,10 @@ export interface Unit {
     modifiedBy: string;
     modifiedOn: string;
   } | null;
+  fuelType1?: FuelType;
+  fuelType2?: FuelType;
 }
+
 
 export function useUnits() {
   const authToken = useAuth();
