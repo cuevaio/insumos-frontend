@@ -8,7 +8,7 @@ import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AvailabilitiesTableBody from '@/components/AvailabilitiesTableBody';
 
 import { AvailabilitiesQueryResponse } from '@/hooks/useAvailabilities';
-import { UnitWithFuelType, useUnits } from '@/hooks/useUnits';
+import { type UnitWithFuelType, useUnits } from '@/hooks/useUnits';
 
 interface AvailabilitiesTableProps {
   unitId: Key | undefined;

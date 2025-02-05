@@ -26,7 +26,7 @@ import {
   AvailabilityRecord,
 } from '@/hooks/useAvailabilities';
 import { Insumo } from '@/hooks/useInsumos';
-import { UnitWithFuelType } from '@/hooks/useUnits';
+import { type UnitWithFuelType } from '@/hooks/useUnits';
 
 import { noteEnumValues } from '@/lib/constants';
 import { cn } from '@/lib/utils';
