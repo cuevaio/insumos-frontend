@@ -94,7 +94,7 @@ const ExportAvailabilitiesButton = () => {
 
   return (
     <Button
-      className="text-xs"
+      className="text-xs h-6"
       variant="outline"
       onClick={() => {
         mutate();

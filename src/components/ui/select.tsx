@@ -42,7 +42,7 @@ const SelectValue = <T extends object>({
   <AriaSelectValue
     className={composeRenderProps(className, (className) =>
       cn(
-        'line-clamp-1 text-xs data-[placeholder]:text-muted-foreground',
+        'line-clamp-3 text-xxs data-[placeholder]:text-muted-foreground',
         /* Description */
         '[&>[slot=description]]:hidden',
         className,
@@ -56,7 +56,7 @@ const SelectTrigger = ({ className, children, ...props }: AriaButtonProps) => (
   <AriaButton
     className={composeRenderProps(className, (className) =>
       cn(
-        'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background',
+        'flex h-6 w-full items-center justify-between rounded-md border border-input bg-background px-2 py-0 text-sm ring-offset-background',
         /* Disabled */
         'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
         /* Focused */

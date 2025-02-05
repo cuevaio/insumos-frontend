@@ -15,12 +15,12 @@
     "Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)": "Comentarios (Precisiones, No. de Licencias, condiciones de AGC, Etc.)",
     "Last Update Date": "Fecha última actualización",
     "User": "Usuario",
-    "Corrected Net Capacity at Summer Design Conditions (Contractual) MW": "Capacidad Neta Corregida a Condiciones de Diseño de Verano (Contractual) MW",
-    "Net Capacity at Real Ambient Conditions": "Capacidad Neta Expresada a Condiciones Ambientales Reales MW",
-    "Net Capacity Considering Available Gas": "Capacidad Neta Expresada a Condiciones Ambientales Reales Considerando Cantidad de Gas Disponible",
-    "Legacy Interconnection Contract Capacity (LIC) MW": "Capacidad Neta del Contrato de Interconexión Legado (CIL) MW",
-    "Net Capacity with LIE Contract MW": "Capacidad Neta con Contrato Tipo LIE MW",
-    "Net Capacity Considering Available Diesel MW": "Capacidad Neta Expresada a Condiciones Ambientales Reales Considerando Cantidad de Diesel Disponible MW",
+    "Corrected to Summer Design Conditions (Contractual) MW": "Corregida a Condiciones de Diseño de Verano (Contractual) MW",
+    "Real Environment Conditions MW": "Condiciones Ambientales Reales MW",
+    "Real Environment Conditions Considering Available Amount MW": "Condiciones Ambientales Reales Considerando Cantidad Disponible MW",
+    "From Legacy Interconnection Contract (CIL) MW": "Del Contrato de Interconexión Legado (CIL) MW",
+    "Under LIE Type Contract MW": "Con Contrato Tipo LIE MW",
+    "Considering Available Diesel MW": "Condiciones Ambientales Reales Considerando Cantidad de Diesel Disponible MW",
     "Price of": "Precio de",
     "Columns": "Columnas",
     "Export": "Exportar",
@@ -35,6 +35,7 @@
     "Transmission Rate": "Tarifa de Transmisión",
     "Operation Rate": "Tarifa de Operación",
     "Note: The information in the pre-selection column is only a suggestion of a possible scenario based on information sent by the external client.": "Nota: La información de la columna de pre-selección solo es una sugerencia de un posible escenario basado en la información enviada por el cliente externo.",
-    "Cannot edit dates more than 2 days in the past": "No se pueden editar fechas anteriores a 2 días"
+    "Cannot edit dates more than 2 days in the past": "No se pueden editar fechas anteriores a 2 días",
+    "Declared Net Capacity of the plant or package": "Capacidad Neta Declarada de la central o paquete"
   }
 }

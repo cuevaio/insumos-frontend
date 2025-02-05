@@ -64,7 +64,7 @@ export const Filters = () => {
 
   return (
     <div className="flex w-full items-end justify-between">
-      <div className="flex gap-4">
+      <div className="flex gap-2">
         <DatePicker
           label={t('Date')}
           value={date}
@@ -78,17 +78,17 @@ export const Filters = () => {
                 variant="outline"
                 role="combobox"
                 aria-expanded={open}
-                className="h-10 w-[200px] justify-between text-xs"
+                className="text-xxs h-6 w-[200px] justify-between px-2 py-0"
               >
                 {unit?.name ? unit.name : t('Select a unit')}
-                <ChevronsUpDown className="opacity-50" />
+                <ChevronsUpDown className="size-3 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
               <Command>
                 <CommandInput
                   placeholder={t('Select a unit')}
-                  className="h-9 text-xs"
+                  className="text-xxs h-9"
                 />
                 <CommandList>
                   <CommandEmpty>No unit found.</CommandEmpty>
@@ -96,7 +96,7 @@ export const Filters = () => {
                     {units?.map((u) => (
                       <CommandItem
                         key={u.id}
-                        className="text-xs"
+                        className="text-xxs"
                         value={u.name}
                         onSelect={(currentValue) => {
                           const unitId = units?.find(
@@ -107,11 +107,10 @@ export const Filters = () => {
                         }}
                       >
                         {u.name}
-
                         <Check
                           className={cn(
                             'ml-auto',
-                            unit?.id === u.id ? 'opacity-100' : 'opacity-0',
+                            u.id === unit?.id ? 'opacity-100' : 'opacity-0',
                           )}
                         />
                       </CommandItem>
@@ -145,7 +144,7 @@ export const Filters = () => {
       <div className="flex gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="text-xs" variant="outline">
+            <Button className="h-6 text-xs" variant="outline">
               {t('Columns')}
             </Button>
           </DropdownMenuTrigger>
