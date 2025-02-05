@@ -507,9 +507,9 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto flex w-full flex-col flex-wrap gap-4">
+    <div className="container mx-auto flex w-full flex-col flex-wrap gap-1">
       <div className="flex w-full items-end justify-between">
-        <div className="flex gap-4">
+        <div className="flex gap-1">
           <DatePicker
             label={t('Date')}
             value={date}
@@ -523,19 +523,19 @@ function App() {
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className="h-10 w-[200px] justify-between text-xs"
+                  className="h-6 w-[200px] justify-between text-xxs px-2 py-0"
                 >
                   {unitId
                     ? units?.find((unit) => unit.id === unitId)?.name
                     : t('Select a unit')}
-                  <ChevronsUpDown className="opacity-50" />
+                  <ChevronsUpDown className="opacity-50 size-3" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0">
                 <Command>
                   <CommandInput
                     placeholder={t('Select a unit')}
-                    className="h-9 text-xs"
+                    className="h-9 text-xxs"
                   />
                   <CommandList>
                     <CommandEmpty>No unit found.</CommandEmpty>
@@ -543,7 +543,7 @@ function App() {
                       {units?.map((unit) => (
                         <CommandItem
                           key={unit.id}
-                          className="text-xs"
+                          className="text-xxs"
                           value={unit.name}
                           onSelect={(currentValue) => {
                             const unitId = units?.find(
@@ -591,7 +591,7 @@ function App() {
         <div className="flex gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="text-xs" variant="outline">
+              <Button className="text-xs h-6" variant="outline">
                 {t('Columns')}
               </Button>
             </DropdownMenuTrigger>
@@ -697,110 +697,229 @@ function App() {
         <Table>
           <TableHeader>
             {(showFT1Columns || (showFT2Columns && unit?.fuelType2)) && (
-              <>
-                <TableRow className="text-xs">
-                  <TableHead
-                    colSpan={2}
-                    className="border-l border-t"
-                  ></TableHead>
-                  {showFT1Columns && (
-                    <TableHead colSpan={5} className="border-x border-t">
-                      {unit?.fuelType1?.name.toUpperCase()}
-                    </TableHead>
-                  )}
-                  {showFT2Columns && unit?.fuelType2 && (
-                    <TableHead colSpan={5} className="border-x border-t">
-                      {unit?.fuelType2?.name.toUpperCase()}
-                    </TableHead>
-                  )}
-                  <TableHead
-                    colSpan={13}
-                    className="border-r border-t"
-                  ></TableHead>
-                </TableRow>
-              </>
+              <TableRow className="text-xxs">
+                <TableHead
+                  colSpan={2}
+                  className="border-l border-t"
+                ></TableHead>
+                {showFT1Columns && (
+                  <TableHead colSpan={5} className="border-x border-t">
+                    {unit?.fuelType1?.name.toUpperCase()}
+                  </TableHead>
+                )}
+                {showFT2Columns && unit?.fuelType2 && (
+                  <TableHead colSpan={5} className="border-x border-t">
+                    {unit?.fuelType2?.name.toUpperCase()}
+                  </TableHead>
+                )}
+                <TableHead
+                  colSpan={13}
+                  className="border-r border-t"
+                ></TableHead>
+              </TableRow>
             )}
-            <TableRow className="border-t text-[0.7rem] leading-[0.75rem]">
+            <TableRow className="border-t text-xxs leading-[0.75rem]">
               <TableHead className="border-l">{t('Hour')}</TableHead>
               <TableHead className="min-w-[100px]">{t('Schedule')}</TableHead>
               {showFT1Columns && (
                 <>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t(
-                      'Corrected Net Capacity at Summer Design Conditions (Contractual) MW',
-                    )}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                    >
+                      {t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                    </span>
                   </TableHead>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t('Net Capacity at Real Ambient Conditions')}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Net Capacity at Real Ambient Conditions')}
+                    >
+                      {t('Net Capacity at Real Ambient Conditions')}
+                    </span>
                   </TableHead>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t('Net Capacity Considering Available Gas')}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Net Capacity Considering Available Gas')}>
+                      {t('Net Capacity Considering Available Gas')}
+                    </span>
                   </TableHead>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                    >
+                      {t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                    </span>
                   </TableHead>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t('Net Capacity with LIE Contract MW')}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Net Capacity with LIE Contract MW')}
+                    >
+                      {t('Net Capacity with LIE Contract MW')}
+                    </span>
                   </TableHead>
                 </>
               )}
               {showFT2Columns && unit?.fuelType2 && (
                 <>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t(
-                      'Corrected Net Capacity at Summer Design Conditions (Contractual) MW',
-                    )}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                    >
+                      {t('Corrected Net Capacity at Summer Design Conditions (Contractual) MW')}
+                    </span>
                   </TableHead>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t('Net Capacity at Real Ambient Conditions')}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Net Capacity at Real Ambient Conditions')}
+                    >
+                      {t('Net Capacity at Real Ambient Conditions')}
+                    </span>
                   </TableHead>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t('Net Capacity Considering Available Diesel MW')}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Net Capacity Considering Available Diesel MW')}
+                    >
+                      {t('Net Capacity Considering Available Diesel MW')}
+                    </span>
                   </TableHead>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                    >
+                      {t('Legacy Interconnection Contract Capacity (LIC) MW')}
+                    </span>
                   </TableHead>
-                  <TableHead className="min-w-[120px] border-l">
-                    {t('Net Capacity with LIE Contract MW')}
+                  <TableHead className="text-xxs min-w-[192px] border-l">
+                    <span
+                      className="line-clamp-2 break-words overflow-hidden"
+                      title={t('Net Capacity with LIE Contract MW')}
+                    >
+                      {t('Net Capacity with LIE Contract MW')}
+                    </span>
                   </TableHead>
                 </>
               )}
-              <TableHead className="border-l">{t('Pre-Selection')}</TableHead>
-              <TableHead>{t('Maximum Offer Availability')}</TableHead>
-              <TableHead>{t('Minimum Offer Availability')}</TableHead>
+              <TableHead className="border-l">
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={t('Pre-Selection')}
+                >
+                  {t('Pre-Selection')}
+                </span>
+              </TableHead>
+              <TableHead>
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={t('Maximum Offer Availability')}
+                >
+                  {t('Maximum Offer Availability')}
+                </span>
+              </TableHead>
+              <TableHead>
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={t('Minimum Offer Availability')}
+                >
+                  {t('Minimum Offer Availability')}
+                </span>
+              </TableHead>
               <TableHead className="min-w-[70px]">
-                % {unit?.fuelType1?.name}
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={`% ${unit?.fuelType1?.name}`}
+                >
+                  % {unit?.fuelType1?.name}
+                </span>
               </TableHead>
               {unit?.fuelType2 && (
                 <TableHead className="min-w-[70px]">
-                  % {unit.fuelType2.name}
+                  <span
+                    className="line-clamp-2 break-words overflow-hidden"
+                    title={`% ${unit.fuelType2.name}`}
+                  >
+                    % {unit.fuelType2.name}
+                  </span>
                 </TableHead>
               )}
-              <TableHead className="min-w-[120px]">{t('Note')}</TableHead>
-              <TableHead>AGC</TableHead>
+              <TableHead className="text-xxs min-w-[192px]">
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={t('Note')}
+                >
+                  {t('Note')}
+                </span>
+              </TableHead>
+              <TableHead>
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title="AGC"
+                >
+                  AGC
+                </span>
+              </TableHead>
               <TableHead className="min-w-[100px]">
-                {t('Price of')} {unit?.fuelType1?.name}
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={`${t('Price of')} ${unit?.fuelType1?.name}`}
+                >
+                  {t('Price of')} {unit?.fuelType1?.name}
+                </span>
               </TableHead>
               {unit?.fuelType2 && (
                 <TableHead className="min-w-[100px]">
-                  {t('Price of')} {unit.fuelType2.name}
+                  <span
+                    className="line-clamp-2 break-words overflow-hidden"
+                    title={`${t('Price of')} ${unit.fuelType2.name}`}
+                  >
+                    {t('Price of')} {unit.fuelType2.name}
+                  </span>
                 </TableHead>
               )}
               <TableHead className="min-w-[150px]">
-                {t('Operation Type')} (Disponible a Despacho / Operación
-                Obligada)
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={`${t('Operation Type')} (Disponible a Despacho / Operación Obligada)`}
+                >
+                  {t('Operation Type')} (Disponible a Despacho / Operación Obligada)
+                </span>
               </TableHead>
               <TableHead className="min-w-[350px]">
-                {t(
-                  'Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)',
-                )}
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={t('Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)')}
+                >
+                  {t('Comments (Specifications, Number of Licenses, AGC Conditions, Etc.)')}
+                </span>
               </TableHead>
-              <TableHead>{t('Last Update Date')}</TableHead>
-              <TableHead className="border-r">{t('User')}</TableHead>
+              <TableHead>
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={t('Last Update Date')}
+                >
+                  {t('Last Update Date')}
+                </span>
+              </TableHead>
+              <TableHead className="border-r">
+                <span
+                  className="line-clamp-2 break-words overflow-hidden"
+                  title={t('User')}
+                >
+                  {t('User')}
+                </span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody
-            className="text-xs"
+            className="text-xxs"
             key={`${market}-${unitId?.toString()}-${date?.toString()}`}
           >
             {date &&
@@ -917,15 +1036,15 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 0)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('max') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('max') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('max') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('max') &&
+                            'border-blue-500',
                             !isHourEditable(hour)
                               ? 'cursor-not-allowed !bg-muted'
                               : 'cursor-text',
@@ -944,17 +1063,17 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 1)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('min') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('min') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('min') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('min') &&
+                            'border-blue-500',
                             !isHourEditable(hour) &&
-                              'cursor-not-allowed !bg-muted',
+                            'cursor-not-allowed !bg-muted',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-min`}
@@ -968,17 +1087,17 @@ function App() {
                           disabled={!isHourEditable(hour)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('share_ft1') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('share_ft1') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('share_ft1') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('share_ft1') &&
+                            'border-blue-500',
                             !isHourEditable(hour) &&
-                              'cursor-not-allowed !bg-muted',
+                            'cursor-not-allowed !bg-muted',
                             'transition-colors duration-300',
                           )}
                           defaultValue={
@@ -999,17 +1118,17 @@ function App() {
                             disabled={!isHourEditable(hour)}
                             className={cn(
                               isFlashingErrors &&
-                                errors[hour] &&
-                                errors[hour].includes('share_ft2') &&
-                                'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('share_ft2') &&
+                              'border-red-500',
                               isFlashingSuccess &&
-                                data?.inserted.includes(hour) &&
-                                'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                               isFlashingSuccess &&
-                                data?.updated[hour]?.includes('share_ft2') &&
-                                'border-blue-500',
+                              data?.updated[hour]?.includes('share_ft2') &&
+                              'border-blue-500',
                               !isHourEditable(hour) &&
-                                'cursor-not-allowed !bg-muted',
+                              'cursor-not-allowed !bg-muted',
                               'transition-colors duration-300',
                             )}
                             defaultValue={
@@ -1037,17 +1156,17 @@ function App() {
                             className={cn(
                               'h-full px-2 py-0 transition-colors duration-300',
                               isFlashingErrors &&
-                                errors[hour] &&
-                                errors[hour].includes('note') &&
-                                'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('note') &&
+                              'border-red-500',
                               isFlashingSuccess &&
-                                data?.inserted.includes(hour) &&
-                                'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                               isFlashingSuccess &&
-                                data?.updated[hour]?.includes('note') &&
-                                'border-blue-500',
+                              data?.updated[hour]?.includes('note') &&
+                              'border-blue-500',
                               !isHourEditable(hour) &&
-                                'cursor-not-allowed !bg-muted',
+                              'cursor-not-allowed !bg-muted',
                               'transition-colors duration-300',
                             )}
                           >
@@ -1089,17 +1208,17 @@ function App() {
                           onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                           className={cn(
                             isFlashingErrors &&
-                              errors[hour] &&
-                              errors[hour].includes('price_ft1') &&
-                              'border-red-500',
+                            errors[hour] &&
+                            errors[hour].includes('price_ft1') &&
+                            'border-red-500',
                             isFlashingSuccess &&
-                              data?.inserted.includes(hour) &&
-                              'border-green-500',
+                            data?.inserted.includes(hour) &&
+                            'border-green-500',
                             isFlashingSuccess &&
-                              data?.updated[hour]?.includes('price_ft1') &&
-                              'border-blue-500',
+                            data?.updated[hour]?.includes('price_ft1') &&
+                            'border-blue-500',
                             !isHourEditable(hour) &&
-                              'cursor-not-allowed !bg-muted',
+                            'cursor-not-allowed !bg-muted',
                             'transition-colors duration-300',
                           )}
                           name={`${hour}-price_ft1`}
@@ -1116,17 +1235,17 @@ function App() {
                             onKeyDown={(e) => handleKeyDown(e, idx, 7)}
                             className={cn(
                               isFlashingErrors &&
-                                errors[hour] &&
-                                errors[hour].includes('price_ft2') &&
-                                'border-red-500',
+                              errors[hour] &&
+                              errors[hour].includes('price_ft2') &&
+                              'border-red-500',
                               isFlashingSuccess &&
-                                data?.inserted.includes(hour) &&
-                                'border-green-500',
+                              data?.inserted.includes(hour) &&
+                              'border-green-500',
                               isFlashingSuccess &&
-                                data?.updated[hour]?.includes('price_ft2') &&
-                                'border-blue-500',
+                              data?.updated[hour]?.includes('price_ft2') &&
+                              'border-blue-500',
                               !isHourEditable(hour) &&
-                                'cursor-not-allowed !bg-muted',
+                              'cursor-not-allowed !bg-muted',
                               'transition-colors duration-300',
                               'control',
                             )}
@@ -1165,21 +1284,21 @@ function App() {
         <div className="mt-4 flex justify-between">
           <div className="flex gap-4 text-center">
             <div className="rounded-lg border bg-blue-300 p-2">
-              <p className="text-sm font-bold">
+              <p className="text-xs font-bold">
                 {t('Average prices for the last 30 days')}
               </p>
-              <p className="text-sm">
+              <p className="text-xs">
                 Nodo {unit?.name}: {unit && `$${prices[unit.id].op}`}
               </p>
-              <p className="text-sm">{t('Days without PML')}: 10/02/2024</p>
+              <p className="text-xs">{t('Days without PML')}: 10/02/2024</p>
             </div>
             <div className="rounded-lg border bg-rose-200 p-2">
-              <p className="text-sm font-bold">{t('Transmission Rate')}</p>
-              <p className="text-sm">{unit && `$${prices[unit.id].tm}`}</p>
+              <p className="text-xs font-bold">{t('Transmission Rate')}</p>
+              <p className="text-xs">{unit && `$${prices[unit.id].tm}`}</p>
             </div>
             <div className="rounded-lg border bg-green-200 p-2">
-              <p className="text-sm font-bold">{t('Operation Rate')}</p>
-              <p className="text-sm">{unit && `$${prices[unit.id].op}`}</p>
+              <p className="text-xs font-bold">{t('Operation Rate')}</p>
+              <p className="text-xs">{unit && `$${prices[unit.id].op}`}</p>
             </div>
           </div>
           <div className="flex gap-4">
@@ -1193,6 +1312,7 @@ function App() {
               className={cn(
                 dateDiff < 0 && 'cursor-not-allowed opacity-50',
                 'text-xs',
+                'h-6',
               )}
             >
               {t('Save changes')}
