@@ -78,7 +78,7 @@ export const Filters = () => {
                 variant="outline"
                 role="combobox"
                 aria-expanded={open}
-                className="text-xxs h-6 w-[200px] justify-between px-2 py-0"
+                className="h-6 w-[200px] justify-between px-2 py-0 text-xxs"
               >
                 {unit?.name ? unit.name : t('Select a unit')}
                 <ChevronsUpDown className="size-3 opacity-50" />
@@ -88,7 +88,7 @@ export const Filters = () => {
               <Command>
                 <CommandInput
                   placeholder={t('Select a unit')}
-                  className="text-xxs h-9"
+                  className="h-9 text-xxs"
                 />
                 <CommandList>
                   <CommandEmpty>No unit found.</CommandEmpty>

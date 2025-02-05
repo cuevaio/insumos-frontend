@@ -551,12 +551,12 @@ function App() {
                 ></TableHead>
               </TableRow>
             )}
-            <TableRow className="text-xxs border-t leading-[0.75rem]">
+            <TableRow className="border-t text-xxs leading-[0.75rem]">
               <TableHead className="border-l">{t('Hour')}</TableHead>
               <TableHead className="min-w-[100px]">{t('Schedule')}</TableHead>
               {showFT1Columns && (
                 <>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t(
@@ -568,7 +568,7 @@ function App() {
                       )}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t('Real Environment Conditions MW')}
@@ -576,7 +576,7 @@ function App() {
                       {t('Real Environment Conditions MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t(
@@ -588,7 +588,7 @@ function App() {
                       )}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t('From Legacy Interconnection Contract (CIL) MW')}
@@ -596,7 +596,7 @@ function App() {
                       {t('From Legacy Interconnection Contract (CIL) MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t('Under LIE Type Contract MW')}
@@ -608,7 +608,7 @@ function App() {
               )}
               {showFT2Columns && unit?.fuelType2 && (
                 <>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t(
@@ -620,7 +620,7 @@ function App() {
                       )}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t('Real Environment Conditions MW')}
@@ -628,7 +628,7 @@ function App() {
                       {t('Real Environment Conditions MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t('Considering Available Diesel MW')}
@@ -636,7 +636,7 @@ function App() {
                       {t('Considering Available Diesel MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t('From Legacy Interconnection Contract (CIL) MW')}
@@ -644,7 +644,7 @@ function App() {
                       {t('From Legacy Interconnection Contract (CIL) MW')}
                     </span>
                   </TableHead>
-                  <TableHead className="text-xxs min-w-[120px] border-l">
+                  <TableHead className="min-w-[120px] border-l text-xxs">
                     <span
                       className="line-clamp-3 overflow-hidden break-words"
                       title={t('Under LIE Type Contract MW')}
@@ -696,7 +696,7 @@ function App() {
                   </span>
                 </TableHead>
               )}
-              <TableHead className="text-xxs min-w-[120px]">
+              <TableHead className="min-w-[120px] text-xxs">
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t('Note')}
