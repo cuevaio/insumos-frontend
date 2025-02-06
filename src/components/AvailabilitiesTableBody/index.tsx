@@ -1,13 +1,13 @@
-import {
-  FC,
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React from 'react';
 
-import { CalendarDate } from '@internationalized/date';
+import {
+  useDate,
+  useMarket,
+  useShowFT1Columns,
+  useShowFT2Columns,
+  useUnit,
+  useUpsertInsumosState,
+} from '@/contexts/AppContext';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -22,58 +22,56 @@ import {
 import { TableBody, TableCell, TableRow } from '@/components/ui/table';
 
 import {
-  AvailabilitiesQueryResponse,
   AvailabilityRecord,
+  useAvailabilities,
 } from '@/hooks/useAvailabilities';
-import { Insumo } from '@/hooks/useInsumos';
-import { type UnitWithFuelType } from '@/hooks/useUnits';
+import { Insumo, useInsumos } from '@/hooks/useInsumos';
 
 import { noteEnumValues } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 interface AvailabilitiesTableBodyProps {
-  availabilities: AvailabilitiesQueryResponse | undefined;
-  insumos: any;
-  date: CalendarDate | null;
   rowsLength: number;
-  unit: UnitWithFuelType | undefined;
-  showFT1Columns: boolean;
-  showFT2Columns: boolean;
-  dateDiff: number;
-  errors: any;
-  isFlashingSuccess: boolean;
-  isFlashingErrors: boolean;
-  data: any;
-  isSkeleton: boolean;
 }
 
-const AvailabilitiesTableBody: FC<AvailabilitiesTableBodyProps> = ({
-  availabilities,
-  insumos,
-  date,
+const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   rowsLength,
-  unit,
-  showFT1Columns,
-  showFT2Columns,
-  dateDiff,
-  errors,
-  isFlashingSuccess,
-  isFlashingErrors,
-  data,
-  isSkeleton,
 }) => {
-  const [checkedStates, setCheckedStates] = useState<{
+  const { value: unit } = useUnit();
+  const { value: date, dateDiff } = useDate();
+  const { value: market } = useMarket();
+  const { value: showFT1Columns } = useShowFT1Columns();
+  const { value: showFT2Columns } = useShowFT2Columns();
+
+  const { data: availabilities } = useAvailabilities({
+    unitId: unit?.id?.toString(),
+    date: date?.toString(),
+    market,
+  });
+
+  const { data: insumos } = useInsumos({
+    date: date?.toString(),
+    unitId: unit?.id?.toString(),
+    market,
+  });
+
+  const isSkeleton = React.useMemo(
+    () => !(date && availabilities && insumos),
+    [date, availabilities, insumos],
+  );
+
+  const [checkedStates, setCheckedStates] = React.useState<{
     [key: string]: boolean;
   }>({});
 
-  const minEditableHour = useMemo(() => {
+  const minEditableHour = React.useMemo(() => {
     const now = new Date();
     const nowHour = now.getHours();
 
     return Math.max(nowHour - 1, 0);
   }, []);
 
-  const isHourEditable = useCallback(
+  const isHourEditable = React.useCallback(
     (hour: number) => {
       if (dateDiff < 0) return false;
       if (dateDiff === 0 && hour < minEditableHour) return false;
@@ -223,7 +221,7 @@ const AvailabilitiesTableBody: FC<AvailabilitiesTableBodyProps> = ({
     }));
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!availabilities?.availabilities || !insumos?.insumos) return;
     const checked: { [key: string]: boolean } = {};
 
@@ -284,7 +282,7 @@ const AvailabilitiesTableBody: FC<AvailabilitiesTableBodyProps> = ({
   }, [availabilities, insumos, unit]);
 
   const handleKeyDown = (
-    event: KeyboardEvent<HTMLInputElement>,
+    event: React.KeyboardEvent<HTMLInputElement>,
     rowIndex: number,
     cellIndex: number,
   ) => {
@@ -345,6 +343,8 @@ const AvailabilitiesTableBody: FC<AvailabilitiesTableBodyProps> = ({
     }
   };
 
+  const { errors, isFlashingErrors, isFlashingSuccess, data } =
+    useUpsertInsumosState();
   return (
     <TableBody className={cn('text-xxs', isSkeleton && 'emptyTableBody')}>
       {new Array(isSkeleton ? 24 : rowsLength).fill(0).map((_, idx) => {
@@ -635,7 +635,11 @@ const AvailabilitiesTableBody: FC<AvailabilitiesTableBodyProps> = ({
                 name={`${hour}-agc`}
                 disabled={!isHourEditable(hour)}
                 onKeyDown={(e) =>
-                  handleKeyDown(e as KeyboardEvent<HTMLInputElement>, idx, 5)
+                  handleKeyDown(
+                    e as React.KeyboardEvent<HTMLInputElement>,
+                    idx,
+                    5,
+                  )
                 }
               />
             </TableCell>

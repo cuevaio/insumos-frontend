@@ -1,3 +1,4 @@
+import { useDate, useMarket, useUnit } from '@/contexts/AppContext';
 import { useMutation } from '@tanstack/react-query';
 import ExcelJS from 'exceljs';
 import FileSaver from 'file-saver';
@@ -8,10 +9,8 @@ import { Button } from '@/components/ui/button';
 import { useAvailabilities } from '@/hooks/useAvailabilities';
 import { useFuelTypes } from '@/hooks/useFuelTypes';
 import { useInsumos } from '@/hooks/useInsumos';
-import { useUnits } from '@/hooks/useUnits';
 
 import { populateAvailabilityData, setupWorksheet } from '@/lib/export';
-import { type Market } from '@/lib/types';
 
 const ExportAvailabilitiesButton = () => {
   const {
@@ -19,25 +18,28 @@ const ExportAvailabilitiesButton = () => {
     i18n: { language },
   } = useTranslation();
 
-  const unitId = localStorage.getItem('unit_id');
-  const date = localStorage.getItem('date');
-  const market = localStorage.getItem('market') as Market;
+  const { value: unit } = useUnit();
+  const { value: date } = useDate();
+  const { value: market } = useMarket();
 
-  const { data: units } = useUnits();
-  const { data: fuelTypes } = useFuelTypes();
+  const { data } = useAvailabilities({
+    unitId: unit?.id,
+    date: date?.toString(),
+    market,
+  });
+  const availabilities = data?.availabilities;
+
   const { data: insumos } = useInsumos({
     date: date?.toString(),
-    unitId: unitId?.toString(),
+    unitId: unit?.id,
     market,
   });
 
-  const { data } = useAvailabilities({ unitId, date, market });
-  const availabilities = data?.availabilities;
-
-  const unit = units?.find((u) => u.id === unitId);
+  const { data: fuelTypes } = useFuelTypes();
 
   const fuelType1 =
     unit?.fuelType1ID && fuelTypes?.find((f) => f.id === unit.fuelType1ID);
+
   const fuelType2 =
     unit?.fuelType2ID && fuelTypes?.find((f) => f.id === unit.fuelType2ID);
 
@@ -49,7 +51,7 @@ const ExportAvailabilitiesButton = () => {
       if (!availabilities) throw new Error('No availabilities found');
       if (!insumos) throw new Error('No insumos found');
 
-      const duration = data?.dayDurations[date];
+      const duration = data?.dayDurations[date.toString()];
 
       const response = await fetch(`/cpp-ui/template-${duration}.xlsx`);
       const arrayBuffer = await response.arrayBuffer();
@@ -62,7 +64,7 @@ const ExportAvailabilitiesButton = () => {
 
       const worksheet = setupWorksheet(
         templateWorksheet,
-        date,
+        date.toString(),
         unit,
         fuelType1,
         fuelType2 || undefined,
