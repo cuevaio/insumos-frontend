@@ -51,7 +51,9 @@ const AvailabilitiesForm: React.FC<AvailabilitiesFormProps> = ({
     i18n: { language },
   } = useTranslation();
 
-  const onAvailabilitiesFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onAvailabilitiesFormSubmit = (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
 
     if (dateDiff < 0) {

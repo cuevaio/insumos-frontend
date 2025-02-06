@@ -141,7 +141,11 @@ export const AvailabilitiesHeader = () => {
           </SelectPopover>
         </Select>
       </div>
-      <div className="flex gap-4">
+      <div
+        className={cn('flex gap-4', {
+          hidden: !unit,
+        })}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="h-6 text-xs" variant="outline">
