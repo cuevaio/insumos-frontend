@@ -1,6 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { InsumoInsert, Market } from '@/lib/types';
+import {
+  ExtendedInsumoInsert,
+  type InsumoInsert,
+  type Market,
+} from '@/lib/types';
 
 export const useUpsertInsumos = (data: {
   date?: string | null;
@@ -23,10 +27,7 @@ export const useUpsertInsumos = (data: {
       });
 
       const json = (await response.json()) as {
-        data: {
-          inserted: number[];
-          updated: { [hour: number]: (keyof InsumoInsert)[] };
-        };
+        data: ExtendedInsumoInsert;
       };
       return json.data;
     },

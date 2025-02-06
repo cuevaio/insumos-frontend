@@ -17,7 +17,11 @@ import { UnitWithFuelType, useUnits } from '@/hooks/useUnits';
 import { useUpsertInsumos } from '@/hooks/useUpsertInsumos';
 
 import { InsumoSchema } from '@/lib/schemas';
-import type { InsumoInsert, Market } from '@/lib/types';
+import {
+  InsumoInsertErrors,
+  type InsumoInsert,
+  type Market,
+} from '@/lib/types';
 
 function App() {
   const {
@@ -30,9 +34,7 @@ function App() {
   const [unitId, setUnitId] = useState<Key>();
   const [date, setDate] = useState<CalendarDate | null>(null);
   const [market, setMarket] = useState<Market | null>(null);
-  const [errors, setErrors] = useState<{
-    [key: string]: (keyof InsumoInsert)[];
-  }>({});
+  const [errors, setErrors] = useState<InsumoInsertErrors>({});
   const [isFlashingErrors, setIsFlashingErrors] = useState(false);
   const [isFlashingSuccess, setIsFlashingSuccess] = useState(false);
 
@@ -247,7 +249,7 @@ function App() {
     <div className="container mx-auto flex w-full flex-col flex-wrap gap-2">
       <AvailabilitiesHeader
         showColumns={!!(date && availabilities && insumos)}
-        units={units}
+        units={units as UnitWithFuelType[]}
         unit={unit as UnitWithFuelType}
         unitId={unitId}
         setUnitId={setUnitId}

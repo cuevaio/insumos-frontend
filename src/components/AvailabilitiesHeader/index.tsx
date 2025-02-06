@@ -38,14 +38,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { type UnitWithFuelType } from '@/hooks/useUnits';
+import { UnitWithFuelType } from '@/hooks/useUnits';
 
 import { type Market } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface AvailabilitiesHeaderProps {
   showColumns: boolean;
-  units: any[] | undefined;
+  units: UnitWithFuelType[] | undefined;
   unit: UnitWithFuelType | undefined;
   unitId: Key | undefined;
   date: CalendarDate | null;

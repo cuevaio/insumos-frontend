@@ -8,20 +8,23 @@ import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AvailabilitiesTableBody from '@/components/AvailabilitiesTableBody';
 
 import { AvailabilitiesQueryResponse } from '@/hooks/useAvailabilities';
-import { type UnitWithFuelType, useUnits } from '@/hooks/useUnits';
+import { ExtendedInsumo } from '@/hooks/useInsumos';
+import { UnitWithFuelType, useUnits } from '@/hooks/useUnits';
+
+import { ExtendedInsumoInsert, InsumoInsertErrors } from '@/lib/types';
 
 interface AvailabilitiesTableProps {
   unitId: Key | undefined;
   date: CalendarDate | null;
   availabilities: AvailabilitiesQueryResponse | undefined;
-  insumos: any;
+  insumos: ExtendedInsumo | undefined;
   showFT1Columns: boolean;
   showFT2Columns: boolean;
   dateDiff: number;
-  errors: any;
+  errors: InsumoInsertErrors;
   isFlashingSuccess: boolean;
   isFlashingErrors: boolean;
-  data: any;
+  data: ExtendedInsumoInsert | undefined;
 }
 
 const AvailabilitiesTable: FC<AvailabilitiesTableProps> = ({

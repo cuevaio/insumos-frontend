@@ -25,25 +25,26 @@ import {
   AvailabilitiesQueryResponse,
   AvailabilityRecord,
 } from '@/hooks/useAvailabilities';
-import { Insumo } from '@/hooks/useInsumos';
-import { type UnitWithFuelType } from '@/hooks/useUnits';
+import { ExtendedInsumo, Insumo } from '@/hooks/useInsumos';
+import { UnitWithFuelType } from '@/hooks/useUnits';
 
 import { noteEnumValues } from '@/lib/constants';
+import { ExtendedInsumoInsert, InsumoInsertErrors } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface AvailabilitiesTableBodyProps {
   availabilities: AvailabilitiesQueryResponse | undefined;
-  insumos: any;
+  insumos: ExtendedInsumo | undefined;
   date: CalendarDate | null;
   rowsLength: number;
   unit: UnitWithFuelType | undefined;
   showFT1Columns: boolean;
   showFT2Columns: boolean;
   dateDiff: number;
-  errors: any;
+  errors: InsumoInsertErrors;
   isFlashingSuccess: boolean;
   isFlashingErrors: boolean;
-  data: any;
+  data: ExtendedInsumoInsert | undefined;
   isSkeleton: boolean;
 }
 
