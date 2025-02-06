@@ -49,7 +49,7 @@ import { cn } from '@/lib/utils';
 
 import { Button } from '../ui/button';
 
-export const Filters = () => {
+export const AvailabilitiesHeader = () => {
   const { data: units } = useUnits();
 
   const { value: unit, setId: setUnitId } = useUnit();
@@ -175,3 +175,5 @@ export const Filters = () => {
     </div>
   );
 };
+
+export default AvailabilitiesHeader;

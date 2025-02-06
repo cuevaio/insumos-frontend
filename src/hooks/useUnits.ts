@@ -30,6 +30,11 @@ export interface Unit {
   fuelType2?: FuelType;
 }
 
+export interface UnitWithFuelType extends Unit {
+  fuelType1: FuelType;
+  fuelType2: FuelType;
+}
+
 export function useUnits() {
   const authToken = useAuth();
   const { data: fts } = useFuelTypes();
