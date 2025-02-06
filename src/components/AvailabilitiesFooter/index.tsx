@@ -1,27 +1,25 @@
-import { FC, MutableRefObject } from 'react';
+import React from 'react';
 
+import { useDate, useUnit } from '@/contexts/AppContext';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import ExportAvailabilitiesButton from '@/components/ExportAvailabilitiesButton';
 
-import { Unit } from '@/hooks/useUnits';
-
 import { prices } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 interface AvailabilitiesFooterProps {
-  unit: Unit | undefined;
-  dateDiff: number;
-  formRef: MutableRefObject<HTMLFormElement | null>;
+  formRef: React.MutableRefObject<HTMLFormElement | null>;
 }
 
-const AvailabilitiesFooter: FC<AvailabilitiesFooterProps> = ({
-  unit,
-  dateDiff,
+const AvailabilitiesFooter: React.FC<AvailabilitiesFooterProps> = ({
   formRef,
 }) => {
   const { t } = useTranslation();
+
+  const { value: unit } = useUnit();
+  const { dateDiff } = useDate();
 
   return (
     <>

@@ -26,6 +26,8 @@ export interface Unit {
     modifiedBy: string;
     modifiedOn: string;
   } | null;
+  fuelType1?: FuelType;
+  fuelType2?: FuelType;
 }
 
 export interface UnitWithFuelType extends Unit {

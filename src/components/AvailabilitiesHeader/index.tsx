@@ -1,11 +1,15 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react';
+import React from 'react';
 
-import { CalendarDate } from '@internationalized/date';
+import {
+  useDate,
+  useMarket,
+  useShowFT1Columns,
+  useShowFT2Columns,
+  useUnit,
+} from '@/contexts/AppContext';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { type Key } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -38,45 +42,25 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { UnitWithFuelType } from '@/hooks/useUnits';
+import { useUnits } from '@/hooks/useUnits';
 
-import { type Market } from '@/lib/types';
+import { Market } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-interface AvailabilitiesHeaderProps {
-  showColumns: boolean;
-  units: UnitWithFuelType[] | undefined;
-  unit: UnitWithFuelType | undefined;
-  unitId: Key | undefined;
-  date: CalendarDate | null;
-  setDate: Dispatch<SetStateAction<CalendarDate | null>>;
-  setUnitId: Dispatch<SetStateAction<Key | undefined>>;
-  market: Market | null;
-  setMarket: Dispatch<SetStateAction<Market | null>>;
-  showFT1Columns: boolean;
-  setShowFT1Columns: Dispatch<SetStateAction<boolean>>;
-  showFT2Columns: boolean;
-  setShowFT2Columns: Dispatch<SetStateAction<boolean>>;
-}
+import { Button } from '../ui/button';
 
-const AvailabilitiesHeader: FC<AvailabilitiesHeaderProps> = ({
-  showColumns,
-  units,
-  unit,
-  unitId,
-  setUnitId,
-  date,
-  setDate,
-  market,
-  setMarket,
-  showFT1Columns,
-  setShowFT1Columns,
-  showFT2Columns,
-  setShowFT2Columns,
-}) => {
+export const AvailabilitiesHeader = () => {
+  const { data: units } = useUnits();
+
+  const { value: unit, setId: setUnitId } = useUnit();
+  const { value: date, setValue: setDate } = useDate();
+  const { value: market, setValue: setMarket } = useMarket();
   const { t } = useTranslation();
-
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const { value: showFT1Columns, setValue: setShowFT1Columns } =
+    useShowFT1Columns();
+  const { value: showFT2Columns, setValue: setShowFT2Columns } =
+    useShowFT2Columns();
 
   return (
     <div className="flex w-full items-end justify-between">
@@ -96,9 +80,7 @@ const AvailabilitiesHeader: FC<AvailabilitiesHeaderProps> = ({
                 aria-expanded={open}
                 className="h-6 w-[200px] justify-between px-2 py-0 text-xxs"
               >
-                {unitId
-                  ? units?.find((unit) => unit.id === unitId)?.name
-                  : t('Select a unit')}
+                {unit?.name ? unit.name : t('Select a unit')}
                 <ChevronsUpDown className="size-3 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -111,11 +93,11 @@ const AvailabilitiesHeader: FC<AvailabilitiesHeaderProps> = ({
                 <CommandList>
                   <CommandEmpty>No unit found.</CommandEmpty>
                   <CommandGroup>
-                    {units?.map((unit) => (
+                    {units?.map((u) => (
                       <CommandItem
-                        key={unit.id}
+                        key={u.id}
                         className="text-xxs"
-                        value={unit.name}
+                        value={u.name}
                         onSelect={(currentValue) => {
                           const unitId = units?.find(
                             (unit) => unit.name === currentValue,
@@ -124,11 +106,11 @@ const AvailabilitiesHeader: FC<AvailabilitiesHeaderProps> = ({
                           setOpen(false);
                         }}
                       >
-                        {unit.name}
+                        {u.name}
                         <Check
                           className={cn(
                             'ml-auto',
-                            unitId === unit.id ? 'opacity-100' : 'opacity-0',
+                            u.id === unit?.id ? 'opacity-100' : 'opacity-0',
                           )}
                         />
                       </CommandItem>
@@ -159,38 +141,40 @@ const AvailabilitiesHeader: FC<AvailabilitiesHeaderProps> = ({
           </SelectPopover>
         </Select>
       </div>
-      <div className="flex gap-4">
-        {showColumns && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="h-6 text-xs" variant="outline">
-                {t('Columns')}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel className="text-xs">
-                {t('Columns')}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
+      <div
+        className={cn('flex gap-4', {
+          hidden: !unit,
+        })}
+      >
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="h-6 text-xs" variant="outline">
+              {t('Columns')}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel className="text-xs">
+              {t('Columns')}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              className="text-xs"
+              checked={showFT1Columns}
+              onCheckedChange={setShowFT1Columns}
+            >
+              {unit?.fuelType1?.name.toUpperCase()}
+            </DropdownMenuCheckboxItem>
+            {unit?.fuelType2 && (
               <DropdownMenuCheckboxItem
                 className="text-xs"
-                checked={showFT1Columns}
-                onCheckedChange={setShowFT1Columns}
+                checked={showFT2Columns}
+                onCheckedChange={setShowFT2Columns}
               >
-                {unit?.fuelType1?.name.toUpperCase()}
+                {unit.fuelType2.name.toUpperCase()}
               </DropdownMenuCheckboxItem>
-              {unit?.fuelType2 && (
-                <DropdownMenuCheckboxItem
-                  className="text-xs"
-                  checked={showFT2Columns}
-                  onCheckedChange={setShowFT2Columns}
-                >
-                  {unit.fuelType2.name.toUpperCase()}
-                </DropdownMenuCheckboxItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

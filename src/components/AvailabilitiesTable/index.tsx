@@ -1,53 +1,23 @@
-import { FC, useMemo } from 'react';
+import React from 'react';
 
-import { CalendarDate } from '@internationalized/date';
-import { type Key } from 'react-aria-components';
+import {
+  useShowFT1Columns,
+  useShowFT2Columns,
+  useUnit,
+} from '@/contexts/AppContext';
 import { useTranslation } from 'react-i18next';
 
 import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AvailabilitiesTableBody from '@/components/AvailabilitiesTableBody';
 
-import { AvailabilitiesQueryResponse } from '@/hooks/useAvailabilities';
-import { ExtendedInsumo } from '@/hooks/useInsumos';
-import { UnitWithFuelType, useUnits } from '@/hooks/useUnits';
+interface AvailabilitiesTableProps {}
 
-import { ExtendedInsumoInsert, InsumoInsertErrors } from '@/lib/types';
-
-interface AvailabilitiesTableProps {
-  unitId: Key | undefined;
-  date: CalendarDate | null;
-  availabilities: AvailabilitiesQueryResponse | undefined;
-  insumos: ExtendedInsumo | undefined;
-  showFT1Columns: boolean;
-  showFT2Columns: boolean;
-  dateDiff: number;
-  errors: InsumoInsertErrors;
-  isFlashingSuccess: boolean;
-  isFlashingErrors: boolean;
-  data: ExtendedInsumoInsert | undefined;
-}
-
-const AvailabilitiesTable: FC<AvailabilitiesTableProps> = ({
-  unitId,
-  date,
-  availabilities,
-  insumos,
-  showFT1Columns,
-  showFT2Columns,
-  dateDiff,
-  errors,
-  isFlashingSuccess,
-  isFlashingErrors,
-  data,
-}) => {
+const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
   const { t } = useTranslation();
 
-  const { data: units } = useUnits();
-
-  const unit = useMemo(
-    () => units?.find((u) => u.id === unitId),
-    [unitId, units],
-  );
+  const { value: unit } = useUnit();
+  const { value: showFT1Columns } = useShowFT1Columns();
+  const { value: showFT2Columns } = useShowFT2Columns();
 
   return (
     <Table>
@@ -283,21 +253,7 @@ const AvailabilitiesTable: FC<AvailabilitiesTableProps> = ({
           </TableHead>
         </TableRow>
       </TableHeader>
-      <AvailabilitiesTableBody
-        availabilities={availabilities}
-        insumos={insumos}
-        date={date}
-        rowsLength={24}
-        unit={unit as UnitWithFuelType}
-        showFT1Columns={showFT1Columns}
-        showFT2Columns={showFT2Columns}
-        dateDiff={dateDiff}
-        errors={errors}
-        isFlashingSuccess={isFlashingSuccess}
-        isFlashingErrors={isFlashingErrors}
-        data={data}
-        isSkeleton={!(date && availabilities && insumos)}
-      />
+      <AvailabilitiesTableBody rowsLength={24} />
     </Table>
   );
 };
