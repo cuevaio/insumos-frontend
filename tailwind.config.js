@@ -55,8 +55,6 @@ export default {
         sans: ['Roboto', 'ui-sans-serif', 'system-ui'],
       },
       fontSize: {
-        //'xxs': '0.625rem',
-        // 'xxs': '0.6rem',
         xxs: '0.58rem',
       },
     },
