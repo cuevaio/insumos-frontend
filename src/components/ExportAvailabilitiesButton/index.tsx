@@ -11,7 +11,7 @@ import { useInsumos } from '@/hooks/useInsumos';
 import { useUnits } from '@/hooks/useUnits';
 
 import { populateAvailabilityData, setupWorksheet } from '@/lib/export';
-import { Market } from '@/lib/types';
+import { type Market } from '@/lib/types';
 
 const ExportAvailabilitiesButton = () => {
   const {
@@ -94,7 +94,7 @@ const ExportAvailabilitiesButton = () => {
 
   return (
     <Button
-      className="text-xs h-6"
+      className="h-6 text-xs"
       variant="outline"
       onClick={() => {
         mutate();

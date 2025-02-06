@@ -57,11 +57,9 @@ export default {
       fontSize: {
         //'xxs': '0.625rem',
         // 'xxs': '0.6rem',
-        'xxs': '0.58rem',
+        xxs: '0.58rem',
       },
     },
   },
-  plugins: [
-    require('tailwindcss-animate'),
-  ],
+  plugins: [require('tailwindcss-animate')],
 };

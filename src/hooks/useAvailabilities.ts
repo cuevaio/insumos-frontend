@@ -5,6 +5,13 @@ import { CPPAPIResponse, Market } from '@/lib/types';
 
 import { useAuth } from './useAuth';
 
+export interface AvailabilitiesQueryResponse {
+  availabilities: AvailabilityRecord[];
+  dayDurations: {
+    [key: string]: number;
+  };
+}
+
 export function useAvailabilities({
   unitId,
   date,
