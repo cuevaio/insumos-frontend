@@ -13,13 +13,12 @@ import {
 } from '@/contexts/AppContext';
 
 import { useAvailabilities } from '@/hooks/useAvailabilities';
-import { useInsumos } from '@/hooks/useInsumos';
 
 import { cn } from '@/lib/utils';
 
-interface AvailabilitiesTableProps {}
+interface AvailabilitiesTableProps { }
 
-const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
+const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({ }) => {
   const { t } = useTranslation();
 
   const { value: unit } = useUnit();
@@ -29,99 +28,91 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
   const { value: market } = useMarket();
 
   const { data: availabilities } = useAvailabilities({
-      unitId: unit?.id?.toString(),
-      date: date?.toString(),
-      market,
-    });
+    unitId: unit?.id?.toString(),
+    date: date?.toString(),
+    market,
+  });
 
-  const { data: insumos } = useInsumos({
-      date: date?.toString(),
-      unitId: unit?.id?.toString(),
-      market,
-    });
-
-  const isSkeleton = React.useMemo(
-      () => !(date && availabilities && insumos),
-      [date, availabilities, insumos],
-    );
-
-  console.log('isSkeleton: ', isSkeleton)
+  const isAvailabilitiesLoading = React.useMemo(() => {
+    const hasRequiredFields = date || unit || market;
+    return hasRequiredFields && !availabilities;
+  }, [date, unit, market, availabilities]);
 
   return (
     <Table>
       <TableHeader className="bg-muted">
         {(showFT1Columns || (showFT2Columns && unit?.fuelType2)) && (
           <TableRow className="text-xxs">
-            <TableHead 
-              colSpan={2} 
+            <TableHead
+              colSpan={2}
               className={
                 cn([
                   'border-l border-t',
-                  isSkeleton && 'animate-pulse',
+                  isAvailabilitiesLoading && 'animate-pulse',
                 ])
-              }/>
+              } />
             {showFT1Columns && (
-              <TableHead 
-                colSpan={5} 
+              <TableHead
+                colSpan={5}
                 className={
                   cn([
                     'border-x border-t text-center',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
-                >
+              >
                 {t('Declared Net Capacity of the plant or package')} -{' '}
                 {unit?.fuelType1?.name.toUpperCase()}
               </TableHead>
             )}
             {showFT2Columns && unit?.fuelType2 && (
-              <TableHead 
-                colSpan={5} 
+              <TableHead
+                colSpan={5}
                 className={
                   cn([
                     'border-x border-t text-center',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }>
                 {t('Declared Net Capacity of the plant or package')} -{' '}
                 {unit?.fuelType2?.name.toUpperCase()}
               </TableHead>
             )}
-            <TableHead 
-              colSpan={13} 
+            <TableHead
+              colSpan={13}
               className={
                 cn([
                   'border-r border-t',
-                  isSkeleton && 'animate-pulse',
+                  isAvailabilitiesLoading && 'animate-pulse',
                 ])
               }
             />
           </TableRow>
         )}
         <TableRow className="border-t text-xxs leading-[0.75rem]">
-          <TableHead 
+          <TableHead
             className={
               cn([
                 'border-l',
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >{t('Hour')}</TableHead>
-          <TableHead 
+          <TableHead
             className={
               cn([
                 'min-w-[100px]',
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >{t('Schedule')}</TableHead>
           {showFT1Columns && (
             <>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -134,11 +125,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Corrected to Summer Design Conditions (Contractual) MW')}
                 </span>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -149,11 +140,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Real Environment Conditions MW')}
                 </span>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -168,11 +159,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   )}
                 </span>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -183,11 +174,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('From Legacy Interconnection Contract (CIL) MW')}
                 </span>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -202,11 +193,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
           )}
           {showFT2Columns && unit?.fuelType2 && (
             <>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -219,11 +210,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Corrected to Summer Design Conditions (Contractual) MW')}
                 </span>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -234,11 +225,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Real Environment Conditions MW')}
                 </span>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -249,11 +240,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Considering Available Diesel MW')}
                 </span>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -264,11 +255,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('From Legacy Interconnection Contract (CIL) MW')}
                 </span>
               </TableHead>
-              <TableHead 
+              <TableHead
                 className={
                   cn([
                     'min-w-[120px] border-l text-xxs',
-                    isSkeleton && 'animate-pulse',
+                    isAvailabilitiesLoading && 'animate-pulse',
                   ])
                 }
               >
@@ -281,11 +272,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               </TableHead>
             </>
           )}
-          <TableHead 
+          <TableHead
             className={
               cn([
                 'border-l',
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -296,10 +287,10 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Pre-Selection')}
             </span>
           </TableHead>
-          <TableHead 
+          <TableHead
             className={
               cn([
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -313,7 +304,7 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
           <TableHead
             className={
               cn([
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -324,11 +315,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Minimum Offer Availability')}
             </span>
           </TableHead>
-          <TableHead 
+          <TableHead
             className={
               cn([
                 'min-w-[70px]',
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -340,11 +331,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
             </span>
           </TableHead>
           {unit?.fuelType2 && (
-            <TableHead 
+            <TableHead
               className={
                 cn([
                   'min-w-[70px]',
-                  isSkeleton && 'animate-pulse',
+                  isAvailabilitiesLoading && 'animate-pulse',
                 ])
               }
             >
@@ -356,11 +347,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               </span>
             </TableHead>
           )}
-          <TableHead 
+          <TableHead
             className={
               cn([
                 'min-w-[120px] text-xxs',
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -374,7 +365,7 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
           <TableHead
             className={
               cn([
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -385,11 +376,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               AGC
             </span>
           </TableHead>
-          <TableHead 
+          <TableHead
             className={
               cn([
                 'min-w-[100px]',
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -401,11 +392,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
             </span>
           </TableHead>
           {unit?.fuelType2 && (
-            <TableHead 
+            <TableHead
               className={
                 cn([
                   'min-w-[100px]',
-                  isSkeleton && 'animate-pulse',
+                  isAvailabilitiesLoading && 'animate-pulse',
                 ])
               }
             >
@@ -417,11 +408,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               </span>
             </TableHead>
           )}
-          <TableHead 
+          <TableHead
             className={
               cn([
                 'min-w-[150px]',
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -432,11 +423,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Operation Type')} (Disponible a Despacho / Operación Obligada)
             </span>
           </TableHead>
-          <TableHead 
+          <TableHead
             className={
               cn([
                 'min-w-[350px]',
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -454,7 +445,7 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
           <TableHead
             className={
               cn([
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -465,11 +456,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Last Update Date')}
             </span>
           </TableHead>
-          <TableHead 
+          <TableHead
             className={
               cn([
                 'border-r',
-                isSkeleton && 'animate-pulse',
+                isAvailabilitiesLoading && 'animate-pulse',
               ])
             }
           >
@@ -482,7 +473,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
           </TableHead>
         </TableRow>
       </TableHeader>
-      <AvailabilitiesTableBody rowsLength={24} />
+      <AvailabilitiesTableBody
+        rowsLength={availabilities?.availabilities?.length ?? 24}
+        isAvailabilitiesLoading={isAvailabilitiesLoading ?? true}
+        availabilities={availabilities}
+      />
     </Table>
   );
 };
