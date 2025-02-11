@@ -1,14 +1,21 @@
 import React from 'react';
-
-import {
-  useShowFT1Columns,
-  useShowFT2Columns,
-  useUnit,
-} from '@/contexts/AppContext';
 import { useTranslation } from 'react-i18next';
 
 import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AvailabilitiesTableBody from '@/components/AvailabilitiesTableBody';
+
+import {
+  useDate,
+  useMarket,
+  useShowFT1Columns,
+  useShowFT2Columns,
+  useUnit,
+} from '@/contexts/AppContext';
+
+import { useAvailabilities } from '@/hooks/useAvailabilities';
+import { useInsumos } from '@/hooks/useInsumos';
+
+import { cn } from '@/lib/utils';
 
 interface AvailabilitiesTableProps {}
 
@@ -18,34 +25,106 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
   const { value: unit } = useUnit();
   const { value: showFT1Columns } = useShowFT1Columns();
   const { value: showFT2Columns } = useShowFT2Columns();
+  const { value: date } = useDate();
+  const { value: market } = useMarket();
+
+  const { data: availabilities } = useAvailabilities({
+      unitId: unit?.id?.toString(),
+      date: date?.toString(),
+      market,
+    });
+
+  const { data: insumos } = useInsumos({
+      date: date?.toString(),
+      unitId: unit?.id?.toString(),
+      market,
+    });
+
+  const isSkeleton = React.useMemo(
+      () => !(date && availabilities && insumos),
+      [date, availabilities, insumos],
+    );
+
+  console.log('isSkeleton: ', isSkeleton)
 
   return (
     <Table>
       <TableHeader className="bg-muted">
         {(showFT1Columns || (showFT2Columns && unit?.fuelType2)) && (
           <TableRow className="text-xxs">
-            <TableHead colSpan={2} className="border-l border-t"></TableHead>
+            <TableHead 
+              colSpan={2} 
+              className={
+                cn([
+                  'border-l border-t',
+                  isSkeleton && 'animate-pulse',
+                ])
+              }/>
             {showFT1Columns && (
-              <TableHead colSpan={5} className="border-x border-t text-center">
+              <TableHead 
+                colSpan={5} 
+                className={
+                  cn([
+                    'border-x border-t text-center',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+                >
                 {t('Declared Net Capacity of the plant or package')} -{' '}
                 {unit?.fuelType1?.name.toUpperCase()}
               </TableHead>
             )}
             {showFT2Columns && unit?.fuelType2 && (
-              <TableHead colSpan={5} className="border-x border-t text-center">
+              <TableHead 
+                colSpan={5} 
+                className={
+                  cn([
+                    'border-x border-t text-center',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }>
                 {t('Declared Net Capacity of the plant or package')} -{' '}
                 {unit?.fuelType2?.name.toUpperCase()}
               </TableHead>
             )}
-            <TableHead colSpan={13} className="border-r border-t"></TableHead>
+            <TableHead 
+              colSpan={13} 
+              className={
+                cn([
+                  'border-r border-t',
+                  isSkeleton && 'animate-pulse',
+                ])
+              }
+            />
           </TableRow>
         )}
         <TableRow className="border-t text-xxs leading-[0.75rem]">
-          <TableHead className="border-l">{t('Hour')}</TableHead>
-          <TableHead className="min-w-[100px]">{t('Schedule')}</TableHead>
+          <TableHead 
+            className={
+              cn([
+                'border-l',
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >{t('Hour')}</TableHead>
+          <TableHead 
+            className={
+              cn([
+                'min-w-[100px]',
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >{t('Schedule')}</TableHead>
           {showFT1Columns && (
             <>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t(
@@ -55,7 +134,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Corrected to Summer Design Conditions (Contractual) MW')}
                 </span>
               </TableHead>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t('Real Environment Conditions MW')}
@@ -63,7 +149,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Real Environment Conditions MW')}
                 </span>
               </TableHead>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t(
@@ -75,7 +168,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   )}
                 </span>
               </TableHead>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t('From Legacy Interconnection Contract (CIL) MW')}
@@ -83,7 +183,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('From Legacy Interconnection Contract (CIL) MW')}
                 </span>
               </TableHead>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t('Under LIE Type Contract MW')}
@@ -95,7 +202,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
           )}
           {showFT2Columns && unit?.fuelType2 && (
             <>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t(
@@ -105,7 +219,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Corrected to Summer Design Conditions (Contractual) MW')}
                 </span>
               </TableHead>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t('Real Environment Conditions MW')}
@@ -113,7 +234,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Real Environment Conditions MW')}
                 </span>
               </TableHead>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t('Considering Available Diesel MW')}
@@ -121,7 +249,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('Considering Available Diesel MW')}
                 </span>
               </TableHead>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t('From Legacy Interconnection Contract (CIL) MW')}
@@ -129,7 +264,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                   {t('From Legacy Interconnection Contract (CIL) MW')}
                 </span>
               </TableHead>
-              <TableHead className="min-w-[120px] border-l text-xxs">
+              <TableHead 
+                className={
+                  cn([
+                    'min-w-[120px] border-l text-xxs',
+                    isSkeleton && 'animate-pulse',
+                  ])
+                }
+              >
                 <span
                   className="line-clamp-3 overflow-hidden break-words"
                   title={t('Under LIE Type Contract MW')}
@@ -139,7 +281,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               </TableHead>
             </>
           )}
-          <TableHead className="border-l">
+          <TableHead 
+            className={
+              cn([
+                'border-l',
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={t('Pre-Selection')}
@@ -147,7 +296,13 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Pre-Selection')}
             </span>
           </TableHead>
-          <TableHead>
+          <TableHead 
+            className={
+              cn([
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={t('Maximum Offer Availability')}
@@ -155,7 +310,13 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Maximum Offer Availability')}
             </span>
           </TableHead>
-          <TableHead>
+          <TableHead
+            className={
+              cn([
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={t('Minimum Offer Availability')}
@@ -163,7 +324,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Minimum Offer Availability')}
             </span>
           </TableHead>
-          <TableHead className="min-w-[70px]">
+          <TableHead 
+            className={
+              cn([
+                'min-w-[70px]',
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={`% ${unit?.fuelType1?.name}`}
@@ -172,7 +340,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
             </span>
           </TableHead>
           {unit?.fuelType2 && (
-            <TableHead className="min-w-[70px]">
+            <TableHead 
+              className={
+                cn([
+                  'min-w-[70px]',
+                  isSkeleton && 'animate-pulse',
+                ])
+              }
+            >
               <span
                 className="line-clamp-3 overflow-hidden break-words"
                 title={`% ${unit.fuelType2.name}`}
@@ -181,7 +356,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               </span>
             </TableHead>
           )}
-          <TableHead className="min-w-[120px] text-xxs">
+          <TableHead 
+            className={
+              cn([
+                'min-w-[120px] text-xxs',
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={t('Note')}
@@ -189,7 +371,13 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Note')}
             </span>
           </TableHead>
-          <TableHead>
+          <TableHead
+            className={
+              cn([
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title="AGC"
@@ -197,7 +385,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               AGC
             </span>
           </TableHead>
-          <TableHead className="min-w-[100px]">
+          <TableHead 
+            className={
+              cn([
+                'min-w-[100px]',
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={`${t('Price of')} ${unit?.fuelType1?.name}`}
@@ -206,7 +401,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
             </span>
           </TableHead>
           {unit?.fuelType2 && (
-            <TableHead className="min-w-[100px]">
+            <TableHead 
+              className={
+                cn([
+                  'min-w-[100px]',
+                  isSkeleton && 'animate-pulse',
+                ])
+              }
+            >
               <span
                 className="line-clamp-3 overflow-hidden break-words"
                 title={`${t('Price of')} ${unit.fuelType2.name}`}
@@ -215,7 +417,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               </span>
             </TableHead>
           )}
-          <TableHead className="min-w-[150px]">
+          <TableHead 
+            className={
+              cn([
+                'min-w-[150px]',
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={`${t('Operation Type')} (Disponible a Despacho / Operación Obligada)`}
@@ -223,7 +432,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Operation Type')} (Disponible a Despacho / Operación Obligada)
             </span>
           </TableHead>
-          <TableHead className="min-w-[350px]">
+          <TableHead 
+            className={
+              cn([
+                'min-w-[350px]',
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={t(
@@ -235,7 +451,13 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               )}
             </span>
           </TableHead>
-          <TableHead>
+          <TableHead
+            className={
+              cn([
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={t('Last Update Date')}
@@ -243,7 +465,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               {t('Last Update Date')}
             </span>
           </TableHead>
-          <TableHead className="border-r">
+          <TableHead 
+            className={
+              cn([
+                'border-r',
+                isSkeleton && 'animate-pulse',
+              ])
+            }
+          >
             <span
               className="line-clamp-3 overflow-hidden break-words"
               title={t('User')}
