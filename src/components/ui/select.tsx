@@ -56,9 +56,9 @@ const SelectTrigger = ({ className, children, ...props }: AriaButtonProps) => (
   <AriaButton
     className={composeRenderProps(className, (className) =>
       cn(
-        'flex h-6 w-full items-center justify-between rounded-md border border-input bg-background px-2 py-0 text-sm ring-offset-background',
+        'group flex h-6 w-full items-center justify-between rounded-md border bg-transparent px-2 py-0 text-sm ring-offset-background',
         /* Disabled */
-        'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
+        'data-[disabled]:cursor-not-allowed data-[disabled]:bg-muted data-[disabled]:opacity-50',
         /* Focused */
         'data-[focus-visible]:outline-none data-[focus-visible]:ring-2 data-[focus-visible]:ring-ring data-[focus-visible]:ring-offset-2',
         /* Resets */
@@ -71,7 +71,10 @@ const SelectTrigger = ({ className, children, ...props }: AriaButtonProps) => (
     {composeRenderProps(children, (children) => (
       <>
         {children}
-        <ChevronDown aria-hidden="true" className="size-4 opacity-50" />
+        <ChevronDown
+          aria-hidden="true"
+          className="size-4 opacity-50 group-data-[disabled]:opacity-0"
+        />
       </>
     ))}
   </AriaButton>
