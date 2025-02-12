@@ -20,5 +20,13 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     base: getBasePathname(command),
+    test: {
+      environment: 'jsdom',
+      setupFiles: ['./src/test/setup.ts'],
+      globals: true,
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
+    },
   };
 });

@@ -141,11 +141,7 @@ export const AvailabilitiesHeader = () => {
           </SelectPopover>
         </Select>
       </div>
-      <div
-        className={cn('flex gap-4', {
-          hidden: !unit,
-        })}
-      >
+      {unit && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="h-6 text-xs" variant="outline">
@@ -161,6 +157,7 @@ export const AvailabilitiesHeader = () => {
               className="text-xs"
               checked={showFT1Columns}
               onCheckedChange={setShowFT1Columns}
+              data-testid="fuel-type-1-checkbox"
             >
               {unit?.fuelType1?.name.toUpperCase()}
             </DropdownMenuCheckboxItem>
@@ -169,13 +166,14 @@ export const AvailabilitiesHeader = () => {
                 className="text-xs"
                 checked={showFT2Columns}
                 onCheckedChange={setShowFT2Columns}
+                data-testid="fuel-type-2-checkbox"
               >
                 {unit.fuelType2.name.toUpperCase()}
               </DropdownMenuCheckboxItem>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      )}
     </div>
   );
 };
