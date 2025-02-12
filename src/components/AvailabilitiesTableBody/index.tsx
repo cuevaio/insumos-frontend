@@ -32,7 +32,7 @@ import { cn } from '@/lib/utils';
 
 interface AvailabilitiesTableBodyProps {
   rowsLength: number;
-  isAvailabilitiesLoading: boolean | null,
+  isAvailabilitiesLoading: boolean | null;
   availabilities: AvailabilitiesQueryResponse | undefined;
 }
 
@@ -339,13 +339,8 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   const { errors, isFlashingErrors, isFlashingSuccess, data } =
     useUpsertInsumosState();
   return (
-    <TableBody 
-      className={
-        cn([
-          'text-xxs', 
-          isAvailabilitiesLoading && 'emptyTableBody',
-        ])
-      }
+    <TableBody
+      className={cn(['text-xxs', isAvailabilitiesLoading && 'emptyTableBody'])}
     >
       {new Array(rowsLength).fill(0).map((_, idx) => {
         const hour = idx + 1;
@@ -473,7 +468,9 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               </>
             )}
             <TableCell className="bg-muted/50">
-              {isAvailabilitiesLoading ? '' : calcPreselection(availability) || ''}
+              {isAvailabilitiesLoading
+                ? ''
+                : calcPreselection(availability) || ''}
             </TableCell>
             <TableCell>
               <Input
@@ -600,7 +597,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                   id={`input-${idx}-${4}`}
                   onKeyDown={(e) => handleKeyDown(e, idx, 4)}
                   className={cn(
-                    'h-full px-2 py-0 transition-colors duration-300',
+                    'h-full rounded-none border-transparent px-2 py-0 transition-colors duration-300',
                     isFlashingErrors &&
                       errors[hour] &&
                       errors[hour].includes('note') &&
@@ -611,7 +608,6 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                     isFlashingSuccess &&
                       data?.updated[hour]?.includes('note') &&
                       'border-blue-500',
-                    !isHourEditable(hour) && 'cursor-not-allowed !bg-muted',
                     'transition-colors duration-300',
                   )}
                 >
@@ -628,20 +624,29 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 </SelectPopover>
               </Select>
             </TableCell>
-            <TableCell className="flex justify-center">
-              <Checkbox
-                id={`input-${idx}-${5}`}
-                defaultChecked={insumo?.agc}
-                name={`${hour}-agc`}
-                disabled={!isHourEditable(hour)}
-                onKeyDown={(e) =>
-                  handleKeyDown(
-                    e as React.KeyboardEvent<HTMLInputElement>,
-                    idx,
-                    5,
-                  )
-                }
-              />
+            <TableCell
+              className={cn(
+                'flex justify-center',
+                !isHourEditable(hour)
+                  ? 'h-[18px] bg-muted py-0 opacity-50'
+                  : 'translate-y-[4px]',
+              )}
+            >
+              <div className="flex h-full items-center">
+                <Checkbox
+                  id={`input-${idx}-${0}`}
+                  defaultChecked={insumo?.agc}
+                  name={`${hour}-agc`}
+                  disabled={!isHourEditable(hour)}
+                  onKeyDown={(e) =>
+                    handleKeyDown(
+                      e as React.KeyboardEvent<HTMLInputElement>,
+                      idx,
+                      5,
+                    )
+                  }
+                />
+              </div>
             </TableCell>
             <TableCell>
               <Input
