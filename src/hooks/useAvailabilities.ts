@@ -54,7 +54,7 @@ export function useAvailabilities({
 
         data = json.data;
       } else {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 3_500));
         data = {
           data: [
             {
