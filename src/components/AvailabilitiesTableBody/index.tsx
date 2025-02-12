@@ -22,8 +22,8 @@ import {
 import { TableBody, TableCell, TableRow } from '@/components/ui/table';
 
 import {
+  AvailabilitiesQueryResponse,
   AvailabilityRecord,
-  useAvailabilities,
 } from '@/hooks/useAvailabilities';
 import { Insumo, useInsumos } from '@/hooks/useInsumos';
 
@@ -32,10 +32,14 @@ import { cn } from '@/lib/utils';
 
 interface AvailabilitiesTableBodyProps {
   rowsLength: number;
+  isAvailabilitiesLoading: boolean | null,
+  availabilities: AvailabilitiesQueryResponse | undefined;
 }
 
 const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   rowsLength,
+  isAvailabilitiesLoading,
+  availabilities,
 }) => {
   const { value: unit } = useUnit();
   const { value: date, dateDiff } = useDate();
@@ -43,22 +47,11 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   const { value: showFT1Columns } = useShowFT1Columns();
   const { value: showFT2Columns } = useShowFT2Columns();
 
-  const { data: availabilities } = useAvailabilities({
-    unitId: unit?.id?.toString(),
-    date: date?.toString(),
-    market,
-  });
-
   const { data: insumos } = useInsumos({
     date: date?.toString(),
     unitId: unit?.id?.toString(),
     market,
   });
-
-  const isSkeleton = React.useMemo(
-    () => !(date && availabilities && insumos),
-    [date, availabilities, insumos],
-  );
 
   const [checkedStates, setCheckedStates] = React.useState<{
     [key: string]: boolean;
@@ -346,8 +339,15 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   const { errors, isFlashingErrors, isFlashingSuccess, data } =
     useUpsertInsumosState();
   return (
-    <TableBody className={cn('text-xxs', isSkeleton && 'emptyTableBody')}>
-      {new Array(isSkeleton ? 24 : rowsLength).fill(0).map((_, idx) => {
+    <TableBody 
+      className={
+        cn([
+          'text-xxs', 
+          isAvailabilitiesLoading && 'emptyTableBody',
+        ])
+      }
+    >
+      {new Array(rowsLength).fill(0).map((_, idx) => {
         const hour = idx + 1;
         const availability = availabilities?.availabilities.find(
           (x) => x.hour === hour,
@@ -364,10 +364,10 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             )}
           >
             <TableCell className="border-l bg-muted/50 tabular-nums">
-              {isSkeleton ? '' : hour}
+              {isAvailabilitiesLoading ? '' : hour}
             </TableCell>
             <TableCell className="bg-muted/50 tabular-nums">
-              {isSkeleton
+              {isAvailabilitiesLoading
                 ? ''
                 : `${idx.toString().padStart(2, '0') + ':00'} -${' '}
                   ${hour.toString().padStart(2, '0') + ':00'}`}
@@ -375,7 +375,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             {showFT1Columns && (
               <>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -385,7 +385,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -394,7 +394,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -403,7 +403,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -412,7 +412,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -425,7 +425,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             {showFT2Columns && unit?.fuelType2 && (
               <>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -435,7 +435,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -444,7 +444,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -453,7 +453,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -462,7 +462,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isSkeleton
+                  {isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -473,7 +473,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               </>
             )}
             <TableCell className="bg-muted/50">
-              {isSkeleton ? '' : calcPreselection(availability) || ''}
+              {isAvailabilitiesLoading ? '' : calcPreselection(availability) || ''}
             </TableCell>
             <TableCell>
               <Input
@@ -697,19 +697,19 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               </TableCell>
             )}
             <TableCell className="bg-muted/50">
-              {isSkeleton ? '' : availability?.operationType}
+              {isAvailabilitiesLoading ? '' : availability?.operationType}
             </TableCell>
             <TableCell className="bg-muted/50">
-              {isSkeleton ? '' : availability?.comments}
+              {isAvailabilitiesLoading ? '' : availability?.comments}
             </TableCell>
             <TableCell className="bg-muted/50">
-              {isSkeleton
+              {isAvailabilitiesLoading
                 ? ''
                 : insumo &&
                   new Date(insumo.updated_at).toLocaleDateString('es-MX')}
             </TableCell>
             <TableCell className="border-r bg-muted/50">
-              {isSkeleton ? '' : insumo && 'hi@cueva.io'}
+              {isAvailabilitiesLoading ? '' : insumo && 'hi@cueva.io'}
             </TableCell>
           </TableRow>
         );

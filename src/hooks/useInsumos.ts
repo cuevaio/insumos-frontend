@@ -16,6 +16,13 @@ export interface Insumo {
   updated_at: string;
 }
 
+export interface ExtendedInsumo {
+  date: string;
+  market: string;
+  unit_id: string;
+  insumos: Insumo[];
+}
+
 export const useInsumos = ({
   date,
   unitId,
@@ -32,12 +39,7 @@ export const useInsumos = ({
       );
 
       const json = (await response.json()) as {
-        data: {
-          date: string;
-          market: string;
-          unit_id: string;
-          insumos: Insumo[];
-        };
+        data: ExtendedInsumo;
       };
 
       return json.data;
