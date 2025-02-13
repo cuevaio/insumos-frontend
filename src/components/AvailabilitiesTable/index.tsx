@@ -33,13 +33,24 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
     market,
   });
 
+  const hasRequiredFields = React.useMemo(() => {
+    return !!(date && unit && market);
+  }, [date, unit, market])
+
+  // const isAvailabilitiesLoading = React.useMemo(() => {
+  //   const hasRequiredFields = !!(date && unit && market);
+  //   return hasRequiredFields && !availabilities;
+  // }, [date, unit, market, availabilities]);
+
   const isAvailabilitiesLoading = React.useMemo(() => {
-    const hasRequiredFields = !!(date && unit && market);
+    // const hasRequiredFields = !!(date && unit && market);
     return hasRequiredFields && !availabilities;
-  }, [date, unit, market, availabilities]);
+  }, [hasRequiredFields, availabilities]);
 
   return (
-    <Table>
+    <Table 
+      className={cn([isAvailabilitiesLoading && 'animate-pulse'])}
+    >
       <TableHeader className="bg-muted">
         {(showFT1Columns || (showFT2Columns && unit?.fuelType2)) && (
           <TableRow className="text-xxs">
@@ -282,7 +293,8 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
       </TableHeader>
       <AvailabilitiesTableBody
         rowsLength={availabilities?.availabilities?.length ?? 24}
-        isAvailabilitiesLoading={isAvailabilitiesLoading ?? true}
+        isAvailabilitiesLoading={isAvailabilitiesLoading}
+        hasRequiredFields={hasRequiredFields}
         availabilities={availabilities}
       />
     </Table>

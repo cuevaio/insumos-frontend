@@ -32,13 +32,15 @@ import { cn } from '@/lib/utils';
 
 interface AvailabilitiesTableBodyProps {
   rowsLength: number;
-  isAvailabilitiesLoading: boolean | null;
+  isAvailabilitiesLoading: boolean;
+  hasRequiredFields: boolean;
   availabilities: AvailabilitiesQueryResponse | undefined;
 }
 
 const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   rowsLength,
   isAvailabilitiesLoading,
+  hasRequiredFields,
   availabilities,
 }) => {
   const { value: unit } = useUnit();
@@ -338,9 +340,13 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
 
   const { errors, isFlashingErrors, isFlashingSuccess, data } =
     useUpsertInsumosState();
+
+  // console.log('isAvailabilitiesLoading: ', isAvailabilitiesLoading)
+  console.log('hasRequiredFields: ', hasRequiredFields)
+
   return (
     <TableBody
-      className={cn(['text-xxs', isAvailabilitiesLoading && 'emptyTableBody'])}
+      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody'])}
     >
       {new Array(rowsLength).fill(0).map((_, idx) => {
         const hour = idx + 1;
@@ -359,10 +365,10 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             )}
           >
             <TableCell className="border-l bg-muted/50 tabular-nums">
-              {isAvailabilitiesLoading ? '' : hour}
+              {!hasRequiredFields || isAvailabilitiesLoading ? '' : hour}
             </TableCell>
             <TableCell className="bg-muted/50 tabular-nums">
-              {isAvailabilitiesLoading
+              {!hasRequiredFields || isAvailabilitiesLoading
                 ? ''
                 : `${idx.toString().padStart(2, '0') + ':00'} -${' '}
                   ${hour.toString().padStart(2, '0') + ':00'}`}
@@ -370,7 +376,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             {showFT1Columns && (
               <>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -380,7 +386,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -389,7 +395,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -398,7 +404,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -407,7 +413,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -420,7 +426,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             {showFT2Columns && unit?.fuelType2 && (
               <>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -430,7 +436,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -439,7 +445,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -448,7 +454,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -457,7 +463,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {isAvailabilitiesLoading
+                  {!hasRequiredFields || isAvailabilitiesLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -468,7 +474,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               </>
             )}
             <TableCell className="bg-muted/50">
-              {isAvailabilitiesLoading
+              {!hasRequiredFields || isAvailabilitiesLoading
                 ? ''
                 : calcPreselection(availability) || ''}
             </TableCell>
@@ -702,19 +708,19 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               </TableCell>
             )}
             <TableCell className="bg-muted/50">
-              {isAvailabilitiesLoading ? '' : availability?.operationType}
+              {!hasRequiredFields || isAvailabilitiesLoading ? '' : availability?.operationType}
             </TableCell>
             <TableCell className="bg-muted/50">
-              {isAvailabilitiesLoading ? '' : availability?.comments}
+              {!hasRequiredFields || isAvailabilitiesLoading ? '' : availability?.comments}
             </TableCell>
             <TableCell className="bg-muted/50">
-              {isAvailabilitiesLoading
+              {!hasRequiredFields || isAvailabilitiesLoading
                 ? ''
                 : insumo &&
                   new Date(insumo.updated_at).toLocaleDateString('es-MX')}
             </TableCell>
             <TableCell className="border-r bg-muted/50">
-              {isAvailabilitiesLoading ? '' : insumo && 'hi@cueva.io'}
+              {!hasRequiredFields || isAvailabilitiesLoading ? '' : insumo && 'hi@cueva.io'}
             </TableCell>
           </TableRow>
         );
