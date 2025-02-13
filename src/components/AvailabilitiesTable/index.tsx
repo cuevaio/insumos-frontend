@@ -35,15 +35,9 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
 
   const hasRequiredFields = React.useMemo(() => {
     return !!(date && unit && market);
-  }, [date, unit, market])
-
-  // const isAvailabilitiesLoading = React.useMemo(() => {
-  //   const hasRequiredFields = !!(date && unit && market);
-  //   return hasRequiredFields && !availabilities;
-  // }, [date, unit, market, availabilities]);
+  }, [date, unit, market]);
 
   const isAvailabilitiesLoading = React.useMemo(() => {
-    // const hasRequiredFields = !!(date && unit && market);
     return hasRequiredFields && !availabilities;
   }, [hasRequiredFields, availabilities]);
 
