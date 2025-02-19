@@ -4,7 +4,6 @@ import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest';
 
 import AvailabilitiesForm from '.';
 
-// Mocks
 vi.mock('@/contexts/AppContext', () => ({
   AppProvider: ({ children }: { children: React.ReactNode }) => children,
   useUnit: vi.fn().mockReturnValue({
@@ -36,7 +35,6 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-// Mock stateful dependencies
 const mockMutate = vi.fn();
 vi.mock('@/hooks/useUpsertInsumos', () => ({
   useUpsertInsumos: () => ({

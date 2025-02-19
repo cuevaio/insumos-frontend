@@ -93,13 +93,6 @@ describe('AvailabilitiesTable', () => {
     }),
   }));
 
-  // beforeEach(() => {
-  //   vi.spyOn(AppContext, 'useUnit').mockReturnValue({
-  //     value: MOCK_UNIT,
-  //     setId: vi.fn(),
-  //   });
-  // });
-
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
