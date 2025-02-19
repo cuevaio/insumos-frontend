@@ -341,8 +341,6 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   const { errors, isFlashingErrors, isFlashingSuccess, data } =
     useUpsertInsumosState();
 
-  console.log(JSON.stringify(availabilities))
-
   return (
     <TableBody
       className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isAvailabilitiesLoading && 'isAvailabilitiesLoading'])}
