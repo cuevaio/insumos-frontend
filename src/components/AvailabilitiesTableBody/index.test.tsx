@@ -2,8 +2,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { AvailabilitiesTableBodyProps } from '.';
-
 import AvailabilitiesTableBody from '.';
 
 const queryClient = new QueryClient();
@@ -1064,7 +1062,7 @@ describe('AvailabilitiesFooter', () => {
     vi.clearAllMocks();
   });
 
-  const renderComponent = ({ mockProps }: { mockProps: AvailabilitiesTableBodyProps }) => {
+  const renderComponent = ({ mockProps }: { mockProps: any }) => {
     return render(
       <QueryClientProvider client={queryClient}>
         <AvailabilitiesTableBody {...mockProps} />
