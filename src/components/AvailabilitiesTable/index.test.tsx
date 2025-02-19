@@ -120,7 +120,6 @@ describe('AvailabilitiesTable', () => {
 
     expect(screen.getAllByRole('columnheader')).toHaveLength(23);
   });
-
   it('renders 29 <th> elements when showFT2Columns is true', () => {
     vi.mocked(AppContext.useShowFT2Columns).mockReturnValue({
       value: true,

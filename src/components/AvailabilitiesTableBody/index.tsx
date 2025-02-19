@@ -346,8 +346,6 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     setDailyPriceFt2(event.target.value);
   };
 
-  console.log(JSON.stringify(availabilities))
-
   return (
     <TableBody
       className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isAvailabilitiesLoading && 'isAvailabilitiesLoading'])}
