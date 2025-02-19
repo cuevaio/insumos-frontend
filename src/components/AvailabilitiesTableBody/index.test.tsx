@@ -1015,7 +1015,7 @@ const MOCK_AVAILABILITIES = {
   }
 }
 
-describe('AvailabilitiesFooter', () => {
+describe('AvailabilitiesTableBody', () => {
   vi.mock('@/contexts/AppContext', () => ({
     AppProvider: ({ children }: { children: React.ReactNode }) => children,
     useUnit: vi.fn().mockReturnValue({
