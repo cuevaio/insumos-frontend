@@ -1,14 +1,11 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import * as constants from '@/lib/constants';
 
 import * as authHook from '../useAuth';
-import {
-  useAvailabilities,
-  type AvailabilityRecord,
-} from '../useAvailabilities';
+import { useAvailabilities } from '../useAvailabilities';
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -88,7 +85,7 @@ describe('useAvailabilities', () => {
   it('should fetch availabilities in production mode', async () => {
     vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
 
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       json: () => Promise.resolve(mockApiResponse),
     });
 
@@ -132,7 +129,7 @@ describe('useAvailabilities', () => {
   it('should handle API error', async () => {
     vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
 
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       json: () => Promise.resolve({ success: false, message: 'API Error' }),
     });
 
@@ -190,7 +187,7 @@ describe('useAvailabilities', () => {
       },
     };
 
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       json: () => Promise.resolve(mixedResponse),
     });
 

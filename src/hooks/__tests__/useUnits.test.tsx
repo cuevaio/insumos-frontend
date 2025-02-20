@@ -1,11 +1,13 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useUnits } from '../useUnits';
+import { renderHook, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+
+import * as constants from '@/lib/constants';
+
 import * as authHook from '../useAuth';
 import * as fuelTypesHook from '../useFuelTypes';
-import * as constants from '@/lib/constants';
 import type { FuelType } from '../useFuelTypes';
+import { useUnits } from '../useUnits';
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -77,8 +79,8 @@ describe('useUnits', () => {
 
   it('should fetch units in production mode', async () => {
     vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
-    
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+
+    (global.fetch as Mock).mockResolvedValueOnce({
       json: () => Promise.resolve(mockApiResponse),
     });
 
@@ -100,7 +102,7 @@ describe('useUnits', () => {
         headers: {
           Authorization: `Bearer ${mockAuthToken}`,
         },
-      }
+      },
     );
   });
 
@@ -122,8 +124,8 @@ describe('useUnits', () => {
 
   it('should handle API error', async () => {
     vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
-    
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+
+    (global.fetch as Mock).mockResolvedValueOnce({
       json: () => Promise.resolve({ success: false, message: 'API Error' }),
     });
 
@@ -150,8 +152,8 @@ describe('useUnits', () => {
 
   it('should map fuel types correctly', async () => {
     vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
-    
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+
+    (global.fetch as Mock).mockResolvedValueOnce({
       json: () => Promise.resolve(mockApiResponse),
     });
 
@@ -165,4 +167,4 @@ describe('useUnits', () => {
     expect(unit?.fuelType1).toEqual(mockFuelTypes[0]);
     expect(unit?.fuelType2).toEqual(mockFuelTypes[1]);
   });
-}); 
+});
