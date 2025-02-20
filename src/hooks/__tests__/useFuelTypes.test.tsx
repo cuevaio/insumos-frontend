@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import * as constants from '@/lib/constants';
 
@@ -41,7 +41,7 @@ describe('useFuelTypes', () => {
   it('should fetch fuel types in production mode', async () => {
     vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
 
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       json: () => Promise.resolve({ success: true, data: mockFuelTypes }),
     });
 
@@ -79,7 +79,7 @@ describe('useFuelTypes', () => {
   it('should handle API error', async () => {
     vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
 
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       json: () => Promise.resolve({ success: false, message: 'API Error' }),
     });
 

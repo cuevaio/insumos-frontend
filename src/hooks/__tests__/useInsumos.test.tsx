@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useInsumos } from '../useInsumos';
@@ -28,7 +28,7 @@ describe('useInsumos', () => {
         hour: 1,
         min: 100,
         max: 200,
-        note: 'NOTE1',
+        note: "c_amb",
         agc: true,
         price_ft1: 50,
         created_at: '2024-03-20T00:00:00Z',
@@ -42,7 +42,7 @@ describe('useInsumos', () => {
   });
 
   it('should fetch insumos when all parameters are provided', async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       json: () => Promise.resolve({ data: mockInsumoData }),
     });
 
@@ -122,7 +122,7 @@ describe('useInsumos', () => {
 
   it('should handle API error', async () => {
     const errorMessage = 'API Error';
-    (global.fetch as jest.Mock).mockRejectedValueOnce(new Error(errorMessage));
+    (global.fetch as Mock).mockRejectedValueOnce(new Error(errorMessage));
 
     const { result } = renderHook(
       () =>
