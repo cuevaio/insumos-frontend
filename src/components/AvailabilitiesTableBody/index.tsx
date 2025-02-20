@@ -30,7 +30,7 @@ import { Insumo, useInsumos } from '@/hooks/useInsumos';
 import { noteEnumValues } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
-interface AvailabilitiesTableBodyProps {
+export interface AvailabilitiesTableBodyProps {
   rowsLength: number;
   isAvailabilitiesLoading: boolean;
   hasRequiredFields: boolean;
@@ -343,7 +343,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
 
   return (
     <TableBody
-      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody'])}
+      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isAvailabilitiesLoading && 'isAvailabilitiesLoading'])}
     >
       {new Array(rowsLength).fill(0).map((_, idx) => {
         const hour = idx + 1;
