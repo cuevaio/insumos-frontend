@@ -2,7 +2,7 @@ import React from 'react';
 
 import {
   useDate,
-  useMarket,
+  // useMarket,
   useShowFT1Columns,
   useShowFT2Columns,
   useUnit,
@@ -25,35 +25,30 @@ import {
   AvailabilitiesQueryResponse,
   AvailabilityRecord,
 } from '@/hooks/useAvailabilities';
-import { Insumo, useInsumos } from '@/hooks/useInsumos';
+import { Insumo, ExtendedInsumo } from '@/hooks/useInsumos';
 
 import { noteEnumValues } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 export interface AvailabilitiesTableBodyProps {
   rowsLength: number;
-  isAvailabilitiesLoading: boolean;
+  isContentLoading: boolean;
   hasRequiredFields: boolean;
   availabilities: AvailabilitiesQueryResponse | undefined;
+  insumos: ExtendedInsumo | undefined;
 }
 
 const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   rowsLength,
-  isAvailabilitiesLoading,
+  isContentLoading,
   hasRequiredFields,
   availabilities,
+  insumos,
 }) => {
   const { value: unit } = useUnit();
   const { value: date, dateDiff } = useDate();
-  const { value: market } = useMarket();
   const { value: showFT1Columns } = useShowFT1Columns();
   const { value: showFT2Columns } = useShowFT2Columns();
-
-  const { data: insumos } = useInsumos({
-    date: date?.toString(),
-    unitId: unit?.id?.toString(),
-    market,
-  });
 
   const [checkedStates, setCheckedStates] = React.useState<{
     [key: string]: boolean;
@@ -100,7 +95,9 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     );
   };
 
-  const calcPreselection = (availability?: AvailabilityRecord) => {
+  const calcPreselection = (
+    availability?: AvailabilityRecord,
+  ) => {
     if (!unit || !availability) return;
 
     const comments = (availability.comments || '')
@@ -343,11 +340,11 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
 
   return (
     <TableBody
-      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isAvailabilitiesLoading && 'isAvailabilitiesLoading'])}
+      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isContentLoading && 'isContentLoading'])}
     >
       {new Array(rowsLength).fill(0).map((_, idx) => {
         const hour = idx + 1;
-        const availability = availabilities?.availabilities.find(
+        const availability = availabilities?.availabilities?.find(
           (x) => x.hour === hour,
         );
 
@@ -362,10 +359,10 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             )}
           >
             <TableCell className="border-l bg-muted/50 tabular-nums">
-              {!hasRequiredFields || isAvailabilitiesLoading ? '' : hour}
+              {!hasRequiredFields || isContentLoading ? '' : hour}
             </TableCell>
             <TableCell className="bg-muted/50 tabular-nums">
-              {!hasRequiredFields || isAvailabilitiesLoading
+              {!hasRequiredFields || isContentLoading
                 ? ''
                 : `${idx.toString().padStart(2, '0') + ':00'} -${' '}
                   ${hour.toString().padStart(2, '0') + ':00'}`}
@@ -373,7 +370,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             {showFT1Columns && (
               <>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -383,7 +380,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -392,7 +389,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -401,7 +398,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -410,7 +407,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -423,7 +420,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             {showFT2Columns && unit?.fuelType2 && (
               <>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -433,7 +430,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -442,7 +439,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -451,7 +448,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -460,7 +457,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                       )}
                 </TableCell>
                 <TableCell className="bg-muted/50">
-                  {!hasRequiredFields || isAvailabilitiesLoading
+                  {!hasRequiredFields || isContentLoading
                     ? ''
                     : renderCapacityCell(
                         idx,
@@ -471,7 +468,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               </>
             )}
             <TableCell className="bg-muted/50">
-              {!hasRequiredFields || isAvailabilitiesLoading
+              {!hasRequiredFields || isContentLoading
                 ? ''
                 : calcPreselection(availability) || ''}
             </TableCell>
@@ -638,7 +635,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               <div className="flex h-full items-center">
                 <Checkbox
                   id={`input-${idx}-${0}`}
-                  defaultChecked={insumo?.agc}
+                  checked={!!insumo?.agc}
                   name={`${hour}-agc`}
                   disabled={!isHourEditable(hour)}
                   onKeyDown={(e) =>
@@ -705,19 +702,19 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               </TableCell>
             )}
             <TableCell className="bg-muted/50">
-              {!hasRequiredFields || isAvailabilitiesLoading ? '' : availability?.operationType}
+              {!hasRequiredFields || isContentLoading ? '' : availability?.operationType}
             </TableCell>
             <TableCell className="bg-muted/50">
-              {!hasRequiredFields || isAvailabilitiesLoading ? '' : availability?.comments}
+              {!hasRequiredFields || isContentLoading ? '' : availability?.comments}
             </TableCell>
             <TableCell className="bg-muted/50">
-              {!hasRequiredFields || isAvailabilitiesLoading
+              {!hasRequiredFields || isContentLoading
                 ? ''
                 : insumo &&
                   new Date(insumo.updated_at).toLocaleDateString('es-MX')}
             </TableCell>
             <TableCell className="border-r bg-muted/50">
-              {!hasRequiredFields || isAvailabilitiesLoading ? '' : insumo && 'hi@cueva.io'}
+              {!hasRequiredFields || isContentLoading ? '' : insumo?.modified_by || ''}
             </TableCell>
           </TableRow>
         );

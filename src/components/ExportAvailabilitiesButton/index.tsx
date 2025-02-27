@@ -24,6 +24,7 @@ const ExportAvailabilitiesButton = () => {
 
   const { data } = useAvailabilities({
     unitId: unit?.id,
+    unitName: unit?.name?.toString(),
     date: date?.toString(),
     market,
   });
@@ -31,7 +32,9 @@ const ExportAvailabilitiesButton = () => {
 
   const { data: insumos } = useInsumos({
     date: date?.toString(),
-    unitId: unit?.id,
+    unitId: unit?.id?.toString(),
+    unitName: unit?.name?.toString(),
+    portfolioName: unit?.portfolioName?.toString(),
     market,
   });
 

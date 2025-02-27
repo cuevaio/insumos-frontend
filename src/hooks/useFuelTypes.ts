@@ -8,9 +8,9 @@ import { CPPAPIResponse } from '@/lib/types';
 export interface FuelType {
   id: string;
   name: string;
-  createdBy: string;
-  modifiedBy: string;
-  modifiedOn: string;
+  createdBy?: string;
+  modifiedBy?: string;
+  modifiedOn?: string;
 }
 
 export function useFuelTypes() {
