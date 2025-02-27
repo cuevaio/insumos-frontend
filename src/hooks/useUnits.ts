@@ -17,6 +17,15 @@ export interface Unit {
   includeLie: boolean;
 }
 
+interface UnitGSMS {
+  id: string;
+  name: string;
+  portfolioName: string;
+  fuelTypeList: FuelType[];
+  includeCil: boolean;
+  includeLie: boolean;
+}
+
 export function useUnits() {
   const authToken = useAuth();
 

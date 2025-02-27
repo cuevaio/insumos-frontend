@@ -93,7 +93,9 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     );
   };
 
-  const calcPreselection = (availability?: AvailabilityRecord) => {
+  const calcPreselection = (
+    availability?: AvailabilityRecord,
+  ) => {
     if (!unit || !availability) return;
 
     const comments = (availability.comments || '')
@@ -348,7 +350,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
 
   return (
     <TableBody
-      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isAvailabilitiesLoading && 'isAvailabilitiesLoading'])}
+      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isContentLoading && 'isContentLoading'])}
     >
       {new Array(rowsLength).fill(0).map((_, idx) => {
         const hour = idx + 1;
