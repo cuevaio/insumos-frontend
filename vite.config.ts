@@ -15,8 +15,8 @@ export default defineConfig(({ command, mode }) => {
 		return os.platform() === 'darwin';
 	}
 
-  const getApiDomain = () => {
-		// if (command === 'serve') return '';
+  const getApiDomain = (command?: 'build' | 'serve') => {
+		if (command === 'serve') return '';
 		if (isExternalOS()) return VITE_EXTERNAL_API_DOMAIN;
 		return VITE_API_DOMAIN;
 	}
@@ -28,7 +28,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [react()],
     define: {
-			__API_DOMAIN__: JSON.stringify(getApiDomain()),
+			__API_DOMAIN__: JSON.stringify(getApiDomain(command)),
 			__BASE__PATHNAME__: JSON.stringify(getBasePathname(command)),
 		},
     resolve: {
