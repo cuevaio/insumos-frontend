@@ -72,7 +72,7 @@ export const useInsumos = ({
 
       // return json.data;
 
-      const response = await fetch('/api/mem-offers-input-service/availability/loadGsms', {
+      const response = await fetch(`${__API_DOMAIN__}/api/mem-offers-input-service/availability/loadGsms`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
