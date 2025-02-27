@@ -13,6 +13,7 @@ import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AvailabilitiesTableBody from '@/components/AvailabilitiesTableBody';
 
 import { useAvailabilities } from '@/hooks/useAvailabilities';
+import { useInsumos } from '@/hooks/useInsumos';
 
 import { cn } from '@/lib/utils';
 
@@ -29,9 +30,18 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
 
   const { data: availabilities } = useAvailabilities({
     unitId: unit?.id?.toString(),
+    unitName: unit?.name?.toString(),
     date: date?.toString(),
     market,
   });
+
+  const { data: insumos } = useInsumos({
+      date: date?.toString(),
+      unitId: unit?.id?.toString(),
+      unitName: unit?.name?.toString(),
+      portfolioName: unit?.portfolioName?.toString(),
+      market,
+    });
 
   const hasRequiredFields = React.useMemo(() => {
     return !!(date && unit && market);
@@ -40,6 +50,10 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
   const isAvailabilitiesLoading = React.useMemo(() => {
     return hasRequiredFields && !availabilities;
   }, [hasRequiredFields, availabilities]);
+
+  const isInsumosLoading = React.useMemo(() => {
+    return hasRequiredFields && !insumos;
+  }, [hasRequiredFields, insumos]);
 
   return (
     <Table 
@@ -286,10 +300,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
         </TableRow>
       </TableHeader>
       <AvailabilitiesTableBody
-        rowsLength={availabilities?.availabilities?.length ?? 24}
-        isAvailabilitiesLoading={isAvailabilitiesLoading}
+        rowsLength={(availabilities?.availabilities?.length || insumos?.insumos?.length) ?? 24}
+        isContentLoading={isAvailabilitiesLoading || isInsumosLoading}
         hasRequiredFields={hasRequiredFields}
         availabilities={availabilities}
+        insumos={insumos}
       />
     </Table>
   );

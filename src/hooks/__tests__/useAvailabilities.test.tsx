@@ -206,6 +206,6 @@ describe('useAvailabilities', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(result.current.data?.availabilities).toHaveLength(1);
-    expect(result.current.data?.availabilities[0].marketType).toBe(mockMarket);
+    expect(result.current.data?.availabilities?.at(0)?.marketType).toBe(mockMarket);
   });
 });
