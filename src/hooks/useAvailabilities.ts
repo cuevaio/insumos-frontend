@@ -27,7 +27,7 @@ export function useAvailabilities({
 
   return useQuery({
     queryFn: async () => {
-      const response = await fetch(`/api/mem-offers-input-service/availability/loadCpp`, {
+      const response = await fetch(`${__API_DOMAIN__}/api/mem-offers-input-service/availability/loadCpp`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

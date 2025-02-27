@@ -54,7 +54,7 @@ export function useUnits() {
 
   return useQuery({
     queryFn: async () => {
-      const response = await fetch(`/api/mem-offers-input-service/unit/load`);
+      const response = await fetch(`${__API_DOMAIN__}/api/mem-offers-input-service/unit/load`);
       const json = (await response.json()) as UnitGSMS[];
       const data = json.map((unitGSMS) => {
         return {
