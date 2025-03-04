@@ -31,8 +31,8 @@ interface FuelGSMS {
 }
 
 interface InsumoGSMS {
-    minOffer: number;
-    maxOffer: number;
+    minAvailability: number;
+    maxAvailability: number;
     fuels: FuelGSMS[];
     agc: boolean;
     note: string;
@@ -62,26 +62,12 @@ export const useInsumos = ({
 }) => {
   return useQuery({
     queryFn: async () => {
-      // const response = await fetch(
-      //   `https://cpp.cueva.io/api/insumos?date=${date}&unit_id=${unitId}&market=${market}`,
-      // );
-
-      // const json = (await response.json()) as {
-      //   data: ExtendedInsumo;
-      // };
-
-      // return json.data;
-
       const response = await fetch(`${__API_DOMAIN__}/api/mem-offers-input-service/availability/loadGsms`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          // unitName: '02EAT-PTA',
-          // portfolioName: 'MEM_SIN',
-          // fromDate: '2025-01-20',
-          // toDate: '2025-01-20',
           unitName,
           portfolioName,
           fromDate: date,
@@ -104,8 +90,8 @@ export const useInsumos = ({
 
           return {
             hour: idx + 1,
-            min: insumoGSMS.minOffer,
-            max: insumoGSMS.maxOffer,
+            min: insumoGSMS.minAvailability,
+            max: insumoGSMS.maxAvailability,
             share_ft1: ft1?.percentage! / 100,
             share_ft2: ft2?.percentage! / 100,
             note: insumoGSMS.note,
