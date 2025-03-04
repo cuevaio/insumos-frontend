@@ -2,7 +2,6 @@ import React from 'react';
 
 import {
   useDate,
-  // useMarket,
   useShowFT1Columns,
   useShowFT2Columns,
   useUnit,

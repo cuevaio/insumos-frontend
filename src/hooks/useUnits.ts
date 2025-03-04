@@ -2,12 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '@/hooks/useAuth';
 
-// import { DEV } from '@/lib/constants';
-// import { CPPAPIResponse } from '@/lib/types';
-
 import { 
   FuelType, 
-  // useFuelTypes, 
 } from './useFuelTypes';
 
 export interface Unit {
@@ -67,7 +63,6 @@ export function useUnits() {
         } as UnitWithFuelType
       });
       
-      console.log('useUnits data: ', JSON.stringify(data))
       return data;
     },
     queryKey: ['allUnits'],

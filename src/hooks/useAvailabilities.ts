@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 
-// import { DEV } from '@/lib/constants';
 import { CPPAPIResponse, Market } from '@/lib/types';
 
 import { useAuth } from './useAuth';
