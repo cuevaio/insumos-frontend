@@ -348,6 +348,17 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     setDailyPriceFt2(event.target.value);
   };
 
+  const [dailyPriceFt1, setDailyPriceFt1] = React.useState(insumos?.insumos?.at(0)?.price_ft1 ?? '')
+  const [dailyPriceFt2, setDailyPriceFt2] = React.useState(insumos?.insumos?.at(0)?.price_ft2 ?? '')
+  
+  const handleChangePriceFt1 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDailyPriceFt1(event.target.value)
+  }
+
+  const handleChangePriceFt2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDailyPriceFt2(event.target.value)
+  }
+
   return (
     <TableBody
       className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isContentLoading && 'isContentLoading'])}
