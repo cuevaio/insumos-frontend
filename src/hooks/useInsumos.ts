@@ -59,8 +59,8 @@ interface FuelGSMS {
 }
 
 interface InsumoGSMS {
-    minOffer: number;
-    maxOffer: number;
+    minAvailability: number;
+    maxAvailability: number;
     fuels: FuelGSMS[];
     agc: boolean;
     note: string;
