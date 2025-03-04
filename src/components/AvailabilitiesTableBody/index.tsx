@@ -338,6 +338,17 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   const { errors, isFlashingErrors, isFlashingSuccess, data } =
     useUpsertInsumosState();
 
+  const [dailyPriceFt1, setDailyPriceFt1] = React.useState(insumos?.insumos?.at(0)?.price_ft1 ?? '')
+  const [dailyPriceFt2, setDailyPriceFt2] = React.useState(insumos?.insumos?.at(0)?.price_ft2 ?? '')
+  
+  const handleChangePriceFt1 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDailyPriceFt1(event.target.value)
+  }
+
+  const handleChangePriceFt2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDailyPriceFt2(event.target.value)
+  }
+
   return (
     <TableBody
       className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isContentLoading && 'isContentLoading'])}
@@ -653,9 +664,10 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 type="number"
                 id={`input-${idx}-${6}`}
                 step=".01"
-                defaultValue={insumo?.price_ft1}
+                value={dailyPriceFt1}
                 disabled={!isHourEditable(hour)}
                 onKeyDown={(e) => handleKeyDown(e, idx, 6)}
+                onChange={handleChangePriceFt1}
                 className={cn(
                   isFlashingErrors &&
                     errors[hour] &&
@@ -679,9 +691,10 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                   type="number"
                   id={`input-${idx}-${7}`}
                   step=".01"
-                  defaultValue={insumo?.price_ft2}
+                  value={dailyPriceFt2}
                   disabled={!isHourEditable(hour)}
                   onKeyDown={(e) => handleKeyDown(e, idx, 7)}
+                  onChange={handleChangePriceFt2}
                   className={cn(
                     isFlashingErrors &&
                       errors[hour] &&
