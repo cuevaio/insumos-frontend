@@ -77,7 +77,7 @@ export const useInsumos = ({
       });
 
       const json = (await response.json()) as {
-        data: ExtendedInsumoGSMS
+        data: ExtendedInsumoGSMS;
       };
 
       const data = {
