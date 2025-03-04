@@ -38,4 +38,21 @@ export const prices: {
     tm: 56.08,
     op: 86.94,
   },
+
+  // TODO: Check where prices must be loaded from
+  '0194ae0b-a075-32d6-797f-73cf343d231b': {
+    avg: 333.295,
+    tm: 43.98,
+    op: 98.14,
+  },
+  '0194ae0f-7d95-a90c-ca92-23bbe7178067': {
+    avg: 485.45,
+    tm: 36.98,
+    op: 96.64,
+  },
+  '0194ae10-eb7d-8677-5be2-2e0d6630e6f9': {
+    avg: 835.765,
+    tm: 56.08,
+    op: 86.94,
+  },
 };

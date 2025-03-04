@@ -1133,6 +1133,6 @@ describe('AvailabilitiesTableBody', () => {
     renderComponent({ mockProps });
     
     const tbody = screen.getByRole('rowgroup');
-    expect(tbody).toHaveClass('isAvailabilitiesLoading');
+    expect(tbody).toHaveClass('isContentLoading');
   });
 });
