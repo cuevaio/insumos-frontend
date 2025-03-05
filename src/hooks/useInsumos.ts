@@ -31,6 +31,7 @@ interface FuelGSMS {
 }
 
 interface InsumoGSMS {
+    hour: number,
     minAvailability: number;
     maxAvailability: number;
     fuels: FuelGSMS[];
@@ -40,7 +41,7 @@ interface InsumoGSMS {
     modifiedOn: string;
 }
 
-interface ExtendedInsumoGSMS {
+export interface ExtendedInsumoGSMS {
     data: InsumoGSMS[];
     averageLast30Days: number;
     transmissionFee: number;
@@ -78,6 +79,8 @@ export const useInsumos = ({
 
       const json = (await response.json()) as {
         data: ExtendedInsumoGSMS;
+        message: string;
+        timestamp: string;
       };
 
       const data = {
