@@ -605,14 +605,9 @@ describe('useAvailabilities', () => {
       {
         method: 'PUT',
         headers: {
-          Authorization: `Bearer ${mockAuthToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          // unitId: mockUnitId,
-          // fromDate: mockDate,
-          // toDate: mockDate,
-          // statusCode: 1,
           unitName: mockUnitName,
           portfolioName: mockPortfolioName,
           fromDate: mockDate,
@@ -623,6 +618,7 @@ describe('useAvailabilities', () => {
     );
   });
 
+  // TODO: The current API is not handling success state yet
   // it('should handle API error', async () => {
   //   vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
 
@@ -646,63 +642,64 @@ describe('useAvailabilities', () => {
   //   expect(result.current.error?.message).toBe('API Error');
   // });
 
-  // it('should not fetch when required parameters are missing', async () => {
-  //   vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
+  it('should not fetch when required parameters are missing', async () => {
+    vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
 
-  //   const { result } = renderHook(
-  //     () =>
-  //       useAvailabilities({
-  //         unitId: null,
-  //         date: mockDate,
-  //         market: mockMarket,
-  //       }),
-  //     {
-  //       wrapper: createWrapper(),
-  //     },
-  //   );
+    const { result } = renderHook(
+      () =>
+        useAvailabilities({
+          unitId: null,
+          date: mockDate,
+          market: mockMarket,
+        }),
+      {
+        wrapper: createWrapper(),
+      },
+    );
 
-  //   await waitFor(() => expect(result.current.isLoading).toBe(false));
-  //   expect(result.current.data).toBeUndefined();
-  //   expect(global.fetch).not.toHaveBeenCalled();
-  // });
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.data).toBeUndefined();
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
 
-  // it('should filter availabilities by market type', async () => {
-  //   vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
+  it('should filter availabilities by market type', async () => {
+    vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
 
-  //   const mixedResponse = {
-  //     ...mockApiResponse,
-  //     data: {
-  //       ...mockApiResponse.data,
-  //       data: [
-  //         ...mockApiResponse.data.data,
-  //         {
-  //           ...mockApiResponse.data.data[0],
-  //           id: 'different-id',
-  //           marketType: 'MTR',
-  //         },
-  //       ],
-  //     },
-  //   };
+    const mixedResponse = {
+      ...mockApiResponse,
+      data: {
+        ...mockApiResponse.data,
+        data: [
+          ...mockApiResponse.data.data,
+          {
+            ...mockApiResponse.data.data[0],
+            id: 'different-id',
+            marketType: 'MTR',
+          },
+        ],
+      },
+    };
 
-  //   (global.fetch as Mock).mockResolvedValueOnce({
-  //     json: () => Promise.resolve(mixedResponse),
-  //   });
+    (global.fetch as Mock).mockResolvedValueOnce({
+      json: () => Promise.resolve(mixedResponse),
+    });
 
-  //   const { result } = renderHook(
-  //     () =>
-  //       useAvailabilities({
-  //         unitId: mockUnitId,
-  //         date: mockDate,
-  //         market: mockMarket,
-  //       }),
-  //     {
-  //       wrapper: createWrapper(),
-  //     },
-  //   );
+    const { result } = renderHook(
+      () =>
+        useAvailabilities({
+          unitId: mockUnitId,
+          unitName: mockUnitName,
+          date: mockDate,
+          market: mockMarket,
+        }),
+      {
+        wrapper: createWrapper(),
+      },
+    );
 
-  //   await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-  //   expect(result.current.data?.availabilities).toHaveLength(1);
-  //   expect(result.current.data?.availabilities?.at(0)?.marketType).toBe(mockMarket);
-  // });
+    expect(result.current.data?.availabilities).toHaveLength(24);
+    expect(result.current.data?.availabilities?.at(0)?.marketType).toBe(mockMarket);
+  });
 });

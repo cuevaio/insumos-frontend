@@ -45,8 +45,6 @@ export function useAvailabilities({
         days: { [index: string]: number };
       }>;
 
-      console.log('useAvailabilities json:', JSON.stringify(json))
-
       // TODO: Tell backend add success field
       // if (!json.success) throw new Error(json.message);
 
