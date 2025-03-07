@@ -618,7 +618,7 @@ describe('useAvailabilities', () => {
     );
   });
 
-  // TODO: The current API is not handling success state yet
+  // // TODO: The current API is not handling success state yet
   // it('should handle API error', async () => {
   //   vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
 
