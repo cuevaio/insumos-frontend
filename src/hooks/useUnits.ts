@@ -17,7 +17,7 @@ export interface Unit {
   includeLie: boolean;
 }
 
-interface UnitGSMS {
+export interface UnitGSMS {
   id: string;
   name: string;
   portfolioName: string;
