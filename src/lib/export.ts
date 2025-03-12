@@ -1,6 +1,5 @@
 import ExcelJS from 'exceljs';
 
-import { FuelType } from '@/hooks/useFuelTypes';
 import { Insumo } from '@/hooks/useInsumos';
 import { Unit } from '@/hooks/useUnits';
 
@@ -68,11 +67,11 @@ export const populateAvailabilityData = (
   availability: any,
   index: number,
   insumo: Insumo | undefined,
-  fuelType2: FuelType | undefined,
+  unit: Unit,
 ) => {
   populateFuelTypeFields(worksheet, availability, index, 1, 'D');
 
-  if (fuelType2) {
+  if (unit.fuelTypeList[1]) {
     populateFuelTypeFields(worksheet, availability, index, 2, 'I');
   }
 
@@ -99,8 +98,6 @@ export const setupWorksheet = (
   worksheet: ExcelJS.Worksheet,
   date: string,
   unit: Unit,
-  fuelType1: FuelType,
-  fuelType2: FuelType | undefined,
 ): ExcelJS.Worksheet => {
   const [year, month, day] = date.split('-');
 
@@ -110,17 +107,17 @@ export const setupWorksheet = (
     `Clave de la Central o Paquete: "${unit.name}"`;
   worksheet.getCell('I3').value = `${day}/${month}/${year}`;
   worksheet.getCell('D4').value =
-    `Capacidad Declarada de la Central o Paquete con ${fuelType1.name}`;
+    `Capacidad Declarada de la Central o Paquete con ${unit.fuelTypeList[0].name}`;
   worksheet.getCell('F5').value =
     'Capacidad Neta Expresada a Condiciones Ambientales Reales Considerando Cantidad de ' +
-    `${fuelType1.name} Disponible MW`;
+    `${unit.fuelTypeList[0].name} Disponible MW`;
 
-  if (fuelType2) {
+  if (unit.fuelTypeList[1]) {
     worksheet.getCell('I4').value =
-      `Capacidad Declarada de la Central o Paquete con ${fuelType2.name}`;
+      `Capacidad Declarada de la Central o Paquete con ${unit.fuelTypeList[1].name}`;
     worksheet.getCell('K5').value =
       'Capacidad Neta Expresada a Condiciones Ambientales Reales Considerando Cantidad de ' +
-      `${fuelType2.name} Disponible MW`;
+      `${unit.fuelTypeList[1].name} Disponible MW`;
   }
 
   return worksheet;

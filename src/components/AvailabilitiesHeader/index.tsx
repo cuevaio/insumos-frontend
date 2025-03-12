@@ -159,16 +159,16 @@ export const AvailabilitiesHeader = () => {
               onCheckedChange={setShowFT1Columns}
               data-testid="fuel-type-1-checkbox"
             >
-              {unit?.fuelType1?.name.toUpperCase()}
+              {unit?.fuelTypeList[0].name.toUpperCase()}
             </DropdownMenuCheckboxItem>
-            {unit?.fuelType2 && (
+            {unit?.fuelTypeList[1] && (
               <DropdownMenuCheckboxItem
                 className="text-xs"
                 checked={showFT2Columns}
                 onCheckedChange={setShowFT2Columns}
                 data-testid="fuel-type-2-checkbox"
               >
-                {unit.fuelType2.name.toUpperCase()}
+                {unit?.fuelTypeList[1].name.toUpperCase()}
               </DropdownMenuCheckboxItem>
             )}
           </DropdownMenuContent>

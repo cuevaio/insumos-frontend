@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 
 import { useAvailabilities } from '@/hooks/useAvailabilities';
-import { useFuelTypes } from '@/hooks/useFuelTypes';
 import { useInsumos } from '@/hooks/useInsumos';
 
 import { populateAvailabilityData, setupWorksheet } from '@/lib/export';
@@ -32,25 +31,14 @@ const ExportAvailabilitiesButton = () => {
 
   const { data: insumos } = useInsumos({
     date: date?.toString(),
-    unitId: unit?.id?.toString(),
-    unitName: unit?.name?.toString(),
-    portfolioName: unit?.portfolioName?.toString(),
+    unit: unit,
     market,
   });
-
-  const { data: fuelTypes } = useFuelTypes();
-
-  const fuelType1 =
-    unit?.fuelType1ID && fuelTypes?.find((f) => f.id === unit.fuelType1ID);
-
-  const fuelType2 =
-    unit?.fuelType2ID && fuelTypes?.find((f) => f.id === unit.fuelType2ID);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
       if (!date) throw new Error('Select a date first!');
       if (!unit) throw new Error('Select a unit first!');
-      if (!fuelType1) throw new Error('Fuel type 1 not found');
       if (!availabilities) throw new Error('No availabilities found');
       if (!insumos) throw new Error('No insumos found');
 
@@ -69,8 +57,6 @@ const ExportAvailabilitiesButton = () => {
         templateWorksheet,
         date.toString(),
         unit,
-        fuelType1,
-        fuelType2 || undefined,
       );
 
       availabilities.forEach((availability, index) => {
@@ -81,7 +67,7 @@ const ExportAvailabilitiesButton = () => {
           availability,
           index,
           insumo || undefined,
-          fuelType2 || undefined,
+          unit,
         );
       });
 
