@@ -5,7 +5,6 @@ import {
   useShowFT1Columns,
   useShowFT2Columns,
   useUnit,
-  useUpsertInsumosState,
 } from '@/contexts/AppContext';
 
 import { Checkbox } from '@/components/ui/checkbox';
@@ -24,9 +23,9 @@ import {
   AvailabilitiesQueryResponse,
   AvailabilityRecord,
 } from '@/hooks/useAvailabilities';
-import { Insumo, ExtendedInsumo } from '@/hooks/useInsumos';
+import { ExtendedInsumo, Insumo } from '@/hooks/useInsumos';
 
-import { noteEnumValues } from '@/lib/constants';
+import { noteConstraintMap } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 export interface AvailabilitiesTableBodyProps {
@@ -94,9 +93,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     );
   };
 
-  const calcPreselection = (
-    availability?: AvailabilityRecord,
-  ) => {
+  const calcPreselection = (availability?: AvailabilityRecord) => {
     if (!unit || !availability) return;
 
     const comments = (availability.comments || '')
@@ -172,7 +169,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     }
 
     // CASE 1
-    if (unit?.fuelType2) {
+    if (unit?.fuelTypeList[1]) {
       if (
         typeof availability.fuelType2AvailabilityNetCapacity === 'number' &&
         availability.fuelType2AvailabilityNetCapacity > 0 &&
@@ -225,7 +222,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
         checked[`${a.hour - 1}-ft1cil`] = false;
         checked[`${a.hour - 1}-ft1lie`] = false;
 
-        if (unit?.fuelType2ID) {
+        if (unit?.fuelTypeList[1]) {
           checked[`${a.hour - 1}-fix-ft2fnc`] = false;
           checked[`${a.hour - 1}-ft2nc`] = false;
           checked[`${a.hour - 1}-ft2anc`] = false;
@@ -249,7 +246,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
           checked[`${a.hour - 1}-ft1lie`] = true;
         }
 
-        if (unit?.fuelType2ID) {
+        if (unit?.fuelTypeList[1]) {
           if (a.fixedAvailability.fuelType2FixedNetCapacity === insumo.max) {
             checked[`${a.hour - 1}-fix-ft2fnc`] = true;
           }
@@ -334,23 +331,28 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     }
   };
 
-  const { errors, isFlashingErrors, isFlashingSuccess, data } =
-    useUpsertInsumosState();
+  const [dailyPriceFt1, setDailyPriceFt1] = React.useState(
+    insumos?.insumos?.at(0)?.price_ft1 ?? '',
+  );
+  const [dailyPriceFt2, setDailyPriceFt2] = React.useState(
+    insumos?.insumos?.at(0)?.price_ft2 ?? '',
+  );
 
-  const [dailyPriceFt1, setDailyPriceFt1] = React.useState(insumos?.insumos?.at(0)?.price_ft1 ?? '')
-  const [dailyPriceFt2, setDailyPriceFt2] = React.useState(insumos?.insumos?.at(0)?.price_ft2 ?? '')
-  
   const handleChangePriceFt1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDailyPriceFt1(event.target.value)
-  }
+    setDailyPriceFt1(event.target.value);
+  };
 
   const handleChangePriceFt2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDailyPriceFt2(event.target.value)
-  }
+    setDailyPriceFt2(event.target.value);
+  };
 
   return (
     <TableBody
-      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isContentLoading && 'isContentLoading'])}
+      className={cn([
+        'text-xxs',
+        hasRequiredFields && 'emptyTableBody',
+        isContentLoading && 'isContentLoading',
+      ])}
     >
       {new Array(rowsLength).fill(0).map((_, idx) => {
         const hour = idx + 1;
@@ -427,7 +429,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 </TableCell>
               </>
             )}
-            {showFT2Columns && unit?.fuelType2 && (
+            {showFT2Columns && unit?.fuelTypeList[1] && (
               <>
                 <TableCell className="bg-muted/50">
                   {!hasRequiredFields || isContentLoading
@@ -487,20 +489,11 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 type="number"
                 id={`input-${idx}-${0}`}
                 step=".01"
+                key={insumo?.max}
                 defaultValue={insumo?.max}
                 disabled={!isHourEditable(hour)}
                 onKeyDown={(e) => handleKeyDown(e, idx, 0)}
                 className={cn(
-                  isFlashingErrors &&
-                    errors[hour] &&
-                    errors[hour].includes('max') &&
-                    'border-red-500',
-                  isFlashingSuccess &&
-                    data?.inserted.includes(hour) &&
-                    'border-green-500',
-                  isFlashingSuccess &&
-                    data?.updated[hour]?.includes('max') &&
-                    'border-blue-500',
                   !isHourEditable(hour)
                     ? 'cursor-not-allowed !bg-muted'
                     : 'cursor-text',
@@ -514,20 +507,11 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 type="number"
                 id={`input-${idx}-${1}`}
                 step=".01"
+                key={insumo?.min}
                 defaultValue={insumo?.min}
                 disabled={!isHourEditable(hour)}
                 onKeyDown={(e) => handleKeyDown(e, idx, 1)}
                 className={cn(
-                  isFlashingErrors &&
-                    errors[hour] &&
-                    errors[hour].includes('min') &&
-                    'border-red-500',
-                  isFlashingSuccess &&
-                    data?.inserted.includes(hour) &&
-                    'border-green-500',
-                  isFlashingSuccess &&
-                    data?.updated[hour]?.includes('min') &&
-                    'border-blue-500',
                   !isHourEditable(hour) && 'cursor-not-allowed !bg-muted',
                   'transition-colors duration-300',
                 )}
@@ -539,18 +523,9 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 type="number"
                 id={`input-${idx}-${2}`}
                 step=".01"
+                key={insumo?.share_ft1}
                 disabled={!isHourEditable(hour)}
                 className={cn(
-                  isFlashingErrors &&
-                    errors[hour] &&
-                    errors[hour].includes('share_ft1') &&
-                    'border-red-500',
-                  isFlashingSuccess &&
-                    data?.inserted.includes(hour) &&
-                    'border-green-500',
-                  isFlashingSuccess &&
-                    data?.updated[hour]?.includes('share_ft1') &&
-                    'border-blue-500',
                   !isHourEditable(hour) && 'cursor-not-allowed !bg-muted',
                   'transition-colors duration-300',
                 )}
@@ -563,24 +538,15 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 name={`${hour}-share_ft1`}
               />
             </TableCell>
-            {unit?.fuelType2 && (
+            {unit?.fuelTypeList[1] && (
               <TableCell>
                 <Input
                   type="number"
                   id={`input-${idx}-${3}`}
+                  key={insumo?.share_ft2}
                   step=".01"
                   disabled={!isHourEditable(hour)}
                   className={cn(
-                    isFlashingErrors &&
-                      errors[hour] &&
-                      errors[hour].includes('share_ft2') &&
-                      'border-red-500',
-                    isFlashingSuccess &&
-                      data?.inserted.includes(hour) &&
-                      'border-green-500',
-                    isFlashingSuccess &&
-                      data?.updated[hour]?.includes('share_ft2') &&
-                      'border-blue-500',
                     !isHourEditable(hour) && 'cursor-not-allowed !bg-muted',
                     'transition-colors duration-300',
                   )}
@@ -597,6 +563,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
             <TableCell>
               <label className="hidden">Select note</label>
               <Select
+                key={insumo?.note}
                 aria-labelledby="label"
                 placeholder=""
                 name={`${hour}-note`}
@@ -608,16 +575,6 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                   onKeyDown={(e) => handleKeyDown(e, idx, 4)}
                   className={cn(
                     'h-full rounded-none border-transparent px-2 py-0 transition-colors duration-300',
-                    isFlashingErrors &&
-                      errors[hour] &&
-                      errors[hour].includes('note') &&
-                      'border-red-500',
-                    isFlashingSuccess &&
-                      data?.inserted.includes(hour) &&
-                      'border-green-500',
-                    isFlashingSuccess &&
-                      data?.updated[hour]?.includes('note') &&
-                      'border-blue-500',
                     'transition-colors duration-300',
                   )}
                 >
@@ -625,9 +582,9 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 </SelectTrigger>
                 <SelectPopover>
                   <SelectListBox>
-                    {noteEnumValues.map((n) => (
-                      <SelectItem key={n} id={n}>
-                        {n}
+                    {Object.entries(noteConstraintMap).map(([key, value]) => (
+                      <SelectItem key={key} id={key}>
+                        {value}
                       </SelectItem>
                     ))}
                   </SelectListBox>
@@ -645,7 +602,8 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               <div className="flex h-full items-center">
                 <Checkbox
                   id={`input-${idx}-${0}`}
-                  checked={!!insumo?.agc}
+                  key={insumo ? String(insumo.agc) : ''}
+                  defaultChecked={!!insumo?.agc}
                   name={`${hour}-agc`}
                   disabled={!isHourEditable(hour)}
                   onKeyDown={(e) =>
@@ -668,23 +626,13 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 onKeyDown={(e) => handleKeyDown(e, idx, 6)}
                 onChange={handleChangePriceFt1}
                 className={cn(
-                  isFlashingErrors &&
-                    errors[hour] &&
-                    errors[hour].includes('price_ft1') &&
-                    'border-red-500',
-                  isFlashingSuccess &&
-                    data?.inserted.includes(hour) &&
-                    'border-green-500',
-                  isFlashingSuccess &&
-                    data?.updated[hour]?.includes('price_ft1') &&
-                    'border-blue-500',
                   !isHourEditable(hour) && 'cursor-not-allowed !bg-muted',
                   'transition-colors duration-300',
                 )}
                 name={`${hour}-price_ft1`}
               />
             </TableCell>
-            {unit?.fuelType2 && (
+            {unit?.fuelTypeList[1] && (
               <TableCell>
                 <Input
                   type="number"
@@ -695,16 +643,6 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                   onKeyDown={(e) => handleKeyDown(e, idx, 7)}
                   onChange={handleChangePriceFt2}
                   className={cn(
-                    isFlashingErrors &&
-                      errors[hour] &&
-                      errors[hour].includes('price_ft2') &&
-                      'border-red-500',
-                    isFlashingSuccess &&
-                      data?.inserted.includes(hour) &&
-                      'border-green-500',
-                    isFlashingSuccess &&
-                      data?.updated[hour]?.includes('price_ft2') &&
-                      'border-blue-500',
                     !isHourEditable(hour) && 'cursor-not-allowed !bg-muted',
                     'transition-colors duration-300',
                     'control',
@@ -714,10 +652,15 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               </TableCell>
             )}
             <TableCell className="bg-muted/50">
-              {!hasRequiredFields || isContentLoading ? '' : availability?.operationType}
+              {!hasRequiredFields || isContentLoading
+                ? ''
+                : availability?.operationType}
             </TableCell>
             <TableCell className="bg-muted/50">
-              {!hasRequiredFields || isContentLoading ? '' : availability?.comments}
+              {!hasRequiredFields || isContentLoading
+                ? ''
+                : availability?.comments}
+              {insumo?.note}
             </TableCell>
             <TableCell className="bg-muted/50">
               {!hasRequiredFields || isContentLoading
@@ -726,7 +669,9 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                   new Date(insumo.updated_at).toLocaleDateString('es-MX')}
             </TableCell>
             <TableCell className="border-r bg-muted/50">
-              {!hasRequiredFields || isContentLoading ? '' : insumo?.modified_by || ''}
+              {!hasRequiredFields || isContentLoading
+                ? ''
+                : insumo?.modified_by || ''}
             </TableCell>
           </TableRow>
         );

@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { noteEnumValues } from './constants';
+import { noteConstraintMap } from './constants';
 
-export const noteEnumZod = z.enum(noteEnumValues);
+export const noteEnumZod = z.enum(Object.keys(noteConstraintMap) as [string, ...string[]]);
 
 export const InsumoSchema = z.object({
   hour: z.coerce.number().min(1).max(25),
@@ -20,7 +20,7 @@ export const InsumoSchema = z.object({
     .max(100)
     .nullish()
     .transform((x) => (typeof x === 'number' ? x / 100 : null)),
-  note: noteEnumZod,
+  note: noteEnumZod.nullish(),
   agc: z
     .enum(['on', 'off'])
     .nullish()

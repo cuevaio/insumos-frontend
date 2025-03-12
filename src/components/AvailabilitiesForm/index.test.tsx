@@ -1,6 +1,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import AvailabilitiesForm from '.';
 
@@ -18,13 +24,6 @@ vi.mock('@/contexts/AppContext', () => ({
   useMarket: vi.fn().mockReturnValue({
     value: 'test-market',
     setValue: vi.fn(),
-  }),
-  useUpsertInsumosState: vi.fn().mockReturnValue({
-    errors: {},
-    setErrors: vi.fn(),
-    setIsFlashingSuccess: vi.fn(),
-    setIsFlashingErrors: vi.fn(),
-    setData: vi.fn(),
   }),
 }));
 

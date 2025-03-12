@@ -5,8 +5,6 @@ import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import * as constants from '@/lib/constants';
 
 import * as authHook from '../useAuth';
-import * as fuelTypesHook from '../useFuelTypes';
-import type { FuelType } from '../useFuelTypes';
 import { useUnits } from '../useUnits';
 
 const createWrapper = () => {
@@ -23,57 +21,54 @@ const createWrapper = () => {
 };
 
 describe('useUnits', () => {
-  const mockAuthToken = 'mock-token';
-  const mockFuelTypes: FuelType[] = [
+  const mockApiResponse = [
     {
-      id: '01930e47-becb-525e-6921-42428aad2825',
-      name: 'gas',
-      createdBy: 'test@test.com',
-      modifiedBy: 'test@test.com',
-      modifiedOn: '2024-01-01T00:00:00.000',
+      id: '0194ae0b-a075-32d6-797f-73cf343d231b',
+      name: '01AMD-U1',
+      portfolioName: 'MEM_SIN',
+      fuelTypeList: [
+        { id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618', name: 'Gas' },
+        { id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f', name: 'Diesel' },
+      ],
+      includeCil: true,
+      includeLie: false,
     },
     {
-      id: '01930e47-cbd1-ec34-77e3-ba7672a95cc5',
-      name: 'diesel',
-      createdBy: 'test@test.com',
-      modifiedBy: 'test@test.com',
-      modifiedOn: '2024-01-01T00:00:00.000',
+      id: '0194ae0f-7d95-a90c-ca92-23bbe7178067',
+      name: '02EAT-PTA',
+      portfolioName: 'MEM_SIN',
+      fuelTypeList: [
+        { id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618', name: 'Gas' },
+        { id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f', name: 'Diesel' },
+      ],
+      includeCil: true,
+      includeLie: false,
+    },
+    {
+      id: '0194ae10-eb7d-8677-5be2-2e0d6630e6f9',
+      name: '02EOC-PTA',
+      portfolioName: 'MEM_SIN',
+      fuelTypeList: [
+        { id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618', name: 'Gas' },
+        { id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f', name: 'Diesel' },
+      ],
+      includeCil: true,
+      includeLie: true,
+    },
+    {
+      id: '01956d41-6556-62a4-2b7a-789c058e063d',
+      name: '04FEN-PTA',
+      portfolioName: 'MEM_SIN',
+      fuelTypeList: [
+        { id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618', name: 'Gas' },
+        null,
+      ],
+      includeCil: true,
+      includeLie: true,
     },
   ];
 
-  const mockApiResponse = {
-    success: true,
-    data: [
-      {
-        id: 'unit1',
-        name: 'Test Unit',
-        createdBy: 'test@test.com',
-        modifiedBy: 'test@test.com',
-        modifiedOn: '2024-01-01T00:00:00.000',
-        includeCil: true,
-        includeLie: true,
-        fuelType1ID: mockFuelTypes[0].id,
-        fuelType2ID: mockFuelTypes[1].id,
-        timeZone: 'America/Mexico_City',
-        ippId: 'ipp1',
-        ipp: {
-          id: 'ipp1',
-          name: 'Test IPP',
-          createdBy: 'test@test.com',
-          modifiedBy: 'test@test.com',
-          modifiedOn: '2024-01-01T00:00:00.000',
-        },
-      },
-    ],
-  };
-
   beforeEach(() => {
-    vi.spyOn(authHook, 'useAuth').mockReturnValue(mockAuthToken);
-    vi.spyOn(fuelTypesHook, 'useFuelTypes').mockReturnValue({
-      data: mockFuelTypes,
-      isLoading: false,
-      isError: false,
-    } as any);
     global.fetch = vi.fn();
   });
 
@@ -90,11 +85,7 @@ describe('useUnits', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data?.[0]).toMatchObject({
-      ...mockApiResponse.data[0],
-      fuelType1: mockFuelTypes[0],
-      fuelType2: mockFuelTypes[1],
-    });
+    expect(result.current).toMatchObject(mockApiResponse);
 
     expect(global.fetch).toHaveBeenCalledWith(
       'http://localhost:8080/cpp-backend/v1/unit/load/all',
