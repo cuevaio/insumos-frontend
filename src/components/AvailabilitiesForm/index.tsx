@@ -170,7 +170,7 @@ const AvailabilitiesForm: React.FC<AvailabilitiesFormProps> = ({
       }
     }
   }, [data, isSuccess, isPending, language, t]);
-  
+
   return (
     <form
       className="w-full"

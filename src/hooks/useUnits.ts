@@ -2,9 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '@/hooks/useAuth';
 
-import { 
-  FuelType, 
-} from './useFuelTypes';
+import { FuelType } from './useFuelTypes';
 
 export interface Unit {
   id: string;
@@ -49,7 +47,9 @@ export function useUnits() {
 
   return useQuery({
     queryFn: async () => {
-      const response = await fetch(`${__API_DOMAIN__}/api/mem-offers-input-service/unit/load`);
+      const response = await fetch(
+        `${__API_DOMAIN__}/api/mem-offers-input-service/unit/load`,
+      );
       const json = (await response.json()) as UnitGSMS[];
 
       const data = json.map((unitGSMS) => {
@@ -58,12 +58,16 @@ export function useUnits() {
           name: unitGSMS.name,
           includeCil: unitGSMS.includeCil,
           includeLie: unitGSMS.includeLie,
-          fuelType1: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Gas'),
-          fuelType2: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Diesel'),
+          fuelType1: unitGSMS.fuelTypeList.find(
+            (fuelTypeGSMS) => fuelTypeGSMS.name === 'Gas',
+          ),
+          fuelType2: unitGSMS.fuelTypeList.find(
+            (fuelTypeGSMS) => fuelTypeGSMS.name === 'Diesel',
+          ),
           portfolioName: unitGSMS?.portfolioName,
-        } as UnitWithFuelType
+        } as UnitWithFuelType;
       });
-      
+
       return data;
     },
     queryKey: ['allUnits'],

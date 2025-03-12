@@ -1,8 +1,13 @@
-import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useInsumos } from '../useInsumos';
-import type { Insumo, ExtendedInsumo, ExtendedInsumoGSMS } from '../useInsumos';
+import { renderHook, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+
+import {
+  useInsumos,
+  type ExtendedInsumo,
+  type ExtendedInsumoGSMS,
+  type Insumo,
+} from '../useInsumos';
 
 // Mock wrapper for React Query
 const createWrapper = () => {
@@ -24,42 +29,43 @@ describe('useInsumos', () => {
     message: string;
     timestamp: string;
   } = {
-    data: { 
+    data: {
       data: [
-        { 
-          hour: 0, 
-          minAvailability: 123, 
-          maxAvailability: 502, 
+        {
+          hour: 0,
+          minAvailability: 123,
+          maxAvailability: 502,
           fuels: [
-            { 
-              name: "G_EAT", 
-              percentage: 100, 
-              price: 70.26 }
-            , { 
-              name: "D_EAT", 
-              percentage: 0, 
-              price: 692.15 
-            }
-          ], 
-          agc: true, 
-          note: "", 
-          modifiedOn: "02/28/2025", 
-          modifiedBy: "background" 
-        }
-      ], 
-      averageLast30Days: 881.2499166666665, 
-      transmissionFee: 61.3, 
-      operationFee: 2.6231 
-    }, 
-    message: "OK", 
-    timestamp: "2025-03-05T16:51:29.881"
+            {
+              name: 'G_EAT',
+              percentage: 100,
+              price: 70.26,
+            },
+            {
+              name: 'D_EAT',
+              percentage: 0,
+              price: 692.15,
+            },
+          ],
+          agc: true,
+          note: '',
+          modifiedOn: '02/28/2025',
+          modifiedBy: 'background',
+        },
+      ],
+      averageLast30Days: 881.2499166666665,
+      transmissionFee: 61.3,
+      operationFee: 2.6231,
+    },
+    message: 'OK',
+    timestamp: '2025-03-05T16:51:29.881',
   };
 
-  const mockDate = '2025-01-30'
-  const mockUnitId = '0194ae0f-7d95-a90c-ca92-23bbe7178067'
-  const mockUnitName = '02EAT-PTA'
-  const mockPortfolioName = 'MEM_SIN'
-  const mockMarket = 'MDA'
+  const mockDate = '2025-01-30';
+  const mockUnitId = '0194ae0f-7d95-a90c-ca92-23bbe7178067';
+  const mockUnitName = '02EAT-PTA';
+  const mockPortfolioName = 'MEM_SIN';
+  const mockMarket = 'MDA';
 
   beforeEach(() => {
     global.fetch = vi.fn();
@@ -81,7 +87,7 @@ describe('useInsumos', () => {
         }),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -122,8 +128,8 @@ describe('useInsumos', () => {
           fromDate: mockDate,
           toDate: mockDate,
           statusCode: 1,
-        })
-      }
+        }),
+      },
     );
   });
 
@@ -137,7 +143,7 @@ describe('useInsumos', () => {
         }),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -155,7 +161,7 @@ describe('useInsumos', () => {
         }),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -173,7 +179,7 @@ describe('useInsumos', () => {
         }),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -194,10 +200,10 @@ describe('useInsumos', () => {
         }),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error).toBeDefined();
   });
-}); 
+});

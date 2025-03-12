@@ -25,27 +25,27 @@ export interface ExtendedInsumo {
 }
 
 interface FuelGSMS {
-    name: string;
-    percentage: number;
-    price: number;
+  name: string;
+  percentage: number;
+  price: number;
 }
 
 interface InsumoGSMS {
-    hour: number,
-    minAvailability: number;
-    maxAvailability: number;
-    fuels: FuelGSMS[];
-    agc: boolean;
-    note: string;
-    modifiedBy: string;
-    modifiedOn: string;
+  hour: number;
+  minAvailability: number;
+  maxAvailability: number;
+  fuels: FuelGSMS[];
+  agc: boolean;
+  note: string;
+  modifiedBy: string;
+  modifiedOn: string;
 }
 
 export interface ExtendedInsumoGSMS {
-    data: InsumoGSMS[];
-    averageLast30Days: number;
-    transmissionFee: number;
-    operationFee: number;
+  data: InsumoGSMS[];
+  averageLast30Days: number;
+  transmissionFee: number;
+  operationFee: number;
 }
 
 export const useInsumos = ({
@@ -63,19 +63,22 @@ export const useInsumos = ({
 }) => {
   return useQuery({
     queryFn: async () => {
-      const response = await fetch(`${__API_DOMAIN__}/api/mem-offers-input-service/availability/loadGsms`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${__API_DOMAIN__}/api/mem-offers-input-service/availability/loadGsms`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            unitName,
+            portfolioName,
+            fromDate: date,
+            toDate: date,
+            statusCode: 1,
+          }),
         },
-        body: JSON.stringify({
-          unitName,
-          portfolioName,
-          fromDate: date,
-          toDate: date,
-          statusCode: 1,
-        })
-      });
+      );
 
       const json = (await response.json()) as {
         data: ExtendedInsumoGSMS;
@@ -88,8 +91,12 @@ export const useInsumos = ({
         market,
         unit_id: unitId,
         insumos: json.data.data.map((insumoGSMS, idx) => {
-          const ft1 = insumoGSMS.fuels.find((fuel) => fuel.name.startsWith('G_'));
-          const ft2 = insumoGSMS.fuels.find((fuel) => fuel.name.startsWith('D_'));
+          const ft1 = insumoGSMS.fuels.find((fuel) =>
+            fuel.name.startsWith('G_'),
+          );
+          const ft2 = insumoGSMS.fuels.find((fuel) =>
+            fuel.name.startsWith('D_'),
+          );
 
           return {
             hour: idx + 1,

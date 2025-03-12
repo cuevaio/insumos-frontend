@@ -1,15 +1,17 @@
 import { MutableRefObject } from 'react';
-import { I18nextProvider } from 'react-i18next';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import * as AppContext from '@/contexts/AppContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { I18nextProvider } from 'react-i18next';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import AvailabilitiesFooter from '@/components/AvailabilitiesFooter';
-import i18n from '@/lib/i18n/i18n';
+
 import { Unit } from '@/hooks/useUnits';
+
+import i18n from '@/lib/i18n/i18n';
 
 const queryClient = new QueryClient();
 
@@ -80,19 +82,29 @@ describe('AvailabilitiesFooter', () => {
             <AvailabilitiesFooter formRef={mockFormRef} />
           </AppContext.AppProvider>
         </I18nextProvider>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   };
 
   it('renders the correct text and elements', () => {
     customRender();
 
-    expect(screen.getByText('Todas las fechas se muestran el el timezone America/New_York')).toBeInTheDocument();
-    expect(screen.getByText('Promedio de precios de los últimos 30 días')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Todas las fechas se muestran el el timezone America/New_York',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Promedio de precios de los últimos 30 días'),
+    ).toBeInTheDocument();
     expect(screen.getByText('Tarifa de Transmisión')).toBeInTheDocument();
     expect(screen.getByText('Tarifa de Operación')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Exportar/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Guardar cambios/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Exportar/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Guardar cambios/i }),
+    ).toBeInTheDocument();
   });
 
   it('applies disabled styles to the "Guardar cambios" button when dateDiff < 0', () => {

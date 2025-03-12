@@ -4,16 +4,16 @@ const getCookie = (name: string) => {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop()!.split(';').shift() ?? '';
-  return ''
-}
+  return '';
+};
 
 export const useAuth = () => {
   const [token, setToken] = React.useState<string>('');
 
   React.useEffect(() => {
-    if (__SERVER_SCOPE__ === 'gsms'){
+    if (__SERVER_SCOPE__ === 'gsms') {
       setToken('no-auth-needed');
-    } else if (!token){
+    } else if (!token) {
       // TODO: Define logic for KUBE access token
       const tokenCookie = getCookie('pci_auth_access_token');
       if (tokenCookie) {

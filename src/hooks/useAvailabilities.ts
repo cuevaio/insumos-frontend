@@ -26,19 +26,22 @@ export function useAvailabilities({
 
   return useQuery({
     queryFn: async () => {
-      const response = await fetch(`${__API_DOMAIN__}/api/mem-offers-input-service/availability/loadCpp`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${__API_DOMAIN__}/api/mem-offers-input-service/availability/loadCpp`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            unitName,
+            portfolioName: 'MEM_SIN',
+            fromDate: date,
+            toDate: date,
+            statusCode: 1,
+          }),
         },
-        body: JSON.stringify({
-          unitName,
-          portfolioName: 'MEM_SIN',
-          fromDate: date,
-          toDate: date,
-          statusCode: 1,
-        })
-      });
+      );
 
       const json = (await response.json()) as CPPAPIResponse<{
         data: AvailabilityRecord[];

@@ -36,12 +36,12 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
   });
 
   const { data: insumos } = useInsumos({
-      date: date?.toString(),
-      unitId: unit?.id?.toString(),
-      unitName: unit?.name?.toString(),
-      portfolioName: unit?.portfolioName?.toString(),
-      market,
-    });
+    date: date?.toString(),
+    unitId: unit?.id?.toString(),
+    unitName: unit?.name?.toString(),
+    portfolioName: unit?.portfolioName?.toString(),
+    market,
+  });
 
   const hasRequiredFields = React.useMemo(() => {
     return !!(date && unit && market);
@@ -56,9 +56,7 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
   }, [hasRequiredFields, insumos]);
 
   return (
-    <Table 
-      className={cn([isAvailabilitiesLoading && 'animate-pulse'])}
-    >
+    <Table className={cn([isAvailabilitiesLoading && 'animate-pulse'])}>
       <TableHeader className="bg-muted">
         {(showFT1Columns || (showFT2Columns && unit?.fuelType2)) && (
           <TableRow className="text-xxs">
@@ -300,7 +298,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
         </TableRow>
       </TableHeader>
       <AvailabilitiesTableBody
-        rowsLength={(availabilities?.availabilities?.length || insumos?.insumos?.length) ?? 24}
+        rowsLength={
+          (availabilities?.availabilities?.length ||
+            insumos?.insumos?.length) ??
+          24
+        }
         isContentLoading={isAvailabilitiesLoading || isInsumosLoading}
         hasRequiredFields={hasRequiredFields}
         availabilities={availabilities}

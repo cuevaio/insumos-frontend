@@ -7,7 +7,7 @@ import * as constants from '@/lib/constants';
 import * as authHook from '../useAuth';
 // import * as fuelTypesHook from '../useFuelTypes';
 // import type { FuelType } from '../useFuelTypes';
-import { useUnits, UnitWithFuelType, UnitGSMS } from '../useUnits';
+import { UnitGSMS, UnitWithFuelType, useUnits } from '../useUnits';
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -27,23 +27,23 @@ describe('useUnits', () => {
 
   const mockApiResponse: UnitGSMS[] = [
     {
-        id: '0194ae0b-a075-32d6-797f-73cf343d231b',
-        name: '01AMD-U1',
-        portfolioName: 'MEM_SIN',
-        fuelTypeList: [
-            {
-                id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618',
-                name: 'Gas'
-            },
-            {
-                id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f',
-                name: 'Diesel'
-            }
-        ],
-        includeCil: true,
-        includeLie: false
+      id: '0194ae0b-a075-32d6-797f-73cf343d231b',
+      name: '01AMD-U1',
+      portfolioName: 'MEM_SIN',
+      fuelTypeList: [
+        {
+          id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618',
+          name: 'Gas',
+        },
+        {
+          id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f',
+          name: 'Diesel',
+        },
+      ],
+      includeCil: true,
+      includeLie: false,
     },
-];
+  ];
 
   beforeEach(() => {
     vi.spyOn(authHook, 'useAuth').mockReturnValue(mockAuthToken);
@@ -70,14 +70,20 @@ describe('useUnits', () => {
           name: unitGSMS.name,
           includeCil: unitGSMS.includeCil,
           includeLie: unitGSMS.includeLie,
-          fuelType1: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Gas'),
-          fuelType2: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Diesel'),
+          fuelType1: unitGSMS.fuelTypeList.find(
+            (fuelTypeGSMS) => fuelTypeGSMS.name === 'Gas',
+          ),
+          fuelType2: unitGSMS.fuelTypeList.find(
+            (fuelTypeGSMS) => fuelTypeGSMS.name === 'Diesel',
+          ),
           portfolioName: unitGSMS?.portfolioName,
-        } as UnitWithFuelType
-      })
+        } as UnitWithFuelType;
+      }),
     );
 
-    expect(global.fetch).toHaveBeenCalledWith('/api/mem-offers-input-service/unit/load');
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/mem-offers-input-service/unit/load',
+    );
   });
 
   // // TODO: The current API is not handling success state yet

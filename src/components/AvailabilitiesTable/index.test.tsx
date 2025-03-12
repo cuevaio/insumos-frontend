@@ -1,12 +1,11 @@
+import * as AppContext from '@/contexts/AppContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import * as AppContext from '@/contexts/AppContext';
 import { Unit } from '@/hooks/useUnits';
 
 import AvailabilitiesTable from '.';
-
 
 vi.mock('@/contexts/AppContext', () => ({
   AppProvider: ({ children }: { children: React.ReactNode }) => children,
@@ -47,11 +46,11 @@ const MOCK_UNIT = {
   },
   fuelType1ID: '1',
   fuelType2ID: '2',
-} as Unit
+} as Unit;
 
 const queryClient = new QueryClient();
 
-describe('AvailabilitiesTable', () => {  
+describe('AvailabilitiesTable', () => {
   vi.mock('@/contexts/AppContext', () => ({
     AppProvider: ({ children }: { children: React.ReactNode }) => children,
     useUnit: vi.fn().mockReturnValue({
@@ -110,7 +109,7 @@ describe('AvailabilitiesTable', () => {
     vi.mocked(AppContext.useUnit).mockReturnValue({
       value: MOCK_UNIT,
       setId: vi.fn(),
-    })
+    });
 
     renderComponent();
     expect(screen.getByRole('table')).toBeInTheDocument();
@@ -125,18 +124,18 @@ describe('AvailabilitiesTable', () => {
     vi.mocked(AppContext.useShowFT1Columns).mockReturnValue({
       value: true,
       setValue: vi.fn(),
-    })
+    });
 
     renderComponent();
 
     expect(screen.getAllByRole('columnheader')).toHaveLength(23);
   });
-  
+
   it('renders 29 <th> elements when showFT2Columns is true', () => {
     vi.mocked(AppContext.useShowFT2Columns).mockReturnValue({
       value: true,
       setValue: vi.fn(),
-    })
+    });
 
     renderComponent();
 

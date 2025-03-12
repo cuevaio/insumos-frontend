@@ -9,7 +9,7 @@ export const noteEnumValues = [
   'prueba',
 ] as const;
 
-export const DEV:boolean = true;
+export const DEV: boolean = true;
 
 export const prices: {
   [key: string]: {

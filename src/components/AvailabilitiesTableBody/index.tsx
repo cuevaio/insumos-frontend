@@ -24,7 +24,7 @@ import {
   AvailabilitiesQueryResponse,
   AvailabilityRecord,
 } from '@/hooks/useAvailabilities';
-import { Insumo, ExtendedInsumo } from '@/hooks/useInsumos';
+import { ExtendedInsumo, Insumo } from '@/hooks/useInsumos';
 
 import { noteEnumValues } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -94,9 +94,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     );
   };
 
-  const calcPreselection = (
-    availability?: AvailabilityRecord,
-  ) => {
+  const calcPreselection = (availability?: AvailabilityRecord) => {
     if (!unit || !availability) return;
 
     const comments = (availability.comments || '')
@@ -337,20 +335,28 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   const { errors, isFlashingErrors, isFlashingSuccess, data } =
     useUpsertInsumosState();
 
-  const [dailyPriceFt1, setDailyPriceFt1] = React.useState(insumos?.insumos?.at(0)?.price_ft1 ?? '')
-  const [dailyPriceFt2, setDailyPriceFt2] = React.useState(insumos?.insumos?.at(0)?.price_ft2 ?? '')
-  
+  const [dailyPriceFt1, setDailyPriceFt1] = React.useState(
+    insumos?.insumos?.at(0)?.price_ft1 ?? '',
+  );
+  const [dailyPriceFt2, setDailyPriceFt2] = React.useState(
+    insumos?.insumos?.at(0)?.price_ft2 ?? '',
+  );
+
   const handleChangePriceFt1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDailyPriceFt1(event.target.value)
-  }
+    setDailyPriceFt1(event.target.value);
+  };
 
   const handleChangePriceFt2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDailyPriceFt2(event.target.value)
-  }
+    setDailyPriceFt2(event.target.value);
+  };
 
   return (
     <TableBody
-      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isContentLoading && 'isContentLoading'])}
+      className={cn([
+        'text-xxs',
+        hasRequiredFields && 'emptyTableBody',
+        isContentLoading && 'isContentLoading',
+      ])}
     >
       {new Array(rowsLength).fill(0).map((_, idx) => {
         const hour = idx + 1;
@@ -714,10 +720,14 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
               </TableCell>
             )}
             <TableCell className="bg-muted/50">
-              {!hasRequiredFields || isContentLoading ? '' : availability?.operationType}
+              {!hasRequiredFields || isContentLoading
+                ? ''
+                : availability?.operationType}
             </TableCell>
             <TableCell className="bg-muted/50">
-              {!hasRequiredFields || isContentLoading ? '' : availability?.comments}
+              {!hasRequiredFields || isContentLoading
+                ? ''
+                : availability?.comments}
             </TableCell>
             <TableCell className="bg-muted/50">
               {!hasRequiredFields || isContentLoading
@@ -726,7 +736,9 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                   new Date(insumo.updated_at).toLocaleDateString('es-MX')}
             </TableCell>
             <TableCell className="border-r bg-muted/50">
-              {!hasRequiredFields || isContentLoading ? '' : insumo?.modified_by || ''}
+              {!hasRequiredFields || isContentLoading
+                ? ''
+                : insumo?.modified_by || ''}
             </TableCell>
           </TableRow>
         );
