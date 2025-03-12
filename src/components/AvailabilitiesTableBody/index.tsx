@@ -93,9 +93,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     );
   };
 
-  const calcPreselection = (
-    availability?: AvailabilityRecord,
-  ) => {
+  const calcPreselection = (availability?: AvailabilityRecord) => {
     if (!unit || !availability) return;
 
     const comments = (availability.comments || '')
@@ -348,20 +346,21 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
     setDailyPriceFt2(event.target.value);
   };
 
-  const [dailyPriceFt1, setDailyPriceFt1] = React.useState(insumos?.insumos?.at(0)?.price_ft1 ?? '')
-  const [dailyPriceFt2, setDailyPriceFt2] = React.useState(insumos?.insumos?.at(0)?.price_ft2 ?? '')
-  
   const handleChangePriceFt1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDailyPriceFt1(event.target.value)
-  }
+    setDailyPriceFt1(event.target.value);
+  };
 
   const handleChangePriceFt2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDailyPriceFt2(event.target.value)
-  }
+    setDailyPriceFt2(event.target.value);
+  };
 
   return (
     <TableBody
-      className={cn(['text-xxs', hasRequiredFields && 'emptyTableBody', isContentLoading && 'isContentLoading'])}
+      className={cn([
+        'text-xxs',
+        hasRequiredFields && 'emptyTableBody',
+        isContentLoading && 'isContentLoading',
+      ])}
     >
       {new Array(rowsLength).fill(0).map((_, idx) => {
         const hour = idx + 1;

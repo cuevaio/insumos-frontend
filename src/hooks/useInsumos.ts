@@ -53,26 +53,26 @@ interface ExtendedInsumoGSMS {
 }
 
 interface FuelGSMS {
-    name: string;
-    percentage: number;
-    price: number;
+  name: string;
+  percentage: number;
+  price: number;
 }
 
 interface InsumoGSMS {
-    minAvailability: number;
-    maxAvailability: number;
-    fuels: FuelGSMS[];
-    agc: boolean;
-    note: string;
-    modifiedBy: string;
-    modifiedOn: string;
+  minAvailability: number;
+  maxAvailability: number;
+  fuels: FuelGSMS[];
+  agc: boolean;
+  note: string;
+  modifiedBy: string;
+  modifiedOn: string;
 }
 
 interface ExtendedInsumoGSMS {
-    data: InsumoGSMS[];
-    averageLast30Days: number;
-    transmissionFee: number;
-    operationFee: number;
+  data: InsumoGSMS[];
+  averageLast30Days: number;
+  transmissionFee: number;
+  operationFee: number;
 }
 
 export const useInsumos = ({
