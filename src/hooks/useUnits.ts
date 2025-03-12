@@ -35,7 +35,7 @@ export interface UnitWithFuelType extends Unit {
   fuelType2: FuelType;
 }
 
-interface UnitGSMS {
+export interface UnitGSMS {
   id: string;
   name: string;
   portfolioName: string;
@@ -51,6 +51,7 @@ export function useUnits() {
     queryFn: async () => {
       const response = await fetch(`${__API_DOMAIN__}/api/mem-offers-input-service/unit/load`);
       const json = (await response.json()) as UnitGSMS[];
+
       const data = json.map((unitGSMS) => {
         return {
           id: unitGSMS.id,

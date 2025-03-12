@@ -58,7 +58,7 @@ export function useAvailabilities({
       };
     },
     queryKey: ['availability', unitId, date, market],
-    enabled: !!unitId && !!date && !!authToken && !!market,
+    enabled: !!unitName && !!date && !!authToken && !!market,
   });
 }
 

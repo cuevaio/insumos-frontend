@@ -5,9 +5,9 @@ import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import * as constants from '@/lib/constants';
 
 import * as authHook from '../useAuth';
-import * as fuelTypesHook from '../useFuelTypes';
-import type { FuelType } from '../useFuelTypes';
-import { useUnits } from '../useUnits';
+// import * as fuelTypesHook from '../useFuelTypes';
+// import type { FuelType } from '../useFuelTypes';
+import { useUnits, UnitWithFuelType, UnitGSMS } from '../useUnits';
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -24,56 +24,29 @@ const createWrapper = () => {
 
 describe('useUnits', () => {
   const mockAuthToken = 'mock-token';
-  const mockFuelTypes: FuelType[] = [
-    {
-      id: '01930e47-becb-525e-6921-42428aad2825',
-      name: 'gas',
-      createdBy: 'test@test.com',
-      modifiedBy: 'test@test.com',
-      modifiedOn: '2024-01-01T00:00:00.000',
-    },
-    {
-      id: '01930e47-cbd1-ec34-77e3-ba7672a95cc5',
-      name: 'diesel',
-      createdBy: 'test@test.com',
-      modifiedBy: 'test@test.com',
-      modifiedOn: '2024-01-01T00:00:00.000',
-    },
-  ];
 
-  const mockApiResponse = {
-    success: true,
-    data: [
-      {
-        id: 'unit1',
-        name: 'Test Unit',
-        createdBy: 'test@test.com',
-        modifiedBy: 'test@test.com',
-        modifiedOn: '2024-01-01T00:00:00.000',
+  const mockApiResponse: UnitGSMS[] = [
+    {
+        id: '0194ae0b-a075-32d6-797f-73cf343d231b',
+        name: '01AMD-U1',
+        portfolioName: 'MEM_SIN',
+        fuelTypeList: [
+            {
+                id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618',
+                name: 'Gas'
+            },
+            {
+                id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f',
+                name: 'Diesel'
+            }
+        ],
         includeCil: true,
-        includeLie: true,
-        fuelType1ID: mockFuelTypes[0].id,
-        fuelType2ID: mockFuelTypes[1].id,
-        timeZone: 'America/Mexico_City',
-        ippId: 'ipp1',
-        ipp: {
-          id: 'ipp1',
-          name: 'Test IPP',
-          createdBy: 'test@test.com',
-          modifiedBy: 'test@test.com',
-          modifiedOn: '2024-01-01T00:00:00.000',
-        },
-      },
-    ],
-  };
+        includeLie: false
+    },
+];
 
   beforeEach(() => {
     vi.spyOn(authHook, 'useAuth').mockReturnValue(mockAuthToken);
-    vi.spyOn(fuelTypesHook, 'useFuelTypes').mockReturnValue({
-      data: mockFuelTypes,
-      isLoading: false,
-      isError: false,
-    } as any);
     global.fetch = vi.fn();
   });
 
@@ -90,52 +63,38 @@ describe('useUnits', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data?.[0]).toMatchObject({
-      ...mockApiResponse.data[0],
-      fuelType1: mockFuelTypes[0],
-      fuelType2: mockFuelTypes[1],
-    });
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:8080/cpp-backend/v1/unit/load/all',
-      {
-        headers: {
-          Authorization: `Bearer ${mockAuthToken}`,
-        },
-      },
+    expect(result.current.data).toMatchObject(
+      mockApiResponse.map((unitGSMS) => {
+        return {
+          id: unitGSMS.id,
+          name: unitGSMS.name,
+          includeCil: unitGSMS.includeCil,
+          includeLie: unitGSMS.includeLie,
+          fuelType1: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Gas'),
+          fuelType2: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Diesel'),
+          portfolioName: unitGSMS?.portfolioName,
+        } as UnitWithFuelType
+      })
     );
+
+    expect(global.fetch).toHaveBeenCalledWith('/api/mem-offers-input-service/unit/load');
   });
 
-  it('should return mock data in development mode', async () => {
-    vi.spyOn(constants, 'DEV', 'get').mockReturnValue(true);
+  // // TODO: The current API is not handling success state yet
+  // it('should handle API error', async () => {
+  //   vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
 
-    const { result } = renderHook(() => useUnits(), {
-      wrapper: createWrapper(),
-    });
+  //   (global.fetch as Mock).mockResolvedValueOnce({
+  //     json: () => Promise.resolve({ success: false, message: 'API Error' }),
+  //   });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  //   const { result } = renderHook(() => useUnits(), {
+  //     wrapper: createWrapper(),
+  //   });
 
-    expect(result.current.data).toBeDefined();
-    expect(result.current.data?.[0]).toHaveProperty('name', 'unit1');
-    expect(result.current.data?.[0].fuelType1).toBeDefined();
-    expect(result.current.data?.[0].fuelType2).toBeDefined();
-    expect(global.fetch).not.toHaveBeenCalled();
-  });
-
-  it('should handle API error', async () => {
-    vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
-
-    (global.fetch as Mock).mockResolvedValueOnce({
-      json: () => Promise.resolve({ success: false, message: 'API Error' }),
-    });
-
-    const { result } = renderHook(() => useUnits(), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isError).toBe(true));
-    expect(result.current.error?.message).toBe('API Error');
-  });
+  //   await waitFor(() => expect(result.current.isError).toBe(true));
+  //   expect(result.current.error?.message).toBe('API Error');
+  // });
 
   it('should not fetch when auth token is missing', async () => {
     vi.spyOn(authHook, 'useAuth').mockReturnValue('');
@@ -148,23 +107,5 @@ describe('useUnits', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.data).toBeUndefined();
     expect(global.fetch).not.toHaveBeenCalled();
-  });
-
-  it('should map fuel types correctly', async () => {
-    vi.spyOn(constants, 'DEV', 'get').mockReturnValue(false);
-
-    (global.fetch as Mock).mockResolvedValueOnce({
-      json: () => Promise.resolve(mockApiResponse),
-    });
-
-    const { result } = renderHook(() => useUnits(), {
-      wrapper: createWrapper(),
-    });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-    const unit = result.current.data?.[0];
-    expect(unit?.fuelType1).toEqual(mockFuelTypes[0]);
-    expect(unit?.fuelType2).toEqual(mockFuelTypes[1]);
   });
 });

@@ -1,50 +1,47 @@
-# React + TypeScript + Vite
+# React App for GSMS and External Scopes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a frontend React application designed to operate within the **GSMS** scope and external environments.
 
-Currently, two official plugins are available:
+## Configuration
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Use the `.env.example` file to configure environment variables for the app.
 
-## Expanding the ESLint configuration
+### Environment Variables
+- **`VITE_GSMS_PATH`**: The path where the app will be served within the GSMS scope.
+- **`VITE_API_DOMAIN`**: The URL where the app will consume data.
+- **`VITE_EXTERNAL_API_DOMAIN`**: The URL for data consumption if the app is running externally as a proxy.
+- **`VITE_SERVER_SCOPE`**: Defines the scope where the app is running. Possible values are `gsms` or `kube`.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Scripts
 
-- Configure the top-level `parserOptions` property like this:
+- **Run tests**:
+  ```bash
+  pnpm test
+  ```
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
+- **Run in development mode**:
+  ```bash
+  pnpm dev
+  ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- **Build the app**:
+  ```bash
+  pnpm build
+  ```
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react';
+## Deployment to GSMS Scope
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-});
-```
+1. Ensure the `.env` file has:
+   ```env
+   VITE_SERVER_SCOPE=gsms
+   ```
+2. Build the app:
+   ```bash
+   pnpm build
+   ```
+3. Copy the build assets to the path specified in `VITE_GSMS_PATH`.
+
+---
+
+For additional information or support, please reach out to the ITL frontend team.
+

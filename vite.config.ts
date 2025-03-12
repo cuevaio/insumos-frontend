@@ -9,6 +9,7 @@ export default defineConfig(({ command, mode }) => {
     VITE_GSMS_PATH,
     VITE_API_DOMAIN,
 		VITE_EXTERNAL_API_DOMAIN,
+    VITE_SERVER_SCOPE,
   } = loadEnv(mode, process.cwd());
 
   const isExternalOS = () => {
@@ -29,7 +30,8 @@ export default defineConfig(({ command, mode }) => {
     plugins: [react()],
     define: {
 			__API_DOMAIN__: JSON.stringify(getApiDomain(command)),
-			__BASE__PATHNAME__: JSON.stringify(getBasePathname(command)),
+			__BASE_PATHNAME__: JSON.stringify(getBasePathname(command)),
+      __SERVER_SCOPE__: JSON.stringify(VITE_SERVER_SCOPE),
 		},
     resolve: {
       alias: {
