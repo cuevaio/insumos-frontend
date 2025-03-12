@@ -1,10 +1,10 @@
-# React App for GSMS and External Scopes
+# Insumos UI for GSMS and External Scopes
 
 This is a frontend React application designed to operate within the **GSMS** scope and external environments.
 
 ## Configuration
 
-Use the `.env.example` file to configure environment variables for the app.
+Use the `.env.example` file to as example to configure environment variables for the app.
 
 ### Environment Variables
 - **`VITE_GSMS_PATH`**: The path where the app will be served within the GSMS scope.
@@ -13,6 +13,11 @@ Use the `.env.example` file to configure environment variables for the app.
 - **`VITE_SERVER_SCOPE`**: Defines the scope where the app is running. Possible values are `gsms` or `kube`.
 
 ## Scripts
+
+- **Install dependencies**:
+  ```bash
+  pnpm install
+  ```
 
 - **Run tests**:
   ```bash
@@ -39,7 +44,7 @@ Use the `.env.example` file to configure environment variables for the app.
    ```bash
    pnpm build
    ```
-3. Copy the build assets to the path specified in `VITE_GSMS_PATH`.
+3. Copy the build assets to the path specified in `VITE_GSMS_PATH` in your GSMS domain.
 
 ---
 
