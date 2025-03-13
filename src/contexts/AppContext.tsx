@@ -95,7 +95,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       _today.getMonth() + 1,
       _today.getDate(),
     );
-    console.log(date.compare(today));
     return date.compare(today);
   }, [date]);
 

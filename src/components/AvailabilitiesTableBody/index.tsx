@@ -332,19 +332,15 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   };
 
   const [dailyPriceFt1, setDailyPriceFt1] = React.useState(
-    insumos?.insumos?.at(0)?.price_ft1 ?? '',
+    insumos?.insumos[0].price_ft1 ?? '',
   );
+  React.useEffect(() => {
+    setDailyPriceFt1(insumos?.insumos[0].price_ft1 ?? '');
+  }, [insumos]);
+
   const [dailyPriceFt2, setDailyPriceFt2] = React.useState(
-    insumos?.insumos?.at(0)?.price_ft2 ?? '',
+    insumos?.insumos[0].price_ft2 ?? '',
   );
-
-  const handleChangePriceFt1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDailyPriceFt1(event.target.value);
-  };
-
-  const handleChangePriceFt2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDailyPriceFt2(event.target.value);
-  };
 
   const handleChangePriceFt1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDailyPriceFt1(event.target.value);
@@ -539,7 +535,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 )}
                 defaultValue={
                   typeof insumo?.share_ft1 === 'number'
-                    ? insumo.share_ft1 * 100
+                    ? insumo.share_ft1
                     : undefined
                 }
                 onKeyDown={(e) => handleKeyDown(e, idx, 2)}
@@ -560,7 +556,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                   )}
                   defaultValue={
                     typeof insumo?.share_ft2 === 'number'
-                      ? insumo.share_ft2 * 100
+                      ? insumo.share_ft2
                       : undefined
                   }
                   onKeyDown={(e) => handleKeyDown(e, idx, 3)}
@@ -575,7 +571,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 aria-labelledby="label"
                 placeholder=""
                 name={`${hour}-note`}
-                defaultSelectedKey={insumo?.note}
+                defaultSelectedKey={insumo?.note ?? undefined}
                 isDisabled={!isHourEditable(hour)}
               >
                 <SelectTrigger
@@ -629,6 +625,7 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
                 type="number"
                 id={`input-${idx}-${6}`}
                 step=".01"
+                key={String(insumo?.price_ft1) + String(dailyPriceFt1)}
                 value={dailyPriceFt1}
                 disabled={!isHourEditable(hour)}
                 onKeyDown={(e) => handleKeyDown(e, idx, 6)}

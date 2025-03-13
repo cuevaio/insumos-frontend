@@ -126,9 +126,9 @@ export const useInsumos = ({
             min: insumoGSMS.minAvailability,
             max: insumoGSMS.maxAvailability,
             share_ft1:
-              typeof ft1?.percentage === 'number' ? ft1.percentage / 100 : null,
+              typeof ft1?.percentage === 'number' ? ft1.percentage : null,
             share_ft2:
-              typeof ft2?.percentage === 'number' ? ft2.percentage / 100 : null,
+              typeof ft2?.percentage === 'number' ? ft2.percentage : null,
             note: insumoGSMS.note.length > 0 ? insumoGSMS.note : null,
             agc: insumoGSMS.agc,
             price_ft1: typeof ft1?.price === 'number' ? ft1.price : null,

@@ -26,9 +26,15 @@ export const useUpsertInsumos = () => {
               hour: insumo.hour,
               minAvailability: insumo.min,
               maxAvailability: insumo.max,
-              fuels: [{ name: 'G_FEN', percentage: 100, price: 5.17 }],
+              fuels: [
+                {
+                  name: 'G_FEN',
+                  percentage: insumo.share_ft1 ?? 0,
+                  price: insumo.price_ft1,
+                },
+              ],
               agc: insumo.agc,
-              note: insumo.note,
+              note: insumo.note ?? "",
             })),
           }),
         },

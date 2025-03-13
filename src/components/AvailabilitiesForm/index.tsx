@@ -81,10 +81,30 @@ const AvailabilitiesForm: React.FC<AvailabilitiesFormProps> = ({
           hour,
           min: insumo.min === '' ? null : Number(insumo.min),
           max: insumo.max === '' ? null : Number(insumo.max),
-          share_ft1: insumo.share_ft1 === '' ? null : Number(insumo.share_ft1),
-          share_ft2: insumo.share_ft2 === '' ? null : Number(insumo.share_ft2),
-          price_ft1: insumo.price_ft1 === '' ? null : Number(insumo.price_ft1),
-          price_ft2: insumo.price_ft2 === '' ? null : Number(insumo.price_ft2),
+          share_ft1:
+            insumo.share_ft1 === ''
+              ? null
+              : Number.isNaN(Number(insumo.share_ft1))
+                ? null
+                : Number(insumo.share_ft1),
+          share_ft2:
+            insumo.share_ft2 === ''
+              ? null
+              : Number.isNaN(Number(insumo.share_ft2))
+                ? null
+                : Number(insumo.share_ft2),
+          price_ft1:
+            insumo.price_ft1 === ''
+              ? null
+              : Number.isNaN(Number(insumo.price_ft1))
+                ? null
+                : Number(insumo.price_ft1),
+          price_ft2:
+            insumo.price_ft2 === ''
+              ? null
+              : Number.isNaN(Number(insumo.price_ft2))
+                ? null
+                : Number(insumo.price_ft2),
           note: insumo.note === '' ? null : insumo.note,
         };
         const p = Schema.safeParse(rawInsumo);
@@ -93,45 +113,46 @@ const AvailabilitiesForm: React.FC<AvailabilitiesFormProps> = ({
           (x) => x.hour === Number(hour),
         );
 
+        if (!existingInsumo) {
+          throw new Error('Insumo not found');
+        }
+
         if (p.success) {
           let submit = false;
 
-          console.log(p.data, existingInsumo);
 
-          if (p.data.min !== existingInsumo?.min) {
-            console.log('min');
+          if (p.data.min !== existingInsumo.min) {
             submit = true;
           }
 
-          if (p.data.max !== existingInsumo?.max) {
-            console.log('max');
+          if (p.data.max !== existingInsumo.max) {
             submit = true;
           }
 
-          if (p.data.share_ft1 !== existingInsumo?.share_ft1) {
-            console.log('share_ft1');
+          if (p.data.share_ft1 !== existingInsumo.share_ft1) {
             submit = true;
           }
 
-          if (p.data.note !== existingInsumo?.note) {
-            console.log('note');
+          if ((p.data.note ?? null) !== existingInsumo.note) {
             submit = true;
           }
 
-          if (p.data.agc !== existingInsumo?.agc) {
-            console.log('agc');
+          if (p.data.agc !== existingInsumo.agc) {
             submit = true;
           }
 
           if (unit?.fuelTypeList[1]) {
-            if (p.data.share_ft2 !== existingInsumo?.share_ft2) {
-              console.log('share_ft2');
+            if (p.data.share_ft2 !== existingInsumo.share_ft2) {
               submit = true;
             }
           }
 
           if (submit) {
-            insumosToSubmit.push(p.data);
+            insumosToSubmit.push({
+              ...p.data,
+              price_ft1: rawInsumo.price_ft1!,
+              price_ft2: rawInsumo.price_ft2,
+            });
           }
         } else {
           _errors[hour] = p.error.issues.map((x) =>
@@ -141,7 +162,6 @@ const AvailabilitiesForm: React.FC<AvailabilitiesFormProps> = ({
       }
     });
 
-    console.log(insumosToSubmit);
 
     if (Object.keys(_errors).length) {
       Object.entries(_errors).forEach(([hour, errors]) => {
