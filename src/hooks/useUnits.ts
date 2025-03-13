@@ -2,37 +2,19 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '@/hooks/useAuth';
 
-import { 
-  FuelType, 
-} from './useFuelTypes';
-
 export interface Unit {
   id: string;
+
   name: string;
-  createdBy?: string;
-  modifiedBy?: string;
-  modifiedOn?: string;
-  includeCil: boolean;
-  includeLie: boolean;
-  fuelType1ID: string;
-  fuelType2ID?: string;
-  timeZone: string;
-  ippId?: string;
-  ipp?: {
+  portfolioName?: string;
+
+  fuelTypeList: {
     id: string;
     name: string;
-    createdBy: string;
-    modifiedBy: string;
-    modifiedOn: string;
-  } | null;
-  fuelType1?: FuelType;
-  fuelType2?: FuelType;
-  portfolioName?: string;
-}
+  }[];
 
-export interface UnitWithFuelType extends Unit {
-  fuelType1: FuelType;
-  fuelType2: FuelType;
+  includeCil: boolean;
+  includeLie: boolean;
 }
 
 export interface UnitGSMS {
@@ -49,22 +31,15 @@ export function useUnits() {
 
   return useQuery({
     queryFn: async () => {
-      const response = await fetch(`${__API_DOMAIN__}/api/mem-offers-input-service/unit/load`);
-      const json = (await response.json()) as UnitGSMS[];
+      const response = await fetch(
+        `${__API_DOMAIN__}/api/mem-offers-input-service/unit/load`,
+      );
 
-      const data = json.map((unitGSMS) => {
-        return {
-          id: unitGSMS.id,
-          name: unitGSMS.name,
-          includeCil: unitGSMS.includeCil,
-          includeLie: unitGSMS.includeLie,
-          fuelType1: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Gas'),
-          fuelType2: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Diesel'),
-          portfolioName: unitGSMS?.portfolioName,
-        } as UnitWithFuelType
-      });
-      
-      return data;
+      if (!response.ok) throw new Error('Failed to fetch units');
+
+      const json = (await response.json()) as Unit[];
+
+      return json;
     },
     queryKey: ['allUnits'],
     enabled: !!authToken,

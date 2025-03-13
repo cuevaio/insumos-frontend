@@ -1,4 +1,4 @@
-import { markets, noteEnumValues } from './constants';
+import { markets, noteConstraintMap } from './constants';
 import { InsumoSchema } from './schemas';
 
 export interface CPPAPIResponse<T> {
@@ -11,7 +11,7 @@ export interface CPPAPIResponse<T> {
 }
 
 export type Market = (typeof markets)[number];
-export type Note = (typeof noteEnumValues)[number];
+export type Note = keyof typeof noteConstraintMap;
 
 export type InsumoInsert = typeof InsumoSchema._type;
 

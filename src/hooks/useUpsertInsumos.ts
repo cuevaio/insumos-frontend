@@ -1,39 +1,52 @@
+import { useDate, useUnit } from '@/contexts/AppContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import {
-  ExtendedInsumoInsert,
-  type InsumoInsert,
-  type Market,
-} from '@/lib/types';
+import { CPPAPIResponse, type InsumoInsert } from '@/lib/types';
 
-export const useUpsertInsumos = (data: {
-  date?: string | null;
-  unitId?: string | null;
-  market?: Market | null;
-}) => {
+export const useUpsertInsumos = () => {
   const queryClient = useQueryClient();
+
+  const { value: unit } = useUnit();
+  const { value: date } = useDate();
 
   return useMutation({
     mutationFn: async (insumos: InsumoInsert[]) => {
-      const response = await fetch('https://cpp.cueva.io/api/insumos', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          date: data.date,
-          unit_id: data.unitId,
-          market: data.market,
-          insumos,
-        }),
-      });
+      const response = await fetch(
+        `${__API_DOMAIN__}/api/mem-offers-input-service/availability/upsert`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            unitName: unit?.name,
+            portfolioName: unit?.portfolioName,
+            date: date?.toString(),
+            data: insumos.map((insumo) => ({
+              hour: insumo.hour,
+              minAvailability: insumo.min,
+              maxAvailability: insumo.max,
+              fuels: [
+                {
+                  name: 'G_FEN',
+                  percentage: insumo.share_ft1 ?? 0,
+                  price: insumo.price_ft1,
+                },
+              ],
+              agc: insumo.agc,
+              note: insumo.note ?? "",
+            })),
+          }),
+        },
+      );
 
-      const json = (await response.json()) as {
-        data: ExtendedInsumoInsert;
-      };
-      return json.data;
+      const json = (await response.json()) as CPPAPIResponse<{}>;
+
+      if (!json.success) throw new Error(json.message);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['insumos', data.date, data.unitId, data.market],
+        queryKey: ['insumos', date, unit?.name],
       });
     },
   });

@@ -35,13 +35,11 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
     market,
   });
 
-  const { data: insumos } = useInsumos({
-      date: date?.toString(),
-      unitId: unit?.id?.toString(),
-      unitName: unit?.name?.toString(),
-      portfolioName: unit?.portfolioName?.toString(),
-      market,
-    });
+  const { data } = useInsumos({
+    date: date?.toString(),
+    unit: unit,
+    market,
+  });
 
   const hasRequiredFields = React.useMemo(() => {
     return !!(date && unit && market);
@@ -52,15 +50,13 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
   }, [hasRequiredFields, availabilities]);
 
   const isInsumosLoading = React.useMemo(() => {
-    return hasRequiredFields && !insumos;
-  }, [hasRequiredFields, insumos]);
+    return hasRequiredFields && !data;
+  }, [hasRequiredFields, data]);
 
   return (
-    <Table 
-      className={cn([isAvailabilitiesLoading && 'animate-pulse'])}
-    >
+    <Table className={cn([isAvailabilitiesLoading && 'animate-pulse'])}>
       <TableHeader className="bg-muted">
-        {(showFT1Columns || (showFT2Columns && unit?.fuelType2)) && (
+        {(showFT1Columns || (showFT2Columns && unit?.fuelTypeList[1])) && (
           <TableRow className="text-xxs">
             <TableHead colSpan={2} className={cn(['border-l border-t'])} />
             {showFT1Columns && (
@@ -69,16 +65,16 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
                 className={cn(['border-x border-t text-center'])}
               >
                 {t('Declared Net Capacity of the plant or package')} -{' '}
-                {unit?.fuelType1?.name.toUpperCase()}
+                {unit?.fuelTypeList[0].name.toUpperCase()}
               </TableHead>
             )}
-            {showFT2Columns && unit?.fuelType2 && (
+            {showFT2Columns && unit?.fuelTypeList[1] && (
               <TableHead
                 colSpan={5}
                 className={cn(['border-x border-t text-center'])}
               >
                 {t('Declared Net Capacity of the plant or package')} -{' '}
-                {unit?.fuelType2?.name.toUpperCase()}
+                {unit?.fuelTypeList[1].name.toUpperCase()}
               </TableHead>
             )}
             <TableHead colSpan={13} className={cn(['border-r border-t'])} />
@@ -139,7 +135,7 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
               </TableHead>
             </>
           )}
-          {showFT2Columns && unit?.fuelType2 && (
+          {showFT2Columns && unit?.fuelTypeList[1] && (
             <>
               <TableHead className={cn(['min-w-[120px] border-l text-xxs'])}>
                 <span
@@ -212,18 +208,18 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
           <TableHead className={cn(['min-w-[70px]'])}>
             <span
               className="line-clamp-3 overflow-hidden break-words"
-              title={`% ${unit?.fuelType1?.name}`}
+              title={`% ${unit?.fuelTypeList[0].name}`}
             >
-              % {unit?.fuelType1?.name}
+              % {unit?.fuelTypeList[0].name}
             </span>
           </TableHead>
-          {unit?.fuelType2 && (
+          {unit?.fuelTypeList[1] && (
             <TableHead className={cn(['min-w-[70px]'])}>
               <span
                 className="line-clamp-3 overflow-hidden break-words"
-                title={`% ${unit.fuelType2.name}`}
+                title={`% ${unit?.fuelTypeList[1].name}`}
               >
-                % {unit.fuelType2.name}
+                % {unit?.fuelTypeList[1].name}
               </span>
             </TableHead>
           )}
@@ -246,18 +242,18 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
           <TableHead className={cn(['min-w-[100px]'])}>
             <span
               className="line-clamp-3 overflow-hidden break-words"
-              title={`${t('Price of')} ${unit?.fuelType1?.name}`}
+              title={`${t('Price of')} ${unit?.fuelTypeList[0].name}`}
             >
-              {t('Price of')} {unit?.fuelType1?.name}
+              {t('Price of')} {unit?.fuelTypeList[0].name}
             </span>
           </TableHead>
-          {unit?.fuelType2 && (
+          {unit?.fuelTypeList[1] && (
             <TableHead className={cn(['min-w-[100px]'])}>
               <span
                 className="line-clamp-3 overflow-hidden break-words"
-                title={`${t('Price of')} ${unit.fuelType2.name}`}
+                title={`${t('Price of')} ${unit?.fuelTypeList[1].name}`}
               >
-                {t('Price of')} {unit.fuelType2.name}
+                {t('Price of')} {unit?.fuelTypeList[1].name}
               </span>
             </TableHead>
           )}
@@ -300,11 +296,14 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
         </TableRow>
       </TableHeader>
       <AvailabilitiesTableBody
-        rowsLength={(availabilities?.availabilities?.length || insumos?.insumos?.length) ?? 24}
+        rowsLength={
+          (availabilities?.availabilities?.length || data?.insumos?.length) ??
+          24
+        }
         isContentLoading={isAvailabilitiesLoading || isInsumosLoading}
         hasRequiredFields={hasRequiredFields}
         availabilities={availabilities}
-        insumos={insumos}
+        insumos={data}
       />
     </Table>
   );

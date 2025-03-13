@@ -5,9 +5,7 @@ import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import * as constants from '@/lib/constants';
 
 import * as authHook from '../useAuth';
-// import * as fuelTypesHook from '../useFuelTypes';
-// import type { FuelType } from '../useFuelTypes';
-import { useUnits, UnitWithFuelType, UnitGSMS } from '../useUnits';
+import { useUnits } from '../useUnits';
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -23,30 +21,54 @@ const createWrapper = () => {
 };
 
 describe('useUnits', () => {
-  const mockAuthToken = 'mock-token';
-
-  const mockApiResponse: UnitGSMS[] = [
+  const mockApiResponse = [
     {
-        id: '0194ae0b-a075-32d6-797f-73cf343d231b',
-        name: '01AMD-U1',
-        portfolioName: 'MEM_SIN',
-        fuelTypeList: [
-            {
-                id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618',
-                name: 'Gas'
-            },
-            {
-                id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f',
-                name: 'Diesel'
-            }
-        ],
-        includeCil: true,
-        includeLie: false
+      id: '0194ae0b-a075-32d6-797f-73cf343d231b',
+      name: '01AMD-U1',
+      portfolioName: 'MEM_SIN',
+      fuelTypeList: [
+        { id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618', name: 'Gas' },
+        { id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f', name: 'Diesel' },
+      ],
+      includeCil: true,
+      includeLie: false,
     },
-];
+    {
+      id: '0194ae0f-7d95-a90c-ca92-23bbe7178067',
+      name: '02EAT-PTA',
+      portfolioName: 'MEM_SIN',
+      fuelTypeList: [
+        { id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618', name: 'Gas' },
+        { id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f', name: 'Diesel' },
+      ],
+      includeCil: true,
+      includeLie: false,
+    },
+    {
+      id: '0194ae10-eb7d-8677-5be2-2e0d6630e6f9',
+      name: '02EOC-PTA',
+      portfolioName: 'MEM_SIN',
+      fuelTypeList: [
+        { id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618', name: 'Gas' },
+        { id: '0191c3c4-4b0e-8bfd-6186-4a0472e4918f', name: 'Diesel' },
+      ],
+      includeCil: true,
+      includeLie: true,
+    },
+    {
+      id: '01956d41-6556-62a4-2b7a-789c058e063d',
+      name: '04FEN-PTA',
+      portfolioName: 'MEM_SIN',
+      fuelTypeList: [
+        { id: '0191c3c4-395b-c5e9-d17f-a77ed4f7e618', name: 'Gas' },
+        null,
+      ],
+      includeCil: true,
+      includeLie: true,
+    },
+  ];
 
   beforeEach(() => {
-    vi.spyOn(authHook, 'useAuth').mockReturnValue(mockAuthToken);
     global.fetch = vi.fn();
   });
 
@@ -63,18 +85,15 @@ describe('useUnits', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toMatchObject(
-      mockApiResponse.map((unitGSMS) => {
-        return {
-          id: unitGSMS.id,
-          name: unitGSMS.name,
-          includeCil: unitGSMS.includeCil,
-          includeLie: unitGSMS.includeLie,
-          fuelType1: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Gas'),
-          fuelType2: unitGSMS.fuelTypeList.find((fuelTypeGSMS) => fuelTypeGSMS.name === 'Diesel'),
-          portfolioName: unitGSMS?.portfolioName,
-        } as UnitWithFuelType
-      })
+    expect(result.current).toMatchObject(mockApiResponse);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://localhost:8080/cpp-backend/v1/unit/load/all',
+      {
+        headers: {
+          Authorization: `Bearer ${mockAuthToken}`,
+        },
+      },
     );
 
     expect(global.fetch).toHaveBeenCalledWith('/api/mem-offers-input-service/unit/load');

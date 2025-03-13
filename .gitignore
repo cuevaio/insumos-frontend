@@ -26,4 +26,6 @@ dist-ssr
 package-lock.json
 .env.local
 .env.production
+.env
+
 test-html-output.html

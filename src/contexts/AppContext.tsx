@@ -6,7 +6,7 @@ import { useLocalStorage } from 'usehooks-ts';
 
 import { useUnits, type Unit } from '@/hooks/useUnits';
 
-import type { InsumoInsert, Market } from '@/lib/types';
+import type { Market } from '@/lib/types';
 
 interface AppContextType {
   unit: {
@@ -29,31 +29,6 @@ interface AppContextType {
   showFT2Columns: {
     value: boolean;
     setValue: (show: boolean) => void;
-  };
-  upsertInsumos: {
-    errors: {
-      [key: string]: (keyof InsumoInsert)[];
-    };
-    setErrors: (errors: { [key: string]: (keyof InsumoInsert)[] }) => void;
-    isFlashingSuccess: boolean;
-    setIsFlashingSuccess: (isFlashingSuccess: boolean) => void;
-    isFlashingErrors: boolean;
-    setIsFlashingErrors: (isFlashingErrors: boolean) => void;
-    data:
-      | {
-          inserted: number[];
-          updated: { [hour: number]: (keyof InsumoInsert)[] };
-        }
-      | undefined;
-
-    setData: (
-      data:
-        | {
-            inserted: number[];
-            updated: { [hour: number]: (keyof InsumoInsert)[] };
-          }
-        | undefined,
-    ) => void;
   };
 }
 
@@ -120,22 +95,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       _today.getMonth() + 1,
       _today.getDate(),
     );
-    console.log(date.compare(today));
     return date.compare(today);
   }, [date]);
-
-  const [errors, setErrors] = React.useState<{
-    [key: string]: (keyof InsumoInsert)[];
-  }>({});
-  const [isFlashingSuccess, setIsFlashingSuccess] = React.useState(false);
-  const [isFlashingErrors, setIsFlashingErrors] = React.useState(false);
-  const [data, setData] = React.useState<
-    | {
-        inserted: number[];
-        updated: { [hour: number]: (keyof InsumoInsert)[] };
-      }
-    | undefined
-  >(undefined);
 
   const value = {
     unit: {
@@ -158,16 +119,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     showFT2Columns: {
       value: showFT2Columns,
       setValue: setShowFT2Columns,
-    },
-    upsertInsumos: {
-      errors,
-      setErrors,
-      isFlashingSuccess,
-      setIsFlashingSuccess,
-      isFlashingErrors,
-      setIsFlashingErrors,
-      data,
-      setData,
     },
   };
 
@@ -213,12 +164,4 @@ export function useShowFT2Columns() {
     throw new Error('useShowFT2Columns must be used within an AppProvider');
   }
   return context.showFT2Columns;
-}
-
-export function useUpsertInsumosState() {
-  const context = React.useContext(AppContext);
-  if (context === undefined) {
-    throw new Error('useUpsertInsumosState must be used within an AppProvider');
-  }
-  return context.upsertInsumos;
 }

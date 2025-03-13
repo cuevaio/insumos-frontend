@@ -1,5 +1,11 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import ExportAvailabilitiesButton from '.';
@@ -25,17 +31,13 @@ describe('ExportAvailabilitiesButton', () => {
   }));
 
   vi.mock('@/hooks/useAvailabilities', () => ({
-    useAvailabilities: vi.fn().mockReturnValue({ 
-      data: { availabilities: [{ id: 1 }] } 
+    useAvailabilities: vi.fn().mockReturnValue({
+      data: { availabilities: [{ id: 1 }] },
     }),
   }));
 
   vi.mock('@/hooks/useInsumos', () => ({
     useInsumos: vi.fn().mockReturnValue({ data: { insumos: [{ id: 1 }] } }),
-  }));
-
-  vi.mock('@/hooks/useFuelTypes', () => ({
-    useFuelTypes: vi.fn().mockReturnValue({ data: { fuelTypes: [{ id: 1 }] } }),
   }));
 
   vi.mock('@/lib/export', () => ({
@@ -58,7 +60,7 @@ describe('ExportAvailabilitiesButton', () => {
   const renderComponent = () => {
     return render(
       <QueryClientProvider client={queryClient}>
-        <ExportAvailabilitiesButton/>
+        <ExportAvailabilitiesButton />
       </QueryClientProvider>,
     );
   };
