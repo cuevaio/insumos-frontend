@@ -11,12 +11,14 @@ export const noteEnumValues = [
 
 export const DEV: boolean = true;
 
+export interface Price{
+  avg: number;
+  tm: number;
+  op: number;
+}
+
 export const prices: {
-  [key: string]: {
-    avg: number;
-    tm: number;
-    op: number;
-  };
+  [key: string]: Price;
 } = {
   '01930e48-70fe-0e9a-1c18-bff758c72abe': {
     avg: 435.765,

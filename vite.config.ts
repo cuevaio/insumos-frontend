@@ -39,7 +39,6 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     server: {
-      // port: 3000,
       proxy: {
         '/api': {
           target: getApiDomain(),
@@ -57,7 +56,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     build: {
-      minify: false,
+      minify: true,
     },
   };
 });

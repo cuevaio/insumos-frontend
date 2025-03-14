@@ -14,11 +14,13 @@ export interface AvailabilitiesQueryResponse {
 export function useAvailabilities({
   unitId,
   unitName,
+  portfolioName,
   date,
   market,
 }: {
   unitId?: string | null;
   unitName?: string | null;
+  portfolioName?: string | null;
   date?: string | null;
   market?: Market | null;
 }) {
@@ -35,7 +37,7 @@ export function useAvailabilities({
           },
           body: JSON.stringify({
             unitName,
-            portfolioName: 'MEM_SIN',
+            portfolioName,
             fromDate: date,
             toDate: date,
             statusCode: 1,
@@ -48,8 +50,7 @@ export function useAvailabilities({
         days: { [index: string]: number };
       }>;
 
-      // TODO: Tell backend add success field
-      // if (!json.success) throw new Error(json.message);
+      if (!json.success) throw new Error(json.message);
 
       const data = json.data;
 

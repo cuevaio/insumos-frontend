@@ -31,6 +31,7 @@ const AvailabilitiesTable: React.FC<AvailabilitiesTableProps> = ({}) => {
   const { data: availabilities } = useAvailabilities({
     unitId: unit?.id?.toString(),
     unitName: unit?.name?.toString(),
+    portfolioName: unit?.portfolioName?.toString(),
     date: date?.toString(),
     market,
   });

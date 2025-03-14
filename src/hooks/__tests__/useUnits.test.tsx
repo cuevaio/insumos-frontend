@@ -5,8 +5,6 @@ import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import * as constants from '@/lib/constants';
 
 import * as authHook from '../useAuth';
-// import * as fuelTypesHook from '../useFuelTypes';
-// import type { FuelType } from '../useFuelTypes';
 import { UnitGSMS, UnitWithFuelType, useUnits } from '../useUnits';
 
 const createWrapper = () => {

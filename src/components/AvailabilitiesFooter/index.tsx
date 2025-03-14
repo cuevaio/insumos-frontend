@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import ExportAvailabilitiesButton from '@/components/ExportAvailabilitiesButton';
 
-import { prices } from '@/lib/constants';
+import { prices, Price } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 interface AvailabilitiesFooterProps {
@@ -20,6 +20,8 @@ const AvailabilitiesFooter: React.FC<AvailabilitiesFooterProps> = ({
 
   const { value: unit } = useUnit();
   const { dateDiff } = useDate();
+
+  const priceByUnit = prices[unit?.id ?? ''] as Price
 
   return (
     <>
@@ -38,17 +40,17 @@ const AvailabilitiesFooter: React.FC<AvailabilitiesFooterProps> = ({
               {t('Average prices for the last 30 days')}
             </p>
             <p className="text-xs">
-              Nodo {unit?.name}: {unit && `$${prices[unit.id].op}`}
+              Nodo {unit?.name}: {unit && priceByUnit?.op && `$${priceByUnit.op}`}
             </p>
             <p className="text-xs">{t('Days without PML')}: 10/02/2024</p>
           </div>
           <div className="rounded-lg border bg-rose-200 p-2">
             <p className="text-xs font-bold">{t('Transmission Rate')}</p>
-            <p className="text-xs">{unit && `$${prices[unit.id].tm}`}</p>
+            <p className="text-xs">{unit && priceByUnit?.tm && `$${priceByUnit.tm}`}</p>
           </div>
           <div className="rounded-lg border bg-green-200 p-2">
             <p className="text-xs font-bold">{t('Operation Rate')}</p>
-            <p className="text-xs">{unit && `$${prices[unit.id].op}`}</p>
+            <p className="text-xs">{unit && priceByUnit?.op && `$${priceByUnit.op}`}</p>
           </div>
         </div>
         <div className="flex gap-4">

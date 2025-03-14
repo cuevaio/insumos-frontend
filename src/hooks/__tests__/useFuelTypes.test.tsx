@@ -4,8 +4,8 @@ import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
 import * as constants from '@/lib/constants';
 
-import * as authHook from '../useAuth';
-import { useFuelTypes } from '../useFuelTypes';
+import * as authHook from '@/hooks/useAuth';
+import { useFuelTypes } from '@/hooks/useFuelTypes';
 
 // Mock wrapper for React Query
 const createWrapper = () => {

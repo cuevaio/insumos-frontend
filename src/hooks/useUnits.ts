@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '@/hooks/useAuth';
 
-import { FuelType } from './useFuelTypes';
+import { FuelType } from '@/hooks/useFuelTypes';
 
 export interface Unit {
   id: string;

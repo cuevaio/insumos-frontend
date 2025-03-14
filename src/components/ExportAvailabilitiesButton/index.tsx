@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 
 import { useAvailabilities } from '@/hooks/useAvailabilities';
-import { useFuelTypes } from '@/hooks/useFuelTypes';
 import { useInsumos } from '@/hooks/useInsumos';
 
 import { populateAvailabilityData, setupWorksheet } from '@/lib/export';
@@ -25,6 +24,7 @@ const ExportAvailabilitiesButton = () => {
   const { data } = useAvailabilities({
     unitId: unit?.id,
     unitName: unit?.name?.toString(),
+    portfolioName: unit?.portfolioName?.toString(),
     date: date?.toString(),
     market,
   });
@@ -38,13 +38,8 @@ const ExportAvailabilitiesButton = () => {
     market,
   });
 
-  const { data: fuelTypes } = useFuelTypes();
-
-  const fuelType1 =
-    unit?.fuelType1ID && fuelTypes?.find((f) => f.id === unit.fuelType1ID);
-
-  const fuelType2 =
-    unit?.fuelType2ID && fuelTypes?.find((f) => f.id === unit.fuelType2ID);
+  const fuelType1 = unit?.fuelType1
+  const fuelType2 = unit?.fuelType2
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -101,6 +96,7 @@ const ExportAvailabilitiesButton = () => {
     <Button
       className="h-6 text-xs"
       variant="outline"
+      type="button"
       onClick={() => {
         mutate();
       }}

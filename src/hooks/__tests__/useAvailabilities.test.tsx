@@ -585,6 +585,7 @@ describe('useAvailabilities', () => {
         useAvailabilities({
           unitId: mockUnitId,
           unitName: mockUnitName,
+          portfolioName: mockPortfolioName,
           date: mockDate,
           market: mockMarket,
         }),
