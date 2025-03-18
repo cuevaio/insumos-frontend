@@ -335,12 +335,22 @@ const AvailabilitiesTableBody: React.FC<AvailabilitiesTableBodyProps> = ({
   const { errors, isFlashingErrors, isFlashingSuccess, data } =
     useUpsertInsumosState();
 
-  const [dailyPriceFt1, setDailyPriceFt1] = React.useState(
-    insumos?.insumos?.at(0)?.price_ft1 ?? '',
-  );
-  const [dailyPriceFt2, setDailyPriceFt2] = React.useState(
-    insumos?.insumos?.at(0)?.price_ft2 ?? '',
-  );
+  const [dailyPriceFt1, setDailyPriceFt1] = React.useState('');
+  const [dailyPriceFt2, setDailyPriceFt2] = React.useState('');
+
+  React.useEffect(() => {
+    const price_ft1 = insumos?.insumos?.at(0)?.price_ft1;
+    const price_ft2 = insumos?.insumos?.at(0)?.price_ft2;
+
+    if (price_ft1) setDailyPriceFt1(price_ft1.toString());
+    else setDailyPriceFt1('0');
+
+    if (price_ft2) setDailyPriceFt2(price_ft2.toString());
+    else setDailyPriceFt2('0')
+  }, [
+    insumos?.insumos?.at(0)?.price_ft1,
+    insumos?.insumos?.at(0)?.price_ft2,
+  ])
 
   const handleChangePriceFt1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDailyPriceFt1(event.target.value);

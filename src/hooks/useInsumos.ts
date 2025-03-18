@@ -32,8 +32,8 @@ interface FuelGSMS {
 
 interface InsumoGSMS {
   hour: number;
-  minAvailability: number;
-  maxAvailability: number;
+  minAvailability?: number;
+  maxAvailability?: number;
   fuels: FuelGSMS[];
   agc: boolean;
   note: string;
@@ -100,14 +100,14 @@ export const useInsumos = ({
 
           return {
             hour: idx + 1,
-            min: insumoGSMS.minAvailability,
-            max: insumoGSMS.maxAvailability,
+            min: insumoGSMS?.minAvailability ?? 0,
+            max: insumoGSMS?.maxAvailability ?? 0,
             share_ft1: ft1?.percentage! / 100,
             share_ft2: ft2?.percentage! / 100,
             note: insumoGSMS.note,
             agc: insumoGSMS.agc,
-            price_ft1: ft1?.price,
-            price_ft2: ft2?.price,
+            price_ft1: ft1?.price ?? 0,
+            price_ft2: ft2?.price ?? 0,
             updated_at: insumoGSMS.modifiedOn,
             modified_by: insumoGSMS.modifiedBy,
           };
